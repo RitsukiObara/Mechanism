@@ -8,7 +8,7 @@
 // インクルードファイル
 //********************************************
 #include "elevation_manager.h"
-#include "mesh_elevation.h"
+#include "objectElevation.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -28,7 +28,7 @@ CElevationManager::CElevationManager()
 //============================
 // 登録処理
 //============================
-void CElevationManager::Regist(CMeshElevation* pThis)
+void CElevationManager::Regist(CElevation* pThis)
 {
 	if (m_pTop == nullptr)
 	{ // オブジェクトが NULL の場合
@@ -46,7 +46,7 @@ void CElevationManager::Regist(CMeshElevation* pThis)
 	{ // 上記以外
 
 		// ローカルポインタを宣言
-		CMeshElevation* pObject = m_pTop;			// 先頭のオブジェクト
+		CElevation* pObject = m_pTop;			// 先頭のオブジェクト
 
 		while (pObject->GetNext() != nullptr)
 		{ // オブジェクトがある限り回る
@@ -75,7 +75,7 @@ void CElevationManager::Regist(CMeshElevation* pThis)
 void CElevationManager::Uninit(void)
 {
 	// ローカル変数宣言
-	CMeshElevation* pObj = nullptr;		// 現在のオブジェクトのポインタ
+	CElevation* pObj = nullptr;		// 現在のオブジェクトのポインタ
 
 	// オブジェクトを代入する
 	pObj = m_pTop;
@@ -106,7 +106,7 @@ CElevationManager::~CElevationManager()
 //===========================================
 // オブジェクトの取得処理
 //===========================================
-CMeshElevation* CElevationManager::GetTop(void)
+CElevation* CElevationManager::GetTop(void)
 {
 	// オブジェクトの情報を渡す
 	return m_pTop;
@@ -115,10 +115,10 @@ CMeshElevation* CElevationManager::GetTop(void)
 //===========================================
 // リスト構造の引き抜き処理
 //===========================================
-void CElevationManager::Pull(CMeshElevation* pThis)
+void CElevationManager::Pull(CElevation* pThis)
 {
 	// ローカル変数宣言
-	CMeshElevation* pObj = nullptr;		// 現在のオブジェクトのポインタ
+	CElevation* pObj = nullptr;		// 現在のオブジェクトのポインタ
 
 	// オブジェクトを代入する
 	pObj = m_pTop;

@@ -20,8 +20,7 @@
 #include "sound.h"
 
 #include "airplane.h"
-#include "mesh_model.h"
-#include "mesh_elevation.h"
+#include "objectElevation.h"
 #include "player.h"
 #include "screw.h"
 #include "enemy.h"
@@ -57,7 +56,7 @@ CGame::~CGame()
 HRESULT CGame::Init(void)
 {
 	// テキスト読み込み処理
-	CMeshElevation::TxtSet();
+	CElevation::TxtSet();
 
 	//if (m_pField == NULL)
 	//{ // フィールドへのポインタが NULL の場合

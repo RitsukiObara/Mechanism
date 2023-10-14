@@ -10,7 +10,7 @@
 #include "main.h"
 #include "manager.h"
 #include "renderer.h"
-#include "mesh_elevation.h"
+#include "objectElevation.h"
 #include "elevation_manager.h"
 #include "Effect.h"
 #include "input.h"
@@ -25,7 +25,7 @@
 //================================
 // コンストラクタ
 //================================
-CMeshElevation::CMeshElevation() : CObject(CObject::TYPE_FIELD, CObject::PRIORITY_BG)
+CElevation::CElevation() : CObject(CObject::TYPE_FIELD, CObject::PRIORITY_BG)
 {
 	// 全ての値をクリアする
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 位置
@@ -58,7 +58,7 @@ CMeshElevation::CMeshElevation() : CObject(CObject::TYPE_FIELD, CObject::PRIORIT
 //================================
 // デストラクタ
 //================================
-CMeshElevation::~CMeshElevation()
+CElevation::~CElevation()
 {
 
 }
@@ -66,7 +66,7 @@ CMeshElevation::~CMeshElevation()
 //============================
 // 前のポインタの設定処理
 //============================
-void CMeshElevation::SetPrev(CMeshElevation* pPrev)
+void CElevation::SetPrev(CElevation* pPrev)
 {
 	// 前のポインタを設定する
 	m_pPrev = pPrev;
@@ -75,7 +75,7 @@ void CMeshElevation::SetPrev(CMeshElevation* pPrev)
 //============================
 // 後のポインタの設定処理
 //============================
-void CMeshElevation::SetNext(CMeshElevation* pNext)
+void CElevation::SetNext(CElevation* pNext)
 {
 	// 次のポインタを設定する
 	m_pNext = pNext;
@@ -84,7 +84,7 @@ void CMeshElevation::SetNext(CMeshElevation* pNext)
 //============================
 // 前のポインタの設定処理
 //============================
-CMeshElevation* CMeshElevation::GetPrev(void) const
+CElevation* CElevation::GetPrev(void) const
 {
 	// 前のポインタを返す
 	return m_pPrev;
@@ -93,7 +93,7 @@ CMeshElevation* CMeshElevation::GetPrev(void) const
 //============================
 // 次のポインタの設定処理
 //============================
-CMeshElevation* CMeshElevation::GetNext(void) const
+CElevation* CElevation::GetNext(void) const
 {
 	// 次のポインタを返す
 	return m_pNext;
@@ -102,7 +102,7 @@ CMeshElevation* CMeshElevation::GetNext(void) const
 //================================
 // 初期化処理
 //================================
-HRESULT CMeshElevation::Init(void)
+HRESULT CElevation::Init(void)
 {
 	// ポインタを宣言
 	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();	// デバイスへのポインタ
@@ -152,7 +152,7 @@ HRESULT CMeshElevation::Init(void)
 //================================
 // 終了処理
 //================================
-void CMeshElevation::Uninit(void)
+void CElevation::Uninit(void)
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != nullptr)
@@ -188,7 +188,7 @@ void CMeshElevation::Uninit(void)
 //================================
 // 更新処理
 //================================
-void CMeshElevation::Update(void)
+void CElevation::Update(void)
 {
 	// 法線の設定処理
 	SetNormalize();
@@ -197,7 +197,7 @@ void CMeshElevation::Update(void)
 //================================
 // 描画処理
 //================================
-void CMeshElevation::Draw(void)
+void CElevation::Draw(void)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();
@@ -251,7 +251,7 @@ void CMeshElevation::Draw(void)
 //================================
 // 情報の設定処理
 //================================
-void CMeshElevation::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ)
+void CElevation::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ)
 {
 	// 全ての値を初期化する
 	m_pos = pos;						// 位置
@@ -276,7 +276,7 @@ void CMeshElevation::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, con
 //================================
 // テクスチャの割り当て処理
 //================================
-void CMeshElevation::BindTexture(int nIdx)
+void CElevation::BindTexture(int nIdx)
 {
 	// テクスチャを割り当てる
 	m_nTexIdx = nIdx;
@@ -285,7 +285,7 @@ void CMeshElevation::BindTexture(int nIdx)
 //================================
 // 頂点の設定処理
 //================================
-void CMeshElevation::SetVertex(void)
+void CElevation::SetVertex(void)
 {
 	VERTEX_3D *pVtx;							// 頂点情報へのポインタ
 
@@ -324,7 +324,7 @@ void CMeshElevation::SetVertex(void)
 //================================
 // 法線の設定処理
 //================================
-void CMeshElevation::SetNormalize(void)
+void CElevation::SetNormalize(void)
 {
 	VERTEX_3D *pVtx;							// 頂点情報へのポインタ
 	D3DXVECTOR3 nor[6] = {};					// 保存用法線
@@ -605,7 +605,7 @@ void CMeshElevation::SetNormalize(void)
 //================================
 // インデックスの設定処理
 //================================
-void CMeshElevation::SetIndex(void)
+void CElevation::SetIndex(void)
 {
 	// ローカル変数宣言
 	WORD      *pIdx;							// インデックス情報へのポインタ
@@ -661,7 +661,7 @@ void CMeshElevation::SetIndex(void)
 //================================
 // 起伏の当たり判定
 //================================
-float CMeshElevation::ElevationCollision(const D3DXVECTOR3 pos)
+float CElevation::ElevationCollision(const D3DXVECTOR3 pos)
 {
 	// ローカル変数宣言
 	D3DXVECTOR3 nor, vec1, vec2;	// 位置
@@ -772,16 +772,16 @@ float CMeshElevation::ElevationCollision(const D3DXVECTOR3 pos)
 //================================
 // 生成処理
 //================================
-CMeshElevation* CMeshElevation::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ, char* texturename)
+CElevation* CElevation::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ, char* texturename)
 {
 	// ローカルオブジェクトを生成
-	CMeshElevation* pMesh = nullptr;	// オブジェクト3Dのインスタンスを生成
+	CElevation* pMesh = nullptr;	// オブジェクト3Dのインスタンスを生成
 
 	if (pMesh == nullptr)
 	{ // オブジェクトが NULL の場合
 
 		// オブジェクトを生成
-		pMesh = new CMeshElevation;
+		pMesh = new CElevation;
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
@@ -821,10 +821,10 @@ CMeshElevation* CMeshElevation::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3
 //================================
 // テキスト読み込み処理
 //================================
-void CMeshElevation::TxtSet(void)
+void CElevation::TxtSet(void)
 {
 	// 変数を宣言
-	CMeshElevation* pElevation = nullptr;	// 起伏のポインタ
+	CElevation* pElevation = nullptr;	// 起伏のポインタ
 	int nEnd;			// テキスト読み込み終了の確認用
 	D3DXVECTOR3 pos = NONE_D3DXVECTOR3;		// 位置
 	D3DXVECTOR3 rot = NONE_D3DXVECTOR3;		// 向き

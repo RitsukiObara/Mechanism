@@ -12,18 +12,18 @@
 //-----------------------------------------------------
 // クラス定義(起伏地面)
 //-----------------------------------------------------
-class CMeshElevation : public CObject
+class CElevation : public CObject
 {
 public:			// 誰でもアクセスできる
 
-	CMeshElevation();		// コンストラクタ
-	~CMeshElevation();		// デストラクタ
+	CElevation();		// コンストラクタ
+	~CElevation();		// デストラクタ
 
 	// リスト構造関係
-	void SetPrev(CMeshElevation* pPrev);	// 前のポインタの設定処理
-	void SetNext(CMeshElevation* pNext);	// 後のポインタの設定処理
-	CMeshElevation* GetPrev(void) const;	// 前のポインタの設定処理
-	CMeshElevation* GetNext(void) const;	// 次のポインタの設定処理
+	void SetPrev(CElevation* pPrev);	// 前のポインタの設定処理
+	void SetNext(CElevation* pNext);	// 後のポインタの設定処理
+	CElevation* GetPrev(void) const;	// 前のポインタの設定処理
+	CElevation* GetNext(void) const;	// 次のポインタの設定処理
 
 	// メンバ関数
 	HRESULT Init(void);		// 初期化処理
@@ -41,7 +41,7 @@ public:			// 誰でもアクセスできる
 	void BindTexture(int nIdx);		// テクスチャの割り当て処理
 
 	// 静的メンバ変数
-	static CMeshElevation* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ, char* texturename);		// 生成処理
+	static CElevation* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ, char* texturename);		// 生成処理
 	static void TxtSet(void);					// テキスト読み込み処理
 
 private:		// 自分だけアクセスできる
@@ -63,8 +63,8 @@ private:		// 自分だけアクセスできる
 	int		m_nTexIdx;			// テクスチャのインデックス
 
 	// リスト構造関係
-	CMeshElevation* m_pPrev;	// 前へのポインタ
-	CMeshElevation* m_pNext;	// 次へのポインタ
+	CElevation* m_pPrev;	// 前へのポインタ
+	CElevation* m_pNext;	// 次へのポインタ
 };
 
 

@@ -9,7 +9,7 @@
 //*******************************************
 #include "collision.h"
 #include "shadowCircle.h"
-#include "mesh_elevation.h"
+#include "objectElevation.h"
 #include "elevation_manager.h"
 #include "player.h"
 #include "player_act.h"
@@ -35,7 +35,7 @@ void collision::ShadowElevCollision(const D3DXVECTOR3& pos, int nIdx)
 {
 	// ローカル変数宣言
 	CShadowCircle* pShadow = CShadowCircle::GetShadow(nIdx);	// 影のポインタ
-	CMeshElevation* pMesh = nullptr;			// メッシュのポインタ
+	CElevation* pMesh = nullptr;			// メッシュのポインタ
 	D3DXVECTOR3 posShadow = pos;				// 影の位置
 
 	if (pShadow != nullptr)

@@ -15,7 +15,7 @@
 //--------------------------------------------
 // 前方宣言
 //--------------------------------------------
-class CMeshElevation;		// 起伏
+class CElevation;		// 起伏
 
 //--------------------------------------------
 // クラス(起伏マネージャークラス)
@@ -28,11 +28,11 @@ public:				// 誰でもアクセスできる
 	~CElevationManager();			// デストラクタ
 
 	// メンバ関数
-	void Regist(CMeshElevation* pThis);		// 登録処理
+	void Regist(CElevation* pThis);		// 登録処理
 	void Uninit(void);						// 終了処理
 	
-	CMeshElevation* GetTop(void);				// 先頭の取得処理
-	void Pull(CMeshElevation* pThis);			// リスト構造の引き抜き処理
+	CElevation* GetTop(void);				// 先頭の取得処理
+	void Pull(CElevation* pThis);			// リスト構造の引き抜き処理
 
 	// 静的メンバ関数
 	static CElevationManager* Create(void);		// 生成処理
@@ -41,7 +41,7 @@ public:				// 誰でもアクセスできる
 private:			// 自分だけアクセスできる
 
 	// メンバ変数
-	CMeshElevation* m_pTop;		// 先頭のオブジェクト
+	CElevation* m_pTop;		// 先頭のオブジェクト
 	int m_nNumAll;			// オブジェクトの総数
 
 	// 静的メンバ変数

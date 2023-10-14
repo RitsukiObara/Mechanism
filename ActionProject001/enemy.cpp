@@ -16,7 +16,7 @@
 #include "useful.h"
 
 #include "player.h"
-#include "mesh_elevation.h"
+#include "objectElevation.h"
 #include "elevation_manager.h"
 
 #include "itocan.h"
@@ -278,7 +278,7 @@ void CEnemy::Gravity(void)
 void CEnemy::ElevationCollision(void)
 {
 	// ローカル変数宣言
-	CMeshElevation* pMesh = CElevationManager::Get()->GetTop();		// 起伏の先頭のオブジェクトを取得する
+	CElevation* pMesh = CElevationManager::Get()->GetTop();		// 起伏の先頭のオブジェクトを取得する
 	D3DXVECTOR3 pos = GetPos();				// 位置を取得する
 	float fHeight = 0.0f;					// 高さ
 

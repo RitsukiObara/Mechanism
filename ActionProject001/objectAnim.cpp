@@ -7,7 +7,7 @@
 //********************************************
 // インクルードファイル
 //********************************************
-#include "animobject.h"
+#include "objectAnim.h"
 #include "renderer.h"
 #include "manager.h"
 

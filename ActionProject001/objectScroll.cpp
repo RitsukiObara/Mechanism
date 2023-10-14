@@ -7,7 +7,7 @@
 //********************************************
 // インクルードファイル
 //********************************************
-#include "scrollobject.h"
+#include "objectScroll.h"
 #include "renderer.h"
 #include "manager.h"
 

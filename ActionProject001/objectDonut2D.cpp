@@ -7,7 +7,7 @@
 //********************************************
 // インクルードファイル
 //********************************************
-#include "donut2D.h"
+#include "objectDonut2D.h"
 #include "renderer.h"
 #include "manager.h"
 #include "texture.h"

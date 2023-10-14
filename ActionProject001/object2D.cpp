@@ -10,8 +10,8 @@
 #include "object2D.h"
 #include "renderer.h"
 #include "manager.h"
-#include "animobject.h"
-#include "scrollobject.h"
+#include "objectAnim.h"
+#include "objectScroll.h"
 #include "texture.h"
 
 //=========================================
