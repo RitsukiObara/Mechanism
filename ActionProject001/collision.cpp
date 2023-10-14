@@ -17,6 +17,8 @@
 #include "airplane_manager.h"
 #include "screw.h"
 #include "screw_manager.h"
+#include "enemy.h"
+#include "enemy_manager.h"
 #include "useful.h"
 
 //===============================
@@ -108,18 +110,19 @@ void collision::AirplaneHit(CPlayer& player)
 void collision::ScrewHit(CPlayer& player)
 {
 	// ローカル変数宣言
-	CScrew* pScrew = nullptr;	// 影のポインタ
+	CScrew* pScrew = CScrewManager::Get()->GetTop();	// ネジのポインタ
+	CScrew* pScrewNext = nullptr;						// 次のネジのポインタ
 	D3DXVECTOR3 PosPlayer = D3DXVECTOR3(player.GetPos().x, player.GetPos().y + PLAYER_HALF_HEIGHT, player.GetPos().z);		// プレイヤーの位置
 	D3DXVECTOR3 VtxMax = D3DXVECTOR3(PLAYER_SIZE.x, PLAYER_HALF_HEIGHT, PLAYER_SIZE.z);										// 最大値
 	D3DXVECTOR3 VtxMin = D3DXVECTOR3(-PLAYER_SIZE.x, -PLAYER_HALF_HEIGHT, -PLAYER_SIZE.z);									// 最小値
 	D3DXVECTOR3 AirplaneVtxMax = D3DXVECTOR3(AIRPLANE_COLL_RADIUS, AIRPLANE_COLL_RADIUS, AIRPLANE_COLL_RADIUS);			// 最大値
 	D3DXVECTOR3 AirplaneVtxMin = D3DXVECTOR3(-AIRPLANE_COLL_RADIUS, -AIRPLANE_COLL_RADIUS, -AIRPLANE_COLL_RADIUS);		// 最小値
 
-	// オブジェクトのポインタを取得する
-	pScrew = CScrewManager::Get()->GetTop();
-
 	while (pScrew != nullptr)
 	{ // オブジェクトのが NULL じゃない限り回す
+
+		// 次のネジの情報を取得する
+		pScrewNext = pScrew->GetNext();
 
 		if (useful::RectangleCollisionXY(pScrew->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true &&
 			useful::RectangleCollisionXZ(pScrew->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true)
@@ -127,12 +130,86 @@ void collision::ScrewHit(CPlayer& player)
 
 			// ヒット処理
 			pScrew->Hit(pScrew->GetPos());
-
-			// この先の処理を行わない
-			return;
 		}
 
 		// 次のオブジェクトを代入する
-		pScrew = pScrew->GetNext();
+		pScrew = pScrewNext;
+	}
+}
+
+//===============================
+// プレイヤーと敵との当たり判定
+//===============================
+void collision::EnemyHit(CPlayer& player)
+{
+	// ローカル変数宣言
+	CEnemy* pEnemy = CEnemyManager::Get()->GetTop();		// 敵の情報
+	CEnemy* pEnemyNext = nullptr;							// 次の敵の情報
+	D3DXVECTOR3 pos = player.GetPos();						// プレイヤーの位置
+	D3DXVECTOR3 posOld = player.GetPosOld();				// プレイヤーの前回の位置
+
+	while (pEnemy != nullptr)
+	{ // 敵の情報が NULL じゃない場合
+
+		// 敵の情報を取得する
+		pEnemyNext = pEnemy->GetNext();
+
+		if (pEnemy->GetPos().z + pEnemy->GetFileData().collsize.z >= pos.z &&
+			pEnemy->GetPos().z - pEnemy->GetFileData().collsize.z <= pos.z)
+		{ // 敵とZ軸が合っている場合
+
+			if (posOld.y >= pEnemy->GetPosOld().y + pEnemy->GetFileData().vtxMax.y &&
+				pos.y <= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMax.y &&
+				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMin.x &&
+				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMax.x)
+			{ // 上からの当たり判定
+
+				if (pEnemy->IsStep() == true)
+				{ // 踏みつけられるの場合
+
+					// 敵のヒット処理
+					pEnemy->Hit();
+
+					// 踏みつけ時の処理
+					player.StepHit();
+				}
+				else
+				{ // 上記以外
+
+					// プレイヤーのヒット処理
+					player.Hit();
+				}
+			}
+			else if (posOld.y + PLAYER_SIZE.y <= pEnemy->GetPosOld().y + pEnemy->GetFileData().vtxMin.y &&
+				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMin.y &&
+				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMin.x &&
+				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMax.x)
+			{ // 下からの当たり判定
+
+				// プレイヤーのヒット処理
+				player.Hit();
+			}
+			else if (posOld.x + PLAYER_SIZE.x <= pEnemy->GetPosOld().x + pEnemy->GetFileData().vtxMin.x &&
+				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMin.x &&
+				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMin.y &&
+				pos.y <= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMax.y)
+			{ // 左からの当たり判定
+
+				// プレイヤーのヒット処理
+				player.Hit();
+			}
+			else if (posOld.x - PLAYER_SIZE.x >= pEnemy->GetPosOld().x + pEnemy->GetFileData().vtxMax.x &&
+				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMax.x &&
+				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMin.y &&
+				pos.y <= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMax.y)
+			{ // 右からの当たり判定
+
+				// プレイヤーのヒット処理
+				player.Hit();
+			}
+		}
+
+		// 次のオブジェクトを代入する
+		pEnemy = pEnemyNext;
 	}
 }

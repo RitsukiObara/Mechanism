@@ -391,10 +391,10 @@ void CObject3D::SetVertexHardCoding(const D3DXVECTOR3& VtxMax, const D3DXVECTOR3
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(+VtxMax.x, +VtxMax.y, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(+VtxMin.x, +VtxMax.y, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(+VtxMax.x, +VtxMin.y, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(+VtxMin.x, +VtxMin.y, 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(+VtxMin.x, +VtxMax.y, VtxMax.z);
+	pVtx[1].pos = D3DXVECTOR3(+VtxMax.x, +VtxMax.y, VtxMin.z);
+	pVtx[2].pos = D3DXVECTOR3(+VtxMin.x, +VtxMin.y, VtxMax.z);
+	pVtx[3].pos = D3DXVECTOR3(+VtxMax.x, +VtxMin.y, VtxMin.z);
 
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

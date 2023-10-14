@@ -53,7 +53,9 @@ CEnemy::~CEnemy()
 void CEnemy::Box(void)
 {
 	// 全ての値をクリアする
+	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
+	m_bStep = false;				// 踏みつけ状況
 	m_pPrev = nullptr;				// 前のポインタ
 	m_pNext = nullptr;				// 次のポインタ
 
@@ -114,7 +116,9 @@ HRESULT CEnemy::Init(void)
 	}
 
 	// 全ての値を初期化する
+	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
+	m_bStep = false;				// 踏みつけ状況
 
 	// 値を返す
 	return S_OK;
@@ -170,7 +174,9 @@ void CEnemy::SetData(const D3DXVECTOR3& pos)
 	SetFileData(CXFile::TYPE_ITOCAN);			// モデルの情報
 
 	// 全ての値を設定する
+	m_posInit = pos;				// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
+	m_bStep = false;				// 踏みつけ状況
 }
 
 //=======================================
@@ -258,6 +264,33 @@ D3DXVECTOR3 CEnemy::GetMove(void) const
 }
 
 //=======================================
+// 踏みつけ状況の設定処理
+//=======================================
+void CEnemy::SetEnableStep(const bool bStep)
+{
+	// 踏みつけ状況を設定する
+	m_bStep = bStep;
+}
+
+//=======================================
+// 踏みつけ状況の取得処理
+//=======================================
+bool CEnemy::IsStep(void) const
+{
+	// 踏みつけ状況を返す
+	return m_bStep;
+}
+
+//=======================================
+// 初期位置の取得処理
+//=======================================
+D3DXVECTOR3 CEnemy::GetInitPos(void) const
+{
+	// 初期位置を返す
+	return m_posInit;
+}
+
+//=======================================
 // 重力処理
 //=======================================
 void CEnemy::Gravity(void)
@@ -275,12 +308,13 @@ void CEnemy::Gravity(void)
 //=======================================
 // 起伏地面の当たり判定処理
 //=======================================
-void CEnemy::ElevationCollision(void)
+bool CEnemy::ElevationCollision(void)
 {
 	// ローカル変数宣言
 	CElevation* pMesh = CElevationManager::Get()->GetTop();		// 起伏の先頭のオブジェクトを取得する
 	D3DXVECTOR3 pos = GetPos();				// 位置を取得する
 	float fHeight = 0.0f;					// 高さ
+	bool bLand = false;						// 着地判定
 
 	while (pMesh != nullptr)
 	{ // 地面の情報がある限り回す
@@ -296,6 +330,9 @@ void CEnemy::ElevationCollision(void)
 
 			// 重力を設定する
 			m_move.y = 0.0f;
+
+			// 着地判定を付ける
+			bLand = true;
 		}
 
 		// 次のポインタを取得する
@@ -304,4 +341,7 @@ void CEnemy::ElevationCollision(void)
 
 	// 位置を更新する
 	SetPos(pos);
+
+	// 着地判定を返す
+	return bLand;
 }

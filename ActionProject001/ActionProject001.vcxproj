@@ -157,6 +157,7 @@
     <ClCompile Include="ability_UI.cpp" />
     <ClCompile Include="airplane.cpp" />
     <ClCompile Include="airplane_manager.cpp" />
+    <ClCompile Include="collpolygon.cpp" />
     <ClCompile Include="new_record.cpp" />
     <ClCompile Include="objectAnim.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -227,6 +228,7 @@
     <ClInclude Include="ability_UI.h" />
     <ClInclude Include="airplane.h" />
     <ClInclude Include="airplane_manager.h" />
+    <ClInclude Include="collpolygon.h" />
     <ClInclude Include="objectAnim.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />

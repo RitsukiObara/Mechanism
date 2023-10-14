@@ -30,6 +30,9 @@ namespace collision
 
 	// アイテムの当たり判定
 	void ScrewHit(CPlayer& player);									// プレイヤーとネジとの当たり判定
+
+	// 敵の当たり判定
+	void EnemyHit(CPlayer& player);									// プレイヤーと敵との当たり判定
 }
 
 #endif

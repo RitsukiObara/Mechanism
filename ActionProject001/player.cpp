@@ -186,6 +186,9 @@ void CPlayer::Update(void)
 	// ネジとの当たり判定
 	collision::ScrewHit(*this);
 
+	// 敵との当たり判定
+	collision::EnemyHit(*this);
+
 	// 影の位置向き設定処理
 	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
 
@@ -316,6 +319,14 @@ void CPlayer::Hit(void)
 {
 	// 爆発パーティクルを生成
 	CParticle::Create(GetPos(), CParticle::TYPE_FIRE);
+}
+
+//=======================================
+// 踏みつけ時の処理
+//=======================================
+void CPlayer::StepHit(void)
+{
+
 }
 
 //=======================================
