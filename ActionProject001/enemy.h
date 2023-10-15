@@ -23,6 +23,7 @@ public:			// 誰でもアクセスできる
 	enum TYPE
 	{
 		TYPE_ITOCAN = 0,		// イトキャン
+		TYPE_MACHIDORI,			// マシンドリー
 		TYPE_MAX				// この列挙型の総数
 	};
 
@@ -47,13 +48,16 @@ public:			// 誰でもアクセスできる
 	virtual void SetData(const D3DXVECTOR3& pos);				// 情報の設定処理
 
 	// セット・ゲット関係
+	D3DXVECTOR3 GetInitPos(void) const;			// 初期位置の取得処理
+
 	void SetMove(const D3DXVECTOR3& move);		// 移動量の設定処理
 	D3DXVECTOR3 GetMove(void) const;			// 移動量の取得処理
 
+	void SetCollSize(const D3DXVECTOR3& size);	// 当たり判定のサイズの設定処理
+	D3DXVECTOR3 GetCollSize(void) const;		// 当たり判定のサイズの取得処理
+
 	void SetEnableStep(const bool bStep);		// 踏みつけ状況の設定処理
 	bool IsStep(void) const;					// 踏みつけ状況の取得処理
-
-	D3DXVECTOR3 GetInitPos(void) const;			// 初期位置の取得処理
 
 	void SetEnableCollision(const bool bColl);	// 当たり判定状況の設定処理
 	bool IsCollision(void) const;				// 当たり判定状況の取得処理
@@ -70,6 +74,7 @@ private:		// 自分だけアクセスできる
 	// メンバ変数
 	D3DXVECTOR3 m_posInit;	// 初期位置
 	D3DXVECTOR3 m_move;		// 移動量
+	D3DXVECTOR3 m_sizeColl;	// 当たり判定のサイズ
 	bool m_bStep;			// 踏みつけ状況
 	bool m_bCollision;		// 当たり判定を通るかどうか
 

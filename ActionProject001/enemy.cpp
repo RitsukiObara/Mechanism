@@ -20,6 +20,10 @@
 #include "elevation_manager.h"
 
 #include "itocan.h"
+#include "machidori.h"
+
+// マクロ定義
+#define GRAVITY		(0.5f)		// 重力
 
 //==============================
 // コンストラクタ
@@ -55,6 +59,7 @@ void CEnemy::Box(void)
 	// 全ての値をクリアする
 	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
+	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
 	m_pPrev = nullptr;				// 前のポインタ
@@ -119,6 +124,7 @@ HRESULT CEnemy::Init(void)
 	// 全ての値を初期化する
 	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
+	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
 
@@ -173,11 +179,11 @@ void CEnemy::SetData(const D3DXVECTOR3& pos)
 	SetPosOld(pos);								// 前回の位置
 	SetRot(NONE_D3DXVECTOR3);					// 向き
 	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
-	SetFileData(CXFile::TYPE_ITOCAN);			// モデルの情報
 
 	// 全ての値を設定する
 	m_posInit = pos;				// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
+	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
 }
@@ -195,10 +201,17 @@ CEnemy* CEnemy::Create(const D3DXVECTOR3& pos, const TYPE type)
 
 		switch (type)
 		{
-		case TYPE_ITOCAN:
+		case TYPE_ITOCAN:		// イトキャン
 
 			// インスタンスを生成
 			pEnemy = new CItocan;
+
+			break;
+
+		case TYPE_MACHIDORI:	// マシンドリー
+
+			// インスタンスを生成
+			pEnemy = new CMachidori;
 
 			break;
 
@@ -227,8 +240,8 @@ CEnemy* CEnemy::Create(const D3DXVECTOR3& pos, const TYPE type)
 		if (FAILED(pEnemy->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "ネジの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -244,7 +257,7 @@ CEnemy* CEnemy::Create(const D3DXVECTOR3& pos, const TYPE type)
 		return nullptr;
 	}
 
-	// ネジのポインタを返す
+	// 敵のポインタを返す
 	return pEnemy;
 }
 
@@ -264,6 +277,24 @@ D3DXVECTOR3 CEnemy::GetMove(void) const
 {
 	// 移動量を返す
 	return m_move;
+}
+
+//=======================================
+// 当たり判定のサイズの設定処理
+//=======================================
+void CEnemy::SetCollSize(const D3DXVECTOR3& size)
+{
+	// 当たり判定のサイズを設定する
+	m_sizeColl = size;
+}
+
+//=======================================
+// 当たり判定のサイズの取得処理
+//=======================================
+D3DXVECTOR3 CEnemy::GetCollSize(void) const
+{
+	// 当たり判定のサイズを返す
+	return m_sizeColl;
 }
 
 //=======================================
@@ -320,7 +351,7 @@ void CEnemy::Gravity(void)
 	D3DXVECTOR3 pos = GetPos();			// 位置を取得する
 
 	// 重力処理
-	useful::Gravity(&m_move.y, pos, 0.5f);
+	useful::Gravity(&m_move.y, pos, GRAVITY);
 
 	// 位置を適用する
 	SetPos(pos);

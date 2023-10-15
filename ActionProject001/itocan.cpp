@@ -20,6 +20,7 @@
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
+#define COLLISION_SIZE		(D3DXVECTOR3(32.0f, 128.0f, 40.0f))	// 当たり判定のサイズ
 #define MOVE_DISTANCE		(1200.0f)							// 移動する距離
 #define MOVE				(D3DXVECTOR3(3.0f, 0.0f, 0.0f))		// 移動量
 #define ROT_MOVE_MAGNI		(0.15f)								// 向きの移動量の倍率
@@ -190,6 +191,9 @@ void CItocan::SetData(const D3DXVECTOR3& pos)
 	// 情報の設定処理
 	CEnemy::SetData(pos);
 
+	// モデルの情報を設定する
+	SetFileData(CXFile::TYPE_ITOCAN);
+
 	// 全ての値をクリアする
 	m_state = STATE_STOP;			// 状態
 	m_nStateCount = 0;			// 状態カウント
@@ -198,6 +202,7 @@ void CItocan::SetData(const D3DXVECTOR3& pos)
 	// 情報の設定処理
 	SetEnableStep(true);			// 踏みつけられる設定
 	SetMove(MOVE);					// 移動量
+	SetCollSize(COLLISION_SIZE);	// 当たり判定のサイズ
 }
 
 //=======================================
@@ -211,7 +216,6 @@ void CItocan::CheckPlayer(void)
 		// ローカル変数宣言
 		D3DXVECTOR3 posPlayer = CPlayer::Get()->GetPos();	// プレイヤーの位置
 		D3DXVECTOR3 pos = GetPos();		// 位置を取得する
-		D3DXVECTOR3 rot = GetRot();		// 向きを取得する
 
 		if (posPlayer.x >= pos.x)
 		{ // プレイヤーの位置が自身よりも右にいる場合
@@ -225,9 +229,6 @@ void CItocan::CheckPlayer(void)
 			// 向きを設定する
 			m_fRotDest = D3DX_PI * 0.5f;
 		}
-
-		// 向きを設定する
-		SetRot(rot);
 	}
 }
 

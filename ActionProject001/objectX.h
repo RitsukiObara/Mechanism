@@ -33,6 +33,7 @@ public:			// 誰でもアクセスできる
 
 		// 敵モデル
 		TYPE_ITOCAN,			// イトキャン
+		TYPE_MACHIDORI,			// マシンドリー
 
 		// プレイヤーモデル
 		TYPE_PLAYERPANTS,		// 腰

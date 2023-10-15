@@ -283,6 +283,24 @@ void CElevation::BindTexture(int nIdx)
 }
 
 //================================
+// 位置の取得処理
+//================================
+D3DXVECTOR3 CElevation::GetPos(void)
+{
+	// 位置を返す
+	return m_pos;
+}
+
+//================================
+// サイズの取得処理
+//================================
+D3DXVECTOR3 CElevation::GetSize(void)
+{
+	// サイズを返す
+	return m_size;
+}
+
+//================================
 // 頂点の設定処理
 //================================
 void CElevation::SetVertex(void)
@@ -663,110 +681,123 @@ void CElevation::SetIndex(void)
 //================================
 float CElevation::ElevationCollision(const D3DXVECTOR3 pos)
 {
-	// ローカル変数宣言
-	D3DXVECTOR3 nor, vec1, vec2;	// 位置
-	float fHeight = pos.y;			// 対象の高さ
-	int nNum = 0;					// 現在の番号
+	if (pos.x <= m_pos.x + m_size.x &&
+		pos.x >= m_pos.x - m_size.x &&
+		pos.z <= m_pos.z + m_size.z &&
+		pos.z >= m_pos.z - m_size.z)
+	{ // 地面の範囲にいる場合
 
-	// 頂点の番号
-	int nVtxLeftUp;		// 左上
-	int nVtxLeftDown;	// 左下
-	int nVtxRightUp;	// 右上
-	int nVtxRightDown;	// 右下
-	D3DXVECTOR3 vtxLeftUp;		// 左上の位置
-	D3DXVECTOR3 vtxLeftDown;	// 左下の位置
-	D3DXVECTOR3 vtxRightUp;		// 右上の位置
-	D3DXVECTOR3 vtxRightDown;	// 右下の位置
+		// ローカル変数宣言
+		D3DXVECTOR3 nor, vec1, vec2;	// 位置
+		float fHeight = pos.y;			// 対象の高さ
+		int nNum = 0;					// 現在の番号
 
-	VERTEX_3D * pVtx;				//頂点情報へのポインタ
+		// 頂点の番号
+		int nVtxLeftUp;		// 左上
+		int nVtxLeftDown;	// 左下
+		int nVtxRightUp;	// 右上
+		int nVtxRightDown;	// 右下
+		D3DXVECTOR3 vtxLeftUp;		// 左上の位置
+		D3DXVECTOR3 vtxLeftDown;	// 左下の位置
+		D3DXVECTOR3 vtxRightUp;		// 右上の位置
+		D3DXVECTOR3 vtxRightDown;	// 右下の位置
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		VERTEX_3D * pVtx;				//頂点情報へのポインタ
 
-	for (int nCntDep = 0; nCntDep < m_nVtxZ - 1; nCntDep++)
-	{
-		for (int nCntWid = 0; nCntWid < m_nVtxX - 1; nCntWid++)
+		//頂点バッファをロックし、頂点情報へのポインタを取得
+		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		for (int nCntDep = 0; nCntDep < m_nVtxZ - 1; nCntDep++)
 		{
-			// 現在の頂点の番号を設定する
-			nNum = (m_nVtxX * nCntDep) + nCntWid;
+			for (int nCntWid = 0; nCntWid < m_nVtxX - 1; nCntWid++)
+			{
+				// 現在の頂点の番号を設定する
+				nNum = (m_nVtxX * nCntDep) + nCntWid;
 
-			// 頂点の番号を設定する
-			nVtxLeftUp = nNum;					// 左上
-			nVtxLeftDown = nNum + m_nVtxX;		// 左下
-			nVtxRightUp = nNum + 1;				// 右上
-			nVtxRightDown = nNum + m_nVtxX + 1;	// 右下
+				// 頂点の番号を設定する
+				nVtxLeftUp = nNum;					// 左上
+				nVtxLeftDown = nNum + m_nVtxX;		// 左下
+				nVtxRightUp = nNum + 1;				// 右上
+				nVtxRightDown = nNum + m_nVtxX + 1;	// 右下
 
-			// 頂点の位置を設定する
-			vtxLeftUp = m_pos + pVtx[nVtxLeftUp].pos;
-			vtxLeftDown = m_pos + pVtx[nVtxLeftDown].pos;
-			vtxRightUp = m_pos + pVtx[nVtxRightUp].pos;
-			vtxRightDown = m_pos + pVtx[nVtxRightDown].pos;
+				// 頂点の位置を設定する
+				vtxLeftUp = m_pos + pVtx[nVtxLeftUp].pos;
+				vtxLeftDown = m_pos + pVtx[nVtxLeftDown].pos;
+				vtxRightUp = m_pos + pVtx[nVtxRightUp].pos;
+				vtxRightDown = m_pos + pVtx[nVtxRightDown].pos;
 
-			if (vtxLeftUp.z >= pos.z &&
-				vtxLeftUp.x <= pos.x &&
-				vtxRightDown.z <= pos.z &&
-				vtxRightDown.x >= pos.x)
-			{ // 四角形の中にいた場合
+				if (vtxLeftUp.z >= pos.z &&
+					vtxLeftUp.x <= pos.x &&
+					vtxRightDown.z <= pos.z &&
+					vtxRightDown.x >= pos.x)
+				{ // 四角形の中にいた場合
 
-				if (useful::LineOuterProductXZ(vtxLeftDown, vtxLeftUp, pos) >= 0 &&
-					useful::LineOuterProductXZ(vtxLeftUp, vtxRightDown, pos) >= 0 &&
-					useful::LineOuterProductXZ(vtxRightDown, vtxLeftDown, pos) >= 0)
-				{ // 真ん中の境界線より左側に居た場合
+					if (useful::LineOuterProductXZ(vtxLeftDown, vtxLeftUp, pos) >= 0 &&
+						useful::LineOuterProductXZ(vtxLeftUp, vtxRightDown, pos) >= 0 &&
+						useful::LineOuterProductXZ(vtxRightDown, vtxLeftDown, pos) >= 0)
+					{ // 真ん中の境界線より左側に居た場合
 
-					// 法線の計算(正規化)
-					//NormalizeVector(nor, pVtx[nVtxRightDown].pos, pVtx[nVtxLeftUp].pos, pVtx[nVtxLeftDown].pos);
+						// 法線の計算(正規化)
+						//NormalizeVector(nor, pVtx[nVtxRightDown].pos, pVtx[nVtxLeftUp].pos, pVtx[nVtxLeftDown].pos);
 
-					vec1 = vtxLeftUp - vtxLeftDown;
-					vec2 = vtxRightDown - vtxLeftDown;
+						vec1 = vtxLeftUp - vtxLeftDown;
+						vec2 = vtxRightDown - vtxLeftDown;
 
-					D3DXVec3Cross(&nor, &vec1, &vec2);
+						D3DXVec3Cross(&nor, &vec1, &vec2);
 
-					D3DXVec3Normalize(&nor, &nor);
+						D3DXVec3Normalize(&nor, &nor);
 
-					if (nor.y != 0.0f)
-					{ // 法線のYが0.0f以外の場合
+						if (nor.y != 0.0f)
+						{ // 法線のYが0.0f以外の場合
 
-						// 高さを設定する
-						fHeight = (((pos.x - vtxLeftDown.x) * nor.x + (-vtxLeftDown.y) * nor.y + (pos.z - vtxLeftDown.z) * nor.z) * -1.0f) / nor.y;
+							// 高さを設定する
+							fHeight = (((pos.x - vtxLeftDown.x) * nor.x + (-vtxLeftDown.y) * nor.y + (pos.z - vtxLeftDown.z) * nor.z) * -1.0f) / nor.y;
 
-						// 高さを返す
-						return fHeight;
+							// 高さを返す
+							return fHeight;
+						}
 					}
-				}
-				else if (useful::LineOuterProductXZ(vtxLeftUp, vtxRightUp, pos) >= 0 &&
-					useful::LineOuterProductXZ(vtxRightDown, vtxLeftUp, pos) >= 0 &&
-					useful::LineOuterProductXZ(vtxRightUp, vtxRightDown, pos) >= 0)
-				{ // 真ん中の境界線より右側に居た場合
+					else if (useful::LineOuterProductXZ(vtxLeftUp, vtxRightUp, pos) >= 0 &&
+						useful::LineOuterProductXZ(vtxRightDown, vtxLeftUp, pos) >= 0 &&
+						useful::LineOuterProductXZ(vtxRightUp, vtxRightDown, pos) >= 0)
+					{ // 真ん中の境界線より右側に居た場合
 
-					// 法線の計算(正規化)
-					//NormalizeVector(nor, pVtx[nVtxLeftUp].pos, pVtx[nVtxRightDown].pos, pVtx[nVtxRightUp].pos);
+						// 法線の計算(正規化)
+						//NormalizeVector(nor, pVtx[nVtxLeftUp].pos, pVtx[nVtxRightDown].pos, pVtx[nVtxRightUp].pos);
 
-					vec1 = vtxRightDown - vtxRightUp;
-					vec2 = vtxLeftUp - vtxRightUp;
+						vec1 = vtxRightDown - vtxRightUp;
+						vec2 = vtxLeftUp - vtxRightUp;
 
-					D3DXVec3Cross(&nor, &vec1, &vec2);
+						D3DXVec3Cross(&nor, &vec1, &vec2);
 
-					D3DXVec3Normalize(&nor, &nor);
+						D3DXVec3Normalize(&nor, &nor);
 
-					if (nor.y != 0.0f)
-					{ // 法線のYが0.0f以外の場合
+						if (nor.y != 0.0f)
+						{ // 法線のYが0.0f以外の場合
 
-						// 高さを設定する
-						fHeight = (((pos.x - vtxRightUp.x) * nor.x + (-vtxRightUp.y) * nor.y + (pos.z - vtxRightUp.z) * nor.z) * -1.0f) / nor.y;
+							// 高さを設定する
+							fHeight = (((pos.x - vtxRightUp.x) * nor.x + (-vtxRightUp.y) * nor.y + (pos.z - vtxRightUp.z) * nor.z) * -1.0f) / nor.y;
 
-						// 高さを返す
-						return fHeight;
+							// 高さを返す
+							return fHeight;
+						}
 					}
 				}
 			}
 		}
+
+		//頂点バッファをアンロックする
+		m_pVtxBuff->Unlock();
+
+		// 高さを返す
+		return fHeight;
 	}
+	else
+	{ // 地面の範囲内にいない場合
 
-	//頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
-
-	// 高さを返す
-	return fHeight;
+		// 高さを返す
+		return pos.y;
+	}
 }
 
 //================================

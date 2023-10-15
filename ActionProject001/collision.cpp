@@ -147,6 +147,7 @@ void collision::EnemyHit(CPlayer& player)
 	CEnemy* pEnemyNext = nullptr;							// 次の敵の情報
 	D3DXVECTOR3 pos = player.GetPos();						// プレイヤーの位置
 	D3DXVECTOR3 posOld = player.GetPosOld();				// プレイヤーの前回の位置
+	D3DXVECTOR3 EnemyVtxMin = NONE_D3DXVECTOR3;				// 敵の最小値
 
 	while (pEnemy != nullptr)
 	{ // 敵の情報が NULL じゃない場合
@@ -154,15 +155,18 @@ void collision::EnemyHit(CPlayer& player)
 		// 敵の情報を取得する
 		pEnemyNext = pEnemy->GetNext();
 
+		// 敵の最小値を設定する
+		EnemyVtxMin = D3DXVECTOR3(-pEnemy->GetCollSize().x, 0.0f, -pEnemy->GetCollSize().z);
+
 		if (pEnemy->GetPos().z + pEnemy->GetFileData().collsize.z >= pos.z &&
 			pEnemy->GetPos().z - pEnemy->GetFileData().collsize.z <= pos.z &&
 			pEnemy->IsCollision() == true)
 		{ // 敵とZ軸が合っているかつ、当たり判定状況が true の場合
 
-			if (posOld.y >= pEnemy->GetPosOld().y + pEnemy->GetFileData().vtxMax.y &&
-				pos.y <= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMax.y &&
-				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMin.x &&
-				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMax.x)
+			if (posOld.y >= pEnemy->GetPosOld().y + pEnemy->GetCollSize().y &&
+				pos.y <= pEnemy->GetPos().y + pEnemy->GetCollSize().y &&
+				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + EnemyVtxMin.x &&
+				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetCollSize().x)
 			{ // 上からの当たり判定
 
 				if (pEnemy->IsStep() == true)
@@ -181,28 +185,28 @@ void collision::EnemyHit(CPlayer& player)
 					player.Hit();
 				}
 			}
-			else if (posOld.y + PLAYER_SIZE.y <= pEnemy->GetPosOld().y + pEnemy->GetFileData().vtxMin.y &&
-				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMin.y &&
-				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMin.x &&
-				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMax.x)
+			else if (posOld.y + PLAYER_SIZE.y <= pEnemy->GetPosOld().y + EnemyVtxMin.y &&
+				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + EnemyVtxMin.y &&
+				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + EnemyVtxMin.x &&
+				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetCollSize().x)
 			{ // 下からの当たり判定
 
 				// プレイヤーのヒット処理
 				player.Hit();
 			}
-			else if (posOld.x + PLAYER_SIZE.x <= pEnemy->GetPosOld().x + pEnemy->GetFileData().vtxMin.x &&
-				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMin.x &&
-				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMin.y &&
-				pos.y <= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMax.y)
+			else if (posOld.x + PLAYER_SIZE.x <= pEnemy->GetPosOld().x + EnemyVtxMin.x &&
+				pos.x + PLAYER_SIZE.x >= pEnemy->GetPos().x + EnemyVtxMin.x &&
+				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + EnemyVtxMin.y &&
+				pos.y <= pEnemy->GetPos().y + pEnemy->GetCollSize().y)
 			{ // 左からの当たり判定
 
 				// プレイヤーのヒット処理
 				player.Hit();
 			}
-			else if (posOld.x - PLAYER_SIZE.x >= pEnemy->GetPosOld().x + pEnemy->GetFileData().vtxMax.x &&
-				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetFileData().vtxMax.x &&
-				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMin.y &&
-				pos.y <= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMax.y)
+			else if (posOld.x - PLAYER_SIZE.x >= pEnemy->GetPosOld().x + pEnemy->GetCollSize().x &&
+				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetCollSize().x &&
+				pos.y + PLAYER_SIZE.y >= pEnemy->GetPos().y + EnemyVtxMin.y &&
+				pos.y <= pEnemy->GetPos().y + pEnemy->GetCollSize().y)
 			{ // 右からの当たり判定
 
 				// プレイヤーのヒット処理
@@ -226,6 +230,7 @@ void collision::EnemyPenetrate(CPlayer& player)
 	D3DXVECTOR3 PosPlayer = D3DXVECTOR3(player.GetPos().x, player.GetPos().y + PLAYER_HALF_HEIGHT, player.GetPos().z);		// プレイヤーの位置
 	D3DXVECTOR3 VtxMax = D3DXVECTOR3(PLAYER_SIZE.x, PLAYER_HALF_HEIGHT, PLAYER_SIZE.z);										// 最大値
 	D3DXVECTOR3 VtxMin = D3DXVECTOR3(-PLAYER_SIZE.x, -PLAYER_HALF_HEIGHT, -PLAYER_SIZE.z);									// 最小値
+	D3DXVECTOR3 EnemyVtxMin = NONE_D3DXVECTOR3;				// 敵の最小値
 
 	while (pEnemy != nullptr)
 	{ // 敵の情報が NULL じゃない場合
@@ -233,8 +238,11 @@ void collision::EnemyPenetrate(CPlayer& player)
 		// 敵の情報を取得する
 		pEnemyNext = pEnemy->GetNext();
 
-		if (useful::RectangleCollisionXY(pEnemy->GetPos(), PosPlayer, pEnemy->GetFileData().vtxMax, VtxMax, pEnemy->GetFileData().vtxMin, VtxMin) == true &&
-			useful::RectangleCollisionXZ(pEnemy->GetPos(), PosPlayer, pEnemy->GetFileData().vtxMax, VtxMax, pEnemy->GetFileData().vtxMin, VtxMin) == true &&
+		// 敵の最小値を設定する
+		EnemyVtxMin = D3DXVECTOR3(-pEnemy->GetCollSize().x, 0.0f, -pEnemy->GetCollSize().z);
+
+		if (useful::RectangleCollisionXY(pEnemy->GetPos(), PosPlayer, pEnemy->GetCollSize(), VtxMax, EnemyVtxMin, VtxMin) == true &&
+			useful::RectangleCollisionXZ(pEnemy->GetPos(), PosPlayer, pEnemy->GetCollSize(), VtxMax, EnemyVtxMin, VtxMin) == true &&
 			pEnemy->IsCollision() == true)
 		{ // 敵とプレイヤーが重なっている時
 

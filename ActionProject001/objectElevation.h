@@ -40,6 +40,10 @@ public:			// 誰でもアクセスできる
 
 	void BindTexture(int nIdx);		// テクスチャの割り当て処理
 
+	// セット・ゲット関係
+	D3DXVECTOR3 GetPos(void);		// 位置の取得処理
+	D3DXVECTOR3 GetSize(void);		// サイズの取得処理
+
 	// 静的メンバ変数
 	static CElevation* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ, char* texturename);		// 生成処理
 	static void TxtSet(void);					// テキスト読み込み処理

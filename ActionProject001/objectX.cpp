@@ -24,6 +24,7 @@ const char* CXFile::c_apModelData[CXFile::TYPE_MAX] =		// モデルの名前
 
 	// 敵モデル
 	"data\\MODEL\\Itocan.x",			// イトキャン
+	"data\\MODEL\\MachiDori.x",			// マシンドリー
 
 	// プレイヤーモデル
 	"data\\MODEL\\PlayerPants.x",		// 腰
