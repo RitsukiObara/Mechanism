@@ -5,21 +5,19 @@
 //
 //=======================================
 #include "Effect.h"
-#include "game.h"
 #include "manager.h"
 #include "renderer.h"
 #include "texture.h"
+#include "useful.h"
 
 //=======================================
 // マクロ定義
 //=======================================
-#define NORMAL_TEXTURE		"data/TEXTURE/effect000.jpg"			// 通常エフェクトのテクスチャ
-#define FIRE_TEXTURE		"data/TEXTURE/Smoke.tga"				// 炎エフェクトのテクスチャ
-#define DUST_TEXTURE		"data/TEXTURE/Dust.tga"					// 埃エフェクトのテクスチャ
-#define BIGJUMP_COL_RAND	(3)										// 超ジャンプエフェクト時の色のランダム数
-#define BIGJUMP_COL_FIRST	(D3DXCOLOR(1.0f, 0.0f, 0.8f, 1.0f))		// 超ジャンプエフェクトの色(1つ目)
-#define BIGJUMP_COL_SEC		(D3DXCOLOR(0.0f, 1.0f, 0.1f, 1.0f))		// 超ジャンプエフェクトの色(2つ目)
-#define BIGJUMP_COL_THIRD	(D3DXCOLOR(0.0f, 0.7f, 1.0f, 1.0f))		// 超ジャンプエフェクトの色(3つ目)
+#define NORMAL_TEXTURE		"data\\TEXTURE\\effect000.jpg"			// 通常エフェクトのテクスチャ
+#define FIRE_TEXTURE		"data\\TEXTURE\\Smoke.tga"				// 炎エフェクトのテクスチャ
+#define DUST_TEXTURE		"data\\TEXTURE\\Dust.tga"				// 埃エフェクトのテクスチャ
+#define RUPTURE_TEXTURE		"data\\TEXTURE\\Rupture.tga"			// 破裂エフェクトのテクスチャ
+#define DUST_GRAVITY		(0.4f)									// 埃の重力
 
 //=========================
 // コンストラクタ
@@ -30,6 +28,7 @@ CEffect::CEffect() : CBillboard(CObject::TYPE_EFFECT, CObject::PRIORITY_EFFECT)
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 移動量
 	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);		// 色
 	m_nLife = 0;									// 寿命
+	m_nLifeOrigin = 0;								// 元々の寿命
 	m_fSub = 0.0f;									// 透明になる間隔
 	m_fContra = 0.0f;								// 半径の縮む間隔
 	m_type = TYPE_NONE;								// 種類
@@ -60,6 +59,7 @@ HRESULT CEffect::Init(void)
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 移動量
 	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);		// 色
 	m_nLife = 0;									// 寿命
+	m_nLifeOrigin = 0;								// 元々の寿命
 	m_fSub = 0.0f;									// 透明になる間隔
 	m_fContra = 0.0f;								// 半径の縮む間隔
 	m_type = TYPE_NONE;								// 種類
@@ -83,49 +83,14 @@ void CEffect::Uninit(void)
 //=========================
 void CEffect::Update(void)
 {
-	// ローカル変数を宣言
-	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
-	D3DXVECTOR3 size = GetSize();	// サイズを取得する
+	// 移動処理
+	Move();
 
-	// 寿命を減らしていく
-	m_nLife--;
+	// 透明度の減算処理
+	SubAlpha();
 
-	// 移動する
-	pos += m_move;
-
-	// 透明度を減算させる
-	m_col.a -= m_fSub;
-
-	// サイズを縮める
-	size.x -= m_fContra;
-	size.y -= m_fContra;
-
-	if (m_col.a <= 0.0f)
-	{ // 透明度が0.0f以下の場合
-
-		// 透明度を補正する
-		m_col.a = 0.0f;
-	}
-
-	if (size.x <= 0.0f)
-	{ // サイズが0.0f以下の場合
-
-		// サイズを補正する
-		size.x = 0.0f;
-	}
-
-	if (size.y <= 0.0f)
-	{ // サイズが0.0f以下の場合
-
-		// サイズを補正する
-		size.y = 0.0f;
-	}
-
-	// 位置を更新する
-	SetPos(pos);
-
-	// サイズを更新する
-	SetSize(size);
+	// サイジング処理
+	Sizing();
 
 	switch (m_type)
 	{
@@ -138,17 +103,27 @@ void CEffect::Update(void)
 	case TYPE_FIRE:			// 炎
 
 		// 炎の更新処理
-		UpdateFire();
+		FireProcess();
 
 		break;
 
 	case TYPE_DUST:			// 埃
 
 		// 重力を足す
-		m_move.y -= 0.4f;
+		m_move.y -= DUST_GRAVITY;
+
+		break;
+
+	case TYPE_RUPTURE:		// 破裂
+
+		// 破裂の更新処理
+		RuptureProcess();
 
 		break;
 	}
+
+	// 寿命を減らしていく
+	m_nLife--;
 
 	if (m_nLife <= 0)
 	{ // エフェクトの寿命が尽きた時
@@ -176,7 +151,7 @@ void CEffect::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();
 
 	if (m_bAdd == true)
-	{ // 一定の種類(tgaファイル)の場合
+	{ // 加算合成する場合
 
 		//αブレンディングを加算処理に設定
 		pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
@@ -211,6 +186,7 @@ void CEffect::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const int
 	// 全ての値を初期化する
 	m_type = type;			// 種類
 	m_nLife = nLife;		// 寿命
+	m_nLifeOrigin = nLife;	// 元々の寿命
 	m_move = move;			// 移動量
 	m_col = col;			// 色
 	m_bAdd = bAdd;			// 加算合成状況
@@ -235,6 +211,12 @@ void CEffect::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const int
 
 		// テクスチャの読み込み処理
 		BindTexture(CManager::Get()->GetTexture()->Regist(FIRE_TEXTURE));
+	}
+	else if (m_type == TYPE::TYPE_RUPTURE)
+	{ // 破裂の場合
+
+		// テクスチャの読み込み処理
+		BindTexture(CManager::Get()->GetTexture()->Regist(RUPTURE_TEXTURE));
 	}
 	else
 	{ // 上記以外
@@ -272,8 +254,8 @@ CEffect* CEffect::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const 
 		if (FAILED(pEffect->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "エフェクトの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -294,9 +276,70 @@ CEffect* CEffect::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const 
 }
 
 //=========================
+// 移動処理
+//=========================
+void CEffect::Move(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
+
+	// 移動する
+	pos += m_move;
+
+	// 位置を更新する
+	SetPos(pos);
+}
+
+//=========================
+// 透明度減算処理
+//=========================
+void CEffect::SubAlpha(void)
+{
+	// 透明度を減算させる
+	m_col.a -= m_fSub;
+
+	if (m_col.a <= 0.0f)
+	{ // 透明度が0.0f以下の場合
+
+		// 透明度を補正する
+		m_col.a = 0.0f;
+	}
+}
+
+//=========================
+// サイジング処理
+//=========================
+void CEffect::Sizing(void)
+{
+	// ローカル変数を宣言
+	D3DXVECTOR3 size = GetSize();	// サイズを取得する
+
+	// サイズを縮める
+	size.x -= m_fContra;
+	size.y -= m_fContra;
+
+	if (size.x <= 0.0f)
+	{ // サイズが0.0f以下の場合
+
+		// サイズを補正する
+		size.x = 0.0f;
+	}
+
+	if (size.y <= 0.0f)
+	{ // サイズが0.0f以下の場合
+
+		// サイズを補正する
+		size.y = 0.0f;
+	}
+
+	// サイズを更新する
+	SetSize(size);
+}
+
+//=========================
 // 爆発の処理
 //=========================
-void CEffect::UpdateFire(void)
+void CEffect::FireProcess(void)
 {
 	// G値に加算する
 	m_col.g += m_fSub;
@@ -306,5 +349,29 @@ void CEffect::UpdateFire(void)
 
 		// G値を固定する
 		m_col.g = 1.0f;
+	}
+}
+
+//=========================
+// 破裂の処理
+//=========================
+void CEffect::RuptureProcess(void)
+{
+	if (m_nLife >= m_nLifeOrigin / 2)
+	{ // 寿命が一定以外の場合
+
+		float f;
+
+		f = m_move.x / ((m_nLifeOrigin / 2) - (m_nLifeOrigin - m_nLife));
+
+		m_move.x -= f;
+
+		f = m_move.y / ((m_nLifeOrigin / 2) - (m_nLifeOrigin - m_nLife));
+
+		m_move.y -= f;
+
+		f = m_move.z / ((m_nLifeOrigin / 2) - (m_nLifeOrigin - m_nLife));
+
+		m_move.z -= f;
 	}
 }

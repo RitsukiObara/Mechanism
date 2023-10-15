@@ -189,6 +189,9 @@ void CPlayer::Update(void)
 	// “G‚Æ‚Ì“–‚½‚è”»’è
 	collision::EnemyHit(*this);
 
+	// “G‚Æ‚Ì‚ß‚è‚İ”»’èˆ—
+	collision::EnemyPenetrate(*this);
+
 	// ‰e‚ÌˆÊ’uŒü‚«İ’èˆ—
 	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
 

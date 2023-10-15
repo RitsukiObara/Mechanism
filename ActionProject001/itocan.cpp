@@ -9,21 +9,27 @@
 //*******************************************
 #include "main.h"
 #include "manager.h"
-#include "renderer.h"
 #include "itocan.h"
-#include "collision.h"
 #include "useful.h"
 
 #include "player.h"
+#include "destruction.h"
+#include "Particle.h"
 #include "debugproc.h"
-#include "collpolygon.h"
 
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
 #define MOVE_DISTANCE		(1200.0f)							// 移動する距離
 #define MOVE				(D3DXVECTOR3(3.0f, 0.0f, 0.0f))		// 移動量
-#define CHECK_COUNT			(10)								// チェックするカウント数
+#define ROT_MOVE_MAGNI		(0.15f)								// 向きの移動量の倍率
+#define CHECK_COUNT			(15)								// チェックするカウント数
+#define DEATH_SCALE			(0.2f)								// 死亡状態の拡大率
+#define DEATH_ADD_SCALE		(0.15f)								// 死亡状態の加算する拡大率
+#define DEATH_COUNT			(40)								// 死亡するまでのカウント
+#define DEATH_DSTR_SIZE		(D3DXVECTOR3(40.0f,40.0f,0.0f))		// 死亡時の撃破のサイズ
+#define DEATH_DSTR_COL		(D3DXCOLOR(1.0f, 0.2f, 0.2f, 1.0f))	// 死亡時の撃破の色
+#define DEATH_DSTR_LIFE		(20)								// 死亡時の撃破の寿命
 
 //==============================
 // コンストラクタ
@@ -33,6 +39,7 @@ CItocan::CItocan() : CEnemy(CObject::TYPE_ENEMY, CObject::PRIORITY_ENTITY)
 	// 全ての値をクリアする
 	m_state = STATE_STOP;		// 状態
 	m_nStateCount = 0;			// 状態カウント
+	m_fRotDest = 0.0f;			// 目標の向き
 }
 
 //==============================
@@ -58,6 +65,7 @@ HRESULT CItocan::Init(void)
 	// 全ての値をクリアする
 	m_state = STATE_STOP;		// 状態
 	m_nStateCount = 0;			// 状態カウント
+	m_fRotDest = 0.0f;			// 目標の向き
 
 	// 値を返す
 	return S_OK;
@@ -80,26 +88,62 @@ void CItocan::Update(void)
 	// 前回の位置を設定する
 	SetPosOld(GetPos());
 
-	if (m_nStateCount % CHECK_COUNT == 0)
-	{ // 一定カウント数になった場合
-
-		// プレイヤーの判定処理
-		CheckPlayer();
-	}
-
-	// 状態の判定処理
-	CheckState();
-
 	switch (m_state)
 	{
 	case STATE_STOP:		// 停止状態
+
+		if (m_nStateCount % CHECK_COUNT == 0)
+		{ // 一定カウント数になった場合
+
+			// プレイヤーの判定処理
+			CheckPlayer();
+		}
+
+		// 状態の判定処理
+		CheckState();
 
 		break;
 
 	case STATE_MOVE:		// 移動状態
 
+		if (m_nStateCount % CHECK_COUNT == 0)
+		{ // 一定カウント数になった場合
+
+			// プレイヤーの判定処理
+			CheckPlayer();
+		}
+
+		// 状態の判定処理
+		CheckState();
+
+		// 向きの移動処理
+		RotMove();
+
 		// 移動処理
 		Move();
+
+		break;
+
+	case STATE_DEATH:		// 死亡状態
+
+		// 死亡時の拡大率処理
+		DeathScaling();
+
+		if (m_nStateCount >= DEATH_COUNT)
+		{ // 状態カウントが一定数になった場合
+
+			// 撃破の生成処理
+			CDestruction::Create(GetPos(), DEATH_DSTR_SIZE, DEATH_DSTR_COL, CDestruction::TYPE_THORN, DEATH_DSTR_LIFE);
+
+			// パーティクルの生成処理
+			CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
+
+			// 終了処理
+			Uninit();
+
+			// この先の処理を行わない
+			return;
+		}
 
 		break;
 	}
@@ -128,7 +172,14 @@ void CItocan::Draw(void)
 //=====================================
 void CItocan::Hit(void)
 {
+	// 当たり判定状況を OFF にする
+	SetEnableCollision(false);
 
+	// 状態カウントを初期化する
+	m_nStateCount = 0;
+
+	// 死亡状態に設定する
+	m_state = STATE_DEATH;
 }
 
 //=====================================
@@ -142,6 +193,7 @@ void CItocan::SetData(const D3DXVECTOR3& pos)
 	// 全ての値をクリアする
 	m_state = STATE_STOP;			// 状態
 	m_nStateCount = 0;			// 状態カウント
+	m_fRotDest = 0.0f;			// 目標の向き
 
 	// 情報の設定処理
 	SetEnableStep(true);			// 踏みつけられる設定
@@ -165,13 +217,13 @@ void CItocan::CheckPlayer(void)
 		{ // プレイヤーの位置が自身よりも右にいる場合
 
 			// 向きを設定する
-			rot.y = -D3DX_PI * 0.5f;
+			m_fRotDest = -D3DX_PI * 0.5f;
 		}
 		else
 		{ // 上記以外
 
 			// 向きを設定する
-			rot.y = D3DX_PI * 0.5f;
+			m_fRotDest = D3DX_PI * 0.5f;
 		}
 
 		// 向きを設定する
@@ -236,4 +288,34 @@ void CItocan::Move(void)
 
 	// 位置を設定する
 	SetPos(pos);
+}
+
+//=======================================
+// 向き移動処理
+//=======================================
+void CItocan::RotMove(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 rot = GetRot();		// 向きを取得する
+
+	// 向きの設定処理
+	useful::RotCorrect(m_fRotDest, &rot.y, ROT_MOVE_MAGNI);
+
+	// 向きを適用する
+	SetRot(rot);
+}
+
+//=======================================
+// 死亡時の拡大率処理
+//=======================================
+void CItocan::DeathScaling(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 scale = GetScale();		// 拡大率を取得する
+
+	// 拡大率の設定処理
+	useful::FrameCorrect(DEATH_SCALE, &scale.y, DEATH_ADD_SCALE);
+
+	// 拡大率の設定処理
+	SetScale(scale);
 }

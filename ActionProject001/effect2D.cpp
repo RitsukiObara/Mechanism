@@ -13,9 +13,9 @@
 //=======================================
 // マクロ定義
 //=======================================
-#define NORMAL_EFFECT_TEXTURE		"data/TEXTURE/effect000.jpg"		// 通常のエフェクトのテクスチャ
-#define STAR_EFFECT_TEXTURE			"data/TEXTURE/SpeedEffect.tga"		// 星のエフェクトのテクスチャ
-#define BOOST_EFFECT_TEXTURE		"data/TEXTURE/smoke.tga"			// 煙のエフェクトのテクスチャ
+#define NORMAL_EFFECT_TEXTURE		"data\\TEXTURE\\effect000.jpg"		// 通常のエフェクトのテクスチャ
+#define STAR_EFFECT_TEXTURE			"data\\TEXTURE\\SpeedEffect.tga"	// 星のエフェクトのテクスチャ
+#define BOOST_EFFECT_TEXTURE		"data\\TEXTURE\\smoke.tga"			// 煙のエフェクトのテクスチャ
 #define GLASS_ROT_MOVE				(0.04f)								// ガラスの向きの移動量
 
 //=========================

@@ -6,7 +6,10 @@
 #===========================================================
 
 # テクスチャの情報
+TEXTURE = data\TEXTURE\Dstr001.png			# 撃破(トゲトゲ)
+TEXTURE = data\TEXTURE\Dstr002.png			# 撃破(フワフワ)
 TEXTURE = data\TEXTURE\explosion000.png		# 爆発
+TEXTURE = data\TEXTURE\HoverMark.png		# ホバージェットマーク
 TEXTURE = data\TEXTURE\NewRecord.png		# 新記録
 TEXTURE = data\TEXTURE\Number.png			# 番号
 TEXTURE = data\TEXTURE\ObaraArcadia2.png	# アルカディアマーク
@@ -17,6 +20,7 @@ TEXTURE = data\TEXTURE\PauseTitle.png		# タイトル
 TEXTURE = data\TEXTURE\Rank.png				# 順位
 TEXTURE = data\TEXTURE\RankingWord.png		# ランキングの文字
 TEXTURE = data\TEXTURE\SkyBox.jpg			# スカイボックス
+TEXTURE = data\TEXTURE\SkyDashMark.png		# 空中ダッシュマーク
 TEXTURE = data\TEXTURE\TimeNumber.png		# タイムの数字
 TEXTURE = data\TEXTURE\YourScore.png		# あなたのスコアの表示
 
@@ -27,3 +31,4 @@ TEXTURE = data\TEXTURE\PopSmoke.tga			# ポップな煙
 TEXTURE = data\TEXTURE\shadow.jpg			# 影
 TEXTURE = data\TEXTURE\SpeedEffect.tga		# スピードエフェクト
 TEXTURE = data\TEXTURE\smoke.tga			# 煙
+TEXTURE = data\TEXTURE\Rupture.tga			# 破裂

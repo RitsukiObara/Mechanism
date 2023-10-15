@@ -72,31 +72,38 @@ void CParticle::Create(const D3DXVECTOR3& pos, const CParticle::TYPE type)
 
 	switch (type)
 	{
-	case TYPE_FIRE:		// 炎系
+	case TYPE_FIRE:			// 炎系
 
 		// 爆発の初期化処理
 		pParticle->InitFire(pos);
 
 		break;
 
-	case TYPE_DUST:		// 埃系
+	case TYPE_DUST:			// 埃系
 
 		// 埃の初期化処理
 		pParticle->InitDust(pos);
 
 		break;
 
-	case TYPE_ITEMGET:
+	case TYPE_ITEMGET:		// アイテム取得
 
 		// アイテムゲットの初期化処理
 		pParticle->InitItemGet(pos);
 
 		break;
 
+	case TYPE_ENEMYDEATH:	// 敵の死亡
+
+		// 敵の死亡の初期化処理
+		pParticle->InitEnemyDeath(pos);
+
+		break;
+
 	default:			// 上記以外
 
-		// 警告文
-		MessageBox(NULL, "パーティクルの種類で予定外の数値が検知された！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		break;
 	}
@@ -244,6 +251,47 @@ void CParticle::InitItemGet(const D3DXVECTOR3& pos)
 			CEffect::TYPE_NONE,
 			D3DXCOLOR(1.0f, 1.0f, 0.1f, 1.0f),
 			true
+		);
+	}
+}
+
+//===============================
+// 敵の死亡の生成
+//===============================
+void CParticle::InitEnemyDeath(const D3DXVECTOR3& pos)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 move;		// エフェクトの移動量
+	int nLife;				// 寿命
+	float fRot;				// 向き
+	float fRadius;			// 半径
+
+	for (int nCntDust = 0; nCntDust < 10; nCntDust++)
+	{
+		// 向きを設定する
+		fRot = (float)((rand() % 629 - 314) * 0.01f);
+
+		// 移動量を設定する
+		move.x = sinf(fRot) * (rand() % 21 - 10);
+		move.y = cosf(fRot) * (rand() % 21 - 10);
+		move.z = 0.0f;
+
+		// 寿命を設定する
+		nLife = rand() % 10 + 20;
+
+		// 半径を設定する
+		fRadius = (float)(rand() % 10 + 15);
+
+		// エフェクトの生成処理
+		CEffect::Create
+		(
+			pos,
+			move,
+			nLife,
+			fRadius,
+			CEffect::TYPE_RUPTURE,
+			D3DXCOLOR(1.0f, 1.0f, 0.5f, 1.0f),
+			false
 		);
 	}
 }

@@ -56,6 +56,7 @@ void CEnemy::Box(void)
 	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_bStep = false;				// 踏みつけ状況
+	m_bCollision = true;			// 当たり判定を通るかどうか
 	m_pPrev = nullptr;				// 前のポインタ
 	m_pNext = nullptr;				// 次のポインタ
 
@@ -119,6 +120,7 @@ HRESULT CEnemy::Init(void)
 	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_bStep = false;				// 踏みつけ状況
+	m_bCollision = true;			// 当たり判定を通るかどうか
 
 	// 値を返す
 	return S_OK;
@@ -177,6 +179,7 @@ void CEnemy::SetData(const D3DXVECTOR3& pos)
 	m_posInit = pos;				// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_bStep = false;				// 踏みつけ状況
+	m_bCollision = true;			// 当たり判定を通るかどうか
 }
 
 //=======================================
@@ -288,6 +291,24 @@ D3DXVECTOR3 CEnemy::GetInitPos(void) const
 {
 	// 初期位置を返す
 	return m_posInit;
+}
+
+//=======================================
+// 当たり判定状況の設定処理
+//=======================================
+void CEnemy::SetEnableCollision(const bool bColl)
+{
+	// 当たり判定状況を設定する
+	m_bCollision = bColl;
+}
+
+//=======================================
+// 当たり判定状況の取得処理
+//=======================================
+bool CEnemy::IsCollision(void) const
+{
+	// 当たり判定を返す
+	return m_bCollision;
 }
 
 //=======================================

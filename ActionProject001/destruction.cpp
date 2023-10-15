@@ -12,8 +12,8 @@
 //=======================================
 // マクロ定義
 //=======================================
-#define THORN_TEXTURE	"data/TEXTURE/Dstr001.png"		// トゲトゲ飛沫のテクスチャ
-#define AIRY_TEXTURE	"data/TEXTURE/Dstr002.png"		// フワフワ飛沫のテクスチャ
+#define THORN_TEXTURE	"data\\TEXTURE\\Dstr001.png"		// トゲトゲ飛沫のテクスチャ
+#define AIRY_TEXTURE	"data\\TEXTURE\\Dstr002.png"		// フワフワ飛沫のテクスチャ
 
 //=========================
 // コンストラクタ

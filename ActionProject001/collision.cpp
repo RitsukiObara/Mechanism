@@ -155,8 +155,9 @@ void collision::EnemyHit(CPlayer& player)
 		pEnemyNext = pEnemy->GetNext();
 
 		if (pEnemy->GetPos().z + pEnemy->GetFileData().collsize.z >= pos.z &&
-			pEnemy->GetPos().z - pEnemy->GetFileData().collsize.z <= pos.z)
-		{ // 敵とZ軸が合っている場合
+			pEnemy->GetPos().z - pEnemy->GetFileData().collsize.z <= pos.z &&
+			pEnemy->IsCollision() == true)
+		{ // 敵とZ軸が合っているかつ、当たり判定状況が true の場合
 
 			if (posOld.y >= pEnemy->GetPosOld().y + pEnemy->GetFileData().vtxMax.y &&
 				pos.y <= pEnemy->GetPos().y + pEnemy->GetFileData().vtxMax.y &&
@@ -207,6 +208,38 @@ void collision::EnemyHit(CPlayer& player)
 				// プレイヤーのヒット処理
 				player.Hit();
 			}
+		}
+
+		// 次のオブジェクトを代入する
+		pEnemy = pEnemyNext;
+	}
+}
+
+//===============================
+// プレイヤーと敵とのめりこみ判定
+//===============================
+void collision::EnemyPenetrate(CPlayer& player)
+{
+	// ローカル変数宣言
+	CEnemy* pEnemy = CEnemyManager::Get()->GetTop();		// 敵の情報
+	CEnemy* pEnemyNext = nullptr;							// 次の敵の情報
+	D3DXVECTOR3 PosPlayer = D3DXVECTOR3(player.GetPos().x, player.GetPos().y + PLAYER_HALF_HEIGHT, player.GetPos().z);		// プレイヤーの位置
+	D3DXVECTOR3 VtxMax = D3DXVECTOR3(PLAYER_SIZE.x, PLAYER_HALF_HEIGHT, PLAYER_SIZE.z);										// 最大値
+	D3DXVECTOR3 VtxMin = D3DXVECTOR3(-PLAYER_SIZE.x, -PLAYER_HALF_HEIGHT, -PLAYER_SIZE.z);									// 最小値
+
+	while (pEnemy != nullptr)
+	{ // 敵の情報が NULL じゃない場合
+
+		// 敵の情報を取得する
+		pEnemyNext = pEnemy->GetNext();
+
+		if (useful::RectangleCollisionXY(pEnemy->GetPos(), PosPlayer, pEnemy->GetFileData().vtxMax, VtxMax, pEnemy->GetFileData().vtxMin, VtxMin) == true &&
+			useful::RectangleCollisionXZ(pEnemy->GetPos(), PosPlayer, pEnemy->GetFileData().vtxMax, VtxMax, pEnemy->GetFileData().vtxMin, VtxMin) == true &&
+			pEnemy->IsCollision() == true)
+		{ // 敵とプレイヤーが重なっている時
+
+			// プレイヤーのヒット処理
+			player.Hit();
 		}
 
 		// 次のオブジェクトを代入する

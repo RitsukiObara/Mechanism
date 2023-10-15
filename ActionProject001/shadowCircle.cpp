@@ -19,7 +19,7 @@ int CShadowCircle::m_nNumAll = 0;				// 影の総数
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
-#define SHADOW_TEXTURE		"data/TEXTURE/shadow.jpg"		// 影のテクスチャ
+#define SHADOW_TEXTURE		"data\\TEXTURE\\shadow.jpg"		// 影のテクスチャ
 
 //====================
 // コンストラクタ

@@ -24,6 +24,7 @@ public:			// 誰でもアクセスできる
 	{
 		STATE_STOP = 0,			// 停止状態
 		STATE_MOVE,				// 移動状態
+		STATE_DEATH,			// 死亡状態
 		STATE_MAX				// この列挙型の総数
 	};
 
@@ -45,10 +46,13 @@ private:		// 自分だけアクセスできる
 	void CheckPlayer(void);			// プレイヤーの判定処理
 	void CheckState(void);			// 状態の判定処理
 	void Move(void);				// 移動処理
+	void RotMove(void);				// 向き移動処理
+	void DeathScaling(void);		// 死亡時の拡大率
 
 	// メンバ変数
 	STATE m_state;					// 状態
 	int m_nStateCount;				// 状態カウント
+	float m_fRotDest;				// 目標の向き
 };
 
 #endif

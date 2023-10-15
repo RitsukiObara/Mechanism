@@ -33,6 +33,7 @@ namespace collision
 
 	// 敵の当たり判定
 	void EnemyHit(CPlayer& player);									// プレイヤーと敵との当たり判定
+	void EnemyPenetrate(CPlayer& player);							// プレイヤーと敵とのめりこみ判定
 }
 
 #endif

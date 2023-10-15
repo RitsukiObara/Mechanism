@@ -25,6 +25,7 @@ public:
 		TYPE_NONE = 0,			// –³‚µ
 		TYPE_FIRE,				// ‰ŠŒn
 		TYPE_DUST,				// ‰Œ
+		TYPE_RUPTURE,			// ”j—ô
 		TYPE_MAX				// ‚±‚Ì—ñ‹“Œ^‚Ì‘”
 	};
 
@@ -39,19 +40,26 @@ public:
 
 	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const int nLife, const float fRadius, const TYPE type, const D3DXCOLOR& col, const bool bAdd);				// î•ñ‚Ìİ’èˆ—
 
-	// í—Ş‚²‚Æ‚Ìˆ—
-	void UpdateFire(void);			// ‰ŠŒn‚Ìˆ—
-
 	// Ã“Iƒƒ“ƒoŠÖ”
 	static CEffect* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const int nLife, const float fRadius, const TYPE type, const D3DXCOLOR& col, const bool bAdd);		// ¶¬ˆ—
 
 private:
+
+	// ƒƒ“ƒoŠÖ”
+	void Move(void);				// ˆÚ“®ˆ—
+	void SubAlpha(void);			// “§–¾“xŒ¸Zˆ—
+	void Sizing(void);				// ƒTƒCƒWƒ“ƒOˆ—
+
+	// í—Ş‚²‚Æ‚Ìˆ—
+	void FireProcess(void);			// ‰ŠŒn‚Ìˆ—
+	void RuptureProcess(void);		// ”j—ô‚Ìˆ—
 
 	// ƒƒ“ƒo•Ï”
 	D3DXVECTOR3 m_move;		// ˆÚ“®—Ê
 	D3DXCOLOR m_col;		// F
 	TYPE m_type;			// í—Ş
 	int m_nLife;			// õ–½
+	int m_nLifeOrigin;		// Œ³X‚Ìõ–½
 	float m_fSub;			// “§–¾‚É‚È‚éŠÔŠu
 	float m_fContra;		// ”¼Œa‚Ìk‚ŞŠÔŠu
 	bool m_bAdd;			// ‰ÁZ‡¬ó‹µ

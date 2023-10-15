@@ -15,7 +15,7 @@
 #include "useful.h"
 
 // マクロ定義
-#define SCORE_TEXTURE		"data/TEXTURE/Number.png"		// スコアのテクスチャ
+#define SCORE_TEXTURE		"data\\TEXTURE\\Number.png"		// スコアのテクスチャ
 #define DISP_ADD_SCORE		(10)							// 描画用スコアの加算数
 
 //========================

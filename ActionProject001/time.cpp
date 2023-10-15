@@ -15,8 +15,8 @@
 #include "useful.h"
 
 // マクロ定義
-#define TIME_TEXTURE		"data/TEXTURE/TimeNumber.png"		// 時間のテクスチャ
-#define TIMEDOT_TEXTURE		"data/TEXTURE/TimeDot.png"			// 時間の点のテクスチャ
+#define TIME_TEXTURE		"data\\TEXTURE\\TimeNumber.png"		// 時間のテクスチャ
+#define TIMEDOT_TEXTURE		"data\\TEXTURE\\TimeDot.png"		// 時間の点のテクスチャ
 #define TIMEDOT_COUNT		(3)									// 時間の点の番号
 
 //========================
