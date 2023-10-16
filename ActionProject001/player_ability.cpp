@@ -78,24 +78,32 @@ void CAbility::Update(CPlayer& player)
 {
 	switch (m_ability)
 	{
-	case ABILITY_NONE:		// 無状態
+	case ABILITY_NONE:			// 無状態
 
 		// カウントを初期化する
 		m_nAblCount = 0;
 
 		break;
 
-	case ABILITY_HOVER:		// ホバージェット
+	case ABILITY_HOVER:			// ホバージェット
 
 		// ホバージェット処理
 		HoverJet(player);
 
 		break;
 
-	case ABILITY_JETDASH:	// ジェットダッシュ
+	case ABILITY_JETDASH:		// ジェットダッシュ
 
 		// ジェットダッシュ処理
 		SkyDash(player);
+
+		break;
+
+	case ABILITY_GROUNDQUAKE:	// グラウンドクエイク
+
+		break;
+
+	case ABILITY_STARDROP:		// スタードロップ
 
 		break;
 	}

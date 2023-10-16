@@ -22,6 +22,7 @@
 //--------------------------------------------
 #define BIGUI_SIZE			(D3DXVECTOR3(60.0f, 120.0f, 0.0f))		// 大きいUIのサイズ
 #define SMALLUI_SIZE		(D3DXVECTOR3(40.0f, 80.0f, 0.0f))		// 小さいUIのサイズ
+#define SHIFT				(40.0f)									// ずらす幅
 #define GROUND_COL			(D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f))		// 下地のサイズ
 
 //--------------------------------------------
@@ -42,7 +43,8 @@ CAbilityUI::CAbilityUI() : CObject(CObject::TYPE_ABILITYUI, CObject::PRIORITY_UI
 {
 	for (int nCntUI = 0; nCntUI < GAGE_MAX; nCntUI++)
 	{
-		m_apObjectUI[nCntUI] = nullptr;		// ポリゴンの情報
+		m_apAcrobat[nCntUI] = nullptr;			// アクロバットの情報
+		m_apMassive[nCntUI] = nullptr;			// マッシブの情報
 	}
 
 	for (int nCntTex = 0; nCntTex < CAbility::TYPE_MAX; nCntTex++)
@@ -71,61 +73,20 @@ HRESULT CAbilityUI::Init(void)
 		m_aTexInfo[nCntTex].m_fTexSizeY = 1.0f;						// テクスチャの縦サイズ
 	}
 
-	// メモリを確保する
-	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
-	{
-		if (m_apObjectUI[nCnt] == nullptr)
-		{ // ポインタが NULL の場合
+	// アクロバットの生成処理
+	if (FAILED(AcrobatCreate()))
+	{ // 生成に失敗した場合
 
-			// メモリを確保する
-			m_apObjectUI[nCnt] = new CObject2D(CObject::TYPE_NONE, CObject::PRIORITY_UI);
-		}
-		else
-		{ // ポインタが NULL じゃない場合
+		// 失敗を返す
+		return E_FAIL;
+	}
 
-			// 警告文
-			MessageBox(NULL, "能力UIのメモリが既に使われている！", "警告！", MB_ICONWARNING);
+	// マッシブの生成処理
+	if (FAILED(MassiveCreate()))
+	{ // 生成に失敗した場合
 
-			// 失敗を返す
-			return E_FAIL;
-		}
-
-		if (m_apObjectUI[nCnt] != nullptr)
-		{ // ポインタが NULL じゃない場合
-
-			// 初期化処理
-			if (FAILED(m_apObjectUI[nCnt]->Init()))
-			{ // 初期化処理に失敗した場合
-
-				// 警告文
-				MessageBox(NULL, "能力UIの初期化に失敗！", "警告！", MB_ICONWARNING);
-
-				// 失敗を返す
-				return E_FAIL;
-			}
-
-			if (nCnt <= GAGE_BIG_METER)
-			{ // 大技の場合
-
-				// テクスチャの割り当て処理
-				m_apObjectUI[nCnt]->BindTexture(m_aTexInfo[CAbility::TYPE_HOVER].m_nTexIdx);
-			}
-			else
-			{ // 小技の場合
-
-				// テクスチャの割り当て処理
-				m_apObjectUI[nCnt]->BindTexture(m_aTexInfo[CAbility::TYPE_JETDASH].m_nTexIdx);
-			}
-		}
-		else
-		{ // ポインタが　NULL の場合
-
-			// 警告文
-			MessageBox(NULL, "能力UIのメモリの確保に失敗！", "警告！", MB_ICONWARNING);
-
-			// 失敗を返す
-			return E_FAIL;
-		}
+		// 失敗を返す
+		return E_FAIL;
 	}
 
 	// 成功を返す
@@ -140,12 +101,20 @@ void CAbilityUI::Uninit(void)
 	// 全ての値を初期化する
 	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
 	{
-		if (m_apObjectUI[nCnt] != nullptr)
-		{ // 時間のポインタが NULL じゃない場合
+		if (m_apAcrobat[nCnt] != nullptr)
+		{ // アクロバットのポインタが NULL じゃない場合
 
 			// 終了処理
-			m_apObjectUI[nCnt]->Uninit();
-			m_apObjectUI[nCnt] = nullptr;
+			m_apAcrobat[nCnt]->Uninit();
+			m_apAcrobat[nCnt] = nullptr;
+		}
+
+		if (m_apMassive[nCnt] != nullptr)
+		{ // アクロバットのポインタが NULL じゃない場合
+
+			// 終了処理
+			m_apMassive[nCnt]->Uninit();
+			m_apMassive[nCnt] = nullptr;
 		}
 	}
 
@@ -166,12 +135,16 @@ void CAbilityUI::Update(void)
 	case CPlayer::MODE_ACROBAT:		// アクロバットモード
 
 		// サイズ変更処理
-		Size(CAbility::TYPE_HOVER, CAbilityUI::GAGE_BIG_METER, HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));			// ホバージェット
-		Size(CAbility::TYPE_JETDASH, CAbilityUI::GAGE_SMALL_METER, JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));	// ジェットダッシュ
+		Size(CAbility::TYPE_HOVER, *m_apAcrobat[GAGE_BIG_METER], HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));			// ホバージェット
+		Size(CAbility::TYPE_JETDASH, *m_apAcrobat[GAGE_SMALL_METER], JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));	// ジェットダッシュ
 
 		break;
 
 	case CPlayer::MODE_MASSIVE:		// マッシブモード
+
+		// サイズ変更処理
+		Size(CAbility::TYPE_GROUNDQUAKE, *m_apMassive[GAGE_BIG_METER], HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));			// グラウンドクエイク
+		Size(CAbility::TYPE_STARDROP, *m_apMassive[GAGE_SMALL_METER], JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));		// スタードロップ
 
 		break;
 
@@ -183,7 +156,8 @@ void CAbilityUI::Update(void)
 	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
 	{
 		// 頂点座標の設定処理
-		m_apObjectUI[nCnt]->SetVtxUnderHeightGage();
+		m_apAcrobat[nCnt]->SetVtxUnderHeightGage();
+		m_apMassive[nCnt]->SetVtxUnderHeightGage();
 	}
 }
 
@@ -192,14 +166,64 @@ void CAbilityUI::Update(void)
 //========================
 void CAbilityUI::Draw(void)
 {
+	switch (CPlayer::Get()->GetMode())
+	{
+	case CPlayer::MODE_ACROBAT:		// アクロバットモード
+
+		// マッシブの描画処理
+		DrawMassive();
+
+		// アクロバットの描画処理
+		DrawAcrobat();
+
+		break;
+
+	case CPlayer::MODE_MASSIVE:		// マッシブモード
+
+		// アクロバットの描画処理
+		DrawAcrobat();
+
+		// マッシブの描画処理
+		DrawMassive();
+
+		break;
+
+	case CPlayer::MODE_REBOOT:		// リブートドライブモード
+
+		break;
+	}
+}
+
+//========================
+// アクロバットの描画処理
+//========================
+void CAbilityUI::DrawAcrobat(void)
+{
 	// 全ての値を初期化する
 	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
 	{
-		if (m_apObjectUI[nCnt] != nullptr)
+		if (m_apAcrobat[nCnt] != nullptr)
 		{ // 番号のポインタが NULL じゃない場合
 
 			// 描画処理
-			m_apObjectUI[nCnt]->Draw();
+			m_apAcrobat[nCnt]->Draw();
+		}
+	}
+}
+
+//========================
+// マッシブの描画処理
+//========================
+void CAbilityUI::DrawMassive(void)
+{
+	// 全ての値を初期化する
+	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
+	{
+		if (m_apMassive[nCnt] != nullptr)
+		{ // 番号のポインタが NULL じゃない場合
+
+			// 描画処理
+			m_apMassive[nCnt]->Draw();
 		}
 	}
 }
@@ -209,38 +233,92 @@ void CAbilityUI::Draw(void)
 //========================
 void CAbilityUI::SetData(const D3DXVECTOR3& posBig, const D3DXVECTOR3& posSmall)
 {
+	// アクロバットの設定処理
+	SetDataAcrobat(posBig, posSmall);
+
+	// マッシブの設定処理
+	SetDataMassive(posBig, posSmall);
+}
+
+//========================
+// アクロバットの設定処理
+//========================
+void CAbilityUI::SetDataAcrobat(const D3DXVECTOR3& posBig, const D3DXVECTOR3& posSmall)
+{
 	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
 	{
-		if (m_apObjectUI[nCnt] != nullptr)
+		if (m_apAcrobat[nCnt] != nullptr)
 		{ // 番号のポインタが NULL じゃない場合
 
 			if (nCnt <= GAGE::GAGE_BIG_METER)
 			{ // 大きいゲージの場合
 
 				// 設定処理
-				m_apObjectUI[nCnt]->SetPos(posBig);				// 位置設定
-				m_apObjectUI[nCnt]->SetRot(NONE_D3DXVECTOR3);	// 向き設定
-				m_apObjectUI[nCnt]->SetSize(BIGUI_SIZE);		// サイズ設定
+				m_apAcrobat[nCnt]->SetPos(posBig);			// 位置設定
+				m_apAcrobat[nCnt]->SetSize(BIGUI_SIZE);		// サイズ設定
 			}
 			else
 			{ // 小さいゲージの場合
 
 				// 設定処理
-				m_apObjectUI[nCnt]->SetPos(posSmall);			// 位置設定
-				m_apObjectUI[nCnt]->SetRot(NONE_D3DXVECTOR3);	// 向き設定
-				m_apObjectUI[nCnt]->SetSize(SMALLUI_SIZE);		// サイズ設定
+				m_apAcrobat[nCnt]->SetPos(posSmall);		// 位置設定
+				m_apAcrobat[nCnt]->SetSize(SMALLUI_SIZE);	// サイズ設定
 			}
-			m_apObjectUI[nCnt]->SetLength();			// 長さ設定
-			m_apObjectUI[nCnt]->SetAngle();				// 方向設定
+
+			m_apAcrobat[nCnt]->SetRot(NONE_D3DXVECTOR3);	// 向き設定
+			m_apAcrobat[nCnt]->SetLength();					// 長さ設定
+			m_apAcrobat[nCnt]->SetAngle();					// 方向設定
 
 			// 頂点情報の設定処理
-			m_apObjectUI[nCnt]->SetVtxUnderHeightGage();
+			m_apAcrobat[nCnt]->SetVtxUnderHeightGage();
 
 			if (nCnt % 2 == 0)
 			{ // 下地の場合
 
 				// 頂点カラーの設定処理
-				m_apObjectUI[nCnt]->SetVtxColor(GROUND_COL);
+				m_apAcrobat[nCnt]->SetVtxColor(GROUND_COL);
+			}
+		}
+	}
+}
+
+//========================
+// マッシブの設定処理
+//========================
+void CAbilityUI::SetDataMassive(const D3DXVECTOR3& posBig, const D3DXVECTOR3& posSmall)
+{
+	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
+	{
+		if (m_apMassive[nCnt] != nullptr)
+		{ // 番号のポインタが NULL じゃない場合
+
+			if (nCnt <= GAGE::GAGE_BIG_METER)
+			{ // 大きいゲージの場合
+
+				// 設定処理
+				m_apMassive[nCnt]->SetPos(D3DXVECTOR3(posBig.x + SHIFT, posBig.y, 0.0f));			// 位置設定
+				m_apMassive[nCnt]->SetSize(BIGUI_SIZE);		// サイズ設定
+			}
+			else
+			{ // 小さいゲージの場合
+
+				// 設定処理
+				m_apMassive[nCnt]->SetPos(D3DXVECTOR3(posSmall.x + SHIFT, posSmall.y, 0.0f));		// 位置設定
+				m_apMassive[nCnt]->SetSize(SMALLUI_SIZE);	// サイズ設定
+			}
+
+			m_apMassive[nCnt]->SetRot(NONE_D3DXVECTOR3);	// 向き設定
+			m_apMassive[nCnt]->SetLength();					// 長さ設定
+			m_apMassive[nCnt]->SetAngle();					// 方向設定
+
+			// 頂点情報の設定処理
+			m_apMassive[nCnt]->SetVtxUnderHeightGage();
+
+			if (nCnt % 2 == 0)
+			{ // 下地の場合
+
+				// 頂点カラーの設定処理
+				m_apMassive[nCnt]->SetVtxColor(GROUND_COL);
 			}
 		}
 	}
@@ -296,12 +374,144 @@ CAbilityUI* CAbilityUI::Create(const D3DXVECTOR3& posBig, const D3DXVECTOR3& pos
 }
 
 //========================
+// アクロバットの生成処理
+//========================
+HRESULT CAbilityUI::AcrobatCreate(void)
+{
+	// メモリを確保する
+	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
+	{
+		if (m_apAcrobat[nCnt] == nullptr)
+		{ // ポインタが NULL の場合
+
+			// メモリを確保する
+			m_apAcrobat[nCnt] = new CObject2D(CObject::TYPE_NONE, CObject::PRIORITY_UI);
+		}
+		else
+		{ // ポインタが NULL じゃない場合
+
+			// 警告文
+			MessageBox(NULL, "能力UIのメモリが既に使われている！", "警告！", MB_ICONWARNING);
+
+			// 失敗を返す
+			return E_FAIL;
+		}
+
+		if (m_apAcrobat[nCnt] != nullptr)
+		{ // ポインタが NULL じゃない場合
+
+			// 初期化処理
+			if (FAILED(m_apAcrobat[nCnt]->Init()))
+			{ // 初期化処理に失敗した場合
+
+				// 警告文
+				MessageBox(NULL, "能力UIの初期化に失敗！", "警告！", MB_ICONWARNING);
+
+				// 失敗を返す
+				return E_FAIL;
+			}
+
+			if (nCnt <= GAGE_BIG_METER)
+			{ // 大技の場合
+
+				// テクスチャの割り当て処理
+				m_apAcrobat[nCnt]->BindTexture(m_aTexInfo[CAbility::TYPE_HOVER].m_nTexIdx);
+			}
+			else
+			{ // 小技の場合
+
+				// テクスチャの割り当て処理
+				m_apAcrobat[nCnt]->BindTexture(m_aTexInfo[CAbility::TYPE_JETDASH].m_nTexIdx);
+			}
+		}
+		else
+		{ // ポインタが　NULL の場合
+
+			// 警告文
+			MessageBox(NULL, "能力UIのメモリの確保に失敗！", "警告！", MB_ICONWARNING);
+
+			// 失敗を返す
+			return E_FAIL;
+		}
+	}
+
+	// 成功を返す
+	return S_OK;
+}
+
+//========================
+// マッシブの生成処理
+//========================
+HRESULT CAbilityUI::MassiveCreate(void)
+{
+		// メモリを確保する
+	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
+	{
+		if (m_apMassive[nCnt] == nullptr)
+		{ // ポインタが NULL の場合
+
+			// メモリを確保する
+			m_apMassive[nCnt] = new CObject2D(CObject::TYPE_NONE, CObject::PRIORITY_UI);
+		}
+		else
+		{ // ポインタが NULL じゃない場合
+
+			// 警告文
+			MessageBox(NULL, "能力UIのメモリが既に使われている！", "警告！", MB_ICONWARNING);
+
+			// 失敗を返す
+			return E_FAIL;
+		}
+
+		if (m_apMassive[nCnt] != nullptr)
+		{ // ポインタが NULL じゃない場合
+
+			// 初期化処理
+			if (FAILED(m_apMassive[nCnt]->Init()))
+			{ // 初期化処理に失敗した場合
+
+				// 警告文
+				MessageBox(NULL, "能力UIの初期化に失敗！", "警告！", MB_ICONWARNING);
+
+				// 失敗を返す
+				return E_FAIL;
+			}
+
+			if (nCnt <= GAGE_BIG_METER)
+			{ // 大技の場合
+
+				// テクスチャの割り当て処理
+				m_apMassive[nCnt]->BindTexture(m_aTexInfo[CAbility::TYPE_GROUNDQUAKE].m_nTexIdx);
+			}
+			else
+			{ // 小技の場合
+
+				// テクスチャの割り当て処理
+				m_apMassive[nCnt]->BindTexture(m_aTexInfo[CAbility::TYPE_STARDROP].m_nTexIdx);
+			}
+		}
+		else
+		{ // ポインタが　NULL の場合
+
+			// 警告文
+			MessageBox(NULL, "能力UIのメモリの確保に失敗！", "警告！", MB_ICONWARNING);
+
+			// 失敗を返す
+			return E_FAIL;
+		}
+	}
+
+	// 成功を返す
+	return S_OK;
+}
+
+//========================
 // サイズ設定処理
 //========================
-void CAbilityUI::Size(const CAbility::TYPE type, const CAbilityUI::GAGE gage, const int nInterval, float fSizeMove)
+void CAbilityUI::Size(const CAbility::TYPE type, CObject2D& pData, const int nInterval, float fSizeMove)
 {
 	// ローカル変数宣言
-	D3DXVECTOR3 size = m_apObjectUI[gage]->GetSize();				// 大技のサイズ
+	D3DXVECTOR3 size = pData.GetSize();				// 大技のサイズ
 	int nCount = CPlayer::Get()->GetAbility()->GetInterval(type);	// カウント
 
 	// サイズを設定する
@@ -309,8 +519,8 @@ void CAbilityUI::Size(const CAbility::TYPE type, const CAbilityUI::GAGE gage, co
 	m_aTexInfo[type].m_fTexSizeY = (float)((1.0f / nInterval) * nCount);
 
 	// サイズを適用する
-	m_apObjectUI[gage]->SetSize(size);
+	pData.SetSize(size);
 	
 	// 下中心の縦のテクスチャ座標の設定処理
-	m_apObjectUI[gage]->SetVtxTextureUnderHeight(m_aTexInfo[type].m_fTexSizeY);
+	pData.SetVtxTextureUnderHeight(m_aTexInfo[type].m_fTexSizeY);
 }

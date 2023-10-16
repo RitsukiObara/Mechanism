@@ -45,6 +45,7 @@ public:			// 誰でもアクセスできる
 	virtual void Draw(void);		// 描画処理
 
 	virtual void Hit(void);			// ヒット処理
+	virtual void SmashHit(void);	// 吹き飛びヒット処理
 	virtual void SetData(const D3DXVECTOR3& pos);				// 情報の設定処理
 
 	// セット・ゲット関係

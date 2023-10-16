@@ -25,6 +25,8 @@ public:			// 誰でもアクセスできる
 		ABILITY_NONE = 0,		// 無状態
 		ABILITY_HOVER,			// ホバージェット
 		ABILITY_JETDASH,		// ジェットダッシュ
+		ABILITY_GROUNDQUAKE,	// グラウンドクエイク
+		ABILITY_STARDROP,		// スタードロップ
 		ABILITY_MAX				// この列挙型の総数
 	};
 

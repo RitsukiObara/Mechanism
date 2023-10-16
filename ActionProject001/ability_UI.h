@@ -49,8 +49,12 @@ public:				// 誰でもアクセスできる
 	void Uninit(void);		// 終了処理
 	void Update(void);		// 更新処理
 	void Draw(void);		// 描画処理
+	void DrawAcrobat(void);	// アクロバットの描画処理
+	void DrawMassive(void);	// マッシブの描画処理
 
 	void SetData(const D3DXVECTOR3& posBig, const D3DXVECTOR3& posSmall);				// 情報の設定処理
+	void SetDataAcrobat(const D3DXVECTOR3& posBig, const D3DXVECTOR3& posSmall);		// アクロバットの設定処理
+	void SetDataMassive(const D3DXVECTOR3& posBig, const D3DXVECTOR3& posSmall);		// マッシブの設定処理
 
 	// 静的メンバ変数
 	static CAbilityUI* Create(const D3DXVECTOR3& posBig, const D3DXVECTOR3& posSmall);	// 生成処理
@@ -58,10 +62,13 @@ public:				// 誰でもアクセスできる
 private:			// 自分だけアクセスできる
 
 	// メンバ関数
-	void Size(const CAbility::TYPE type, const CAbilityUI::GAGE gage, const int nInterval, float fSizeMove);		// サイズ設定処理
+	HRESULT AcrobatCreate(void);		// アクロバットの生成処理
+	HRESULT MassiveCreate(void);		// マッシブの生成処理
+	void Size(const CAbility::TYPE type, CObject2D& pData, const int nInterval, float fSizeMove);		// サイズ設定処理
 
 	// メンバ変数
-	CObject2D* m_apObjectUI[GAGE_MAX];			// ポリゴンの情報
+	CObject2D* m_apAcrobat[GAGE_MAX];			// アクロバットの情報
+	CObject2D* m_apMassive[GAGE_MAX];			// マッシブの情報
 	STexInfo m_aTexInfo[CAbility::TYPE_MAX];	// テクスチャの情報
 
 	// 静的メンバ変数

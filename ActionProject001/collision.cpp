@@ -13,6 +13,7 @@
 #include "elevation_manager.h"
 #include "player.h"
 #include "player_act.h"
+#include "player_ability.h"
 #include "airplane.h"
 #include "airplane_manager.h"
 #include "screw.h"
@@ -200,8 +201,18 @@ void collision::EnemyHit(CPlayer& player)
 				pos.y <= pEnemy->GetPos().y + pEnemy->GetCollSize().y)
 			{ // 左からの当たり判定
 
-				// プレイヤーのヒット処理
-				player.Hit();
+				if (player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH)
+				{ // ジェットダッシュ状態の場合
+
+					// 敵のヒット処理
+					pEnemy->Hit();
+				}
+				else
+				{ // 上記以外
+
+					// プレイヤーのヒット処理
+					player.Hit();
+				}
 			}
 			else if (posOld.x - PLAYER_SIZE.x >= pEnemy->GetPosOld().x + pEnemy->GetCollSize().x &&
 				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetCollSize().x &&
@@ -209,8 +220,18 @@ void collision::EnemyHit(CPlayer& player)
 				pos.y <= pEnemy->GetPos().y + pEnemy->GetCollSize().y)
 			{ // 右からの当たり判定
 
-				// プレイヤーのヒット処理
-				player.Hit();
+				if (player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH)
+				{ // ジェットダッシュ状態の場合
+
+					// 敵の吹き飛びヒット処理
+					pEnemy->SmashHit();
+				}
+				else
+				{ // 上記以外
+
+					// プレイヤーのヒット処理
+					player.Hit();
+				}
 			}
 		}
 
