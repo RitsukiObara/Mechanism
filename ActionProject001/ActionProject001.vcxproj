@@ -158,6 +158,7 @@
     <ClCompile Include="airplane.cpp" />
     <ClCompile Include="airplane_manager.cpp" />
     <ClCompile Include="collpolygon.cpp" />
+    <ClCompile Include="fraction.cpp" />
     <ClCompile Include="machidori.cpp" />
     <ClCompile Include="new_record.cpp" />
     <ClCompile Include="objectAnim.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="airplane.h" />
     <ClInclude Include="airplane_manager.h" />
     <ClInclude Include="collpolygon.h" />
+    <ClInclude Include="fraction.h" />
     <ClInclude Include="machidori.h" />
     <ClInclude Include="objectAnim.h" />
     <ClInclude Include="camera.h" />

@@ -23,7 +23,16 @@
 #define COLLISION_SIZE			(D3DXVECTOR3(40.0f, 93.0f, 44.0f))		// 当たり判定のサイズ
 #define ROT_MOVE				(0.05f)									// 向きの移動量
 #define ADD_HEIGHT				(300.0f)								// 追加する高さ
-#define CURVE_HEIGHT			(50.0f)									// 浮き沈みの差
+#define MOVE_HEIGHT				(50.0f)									// Y軸の移動量
+#define MOVE_WIDTH				(2.0f)									// X軸の移動量
+#define STANDBY_CORRECT			(0.08f)									// スタンバイ状態の補正
+#define STANDBY_ROT_DEST		(0.4f)									// スタンバイ状態の目的の向き
+#define STANDBY_COUNT			(60)									// スタンバイ状態のカウント
+#define ATTACK_CORRECT			(0.6f)									// スタンバイ状態の補正
+#define ATTACK_ROT_DEST			(0.0f)									// スタンバイ状態の目的の向き
+#define ATTACK_DOWN				(20.0f)									// 攻撃状態の降下量
+#define ATTACK_COUNT			(80)									// 攻撃状態のカウント
+#define UP_HEIGHT				(10.0f)									// 攻撃状態の高さ
 
 //==============================
 // コンストラクタ
@@ -32,7 +41,9 @@ CMachidori::CMachidori() : CEnemy(CObject::TYPE_ENEMY, CObject::PRIORITY_ENTITY)
 {
 	// 全ての値をクリアする
 	m_state = STATE_FLY;	// 状態
+	m_nStateCount = 0;		// 状態カウント
 	m_fCurveRot = 0.0f;		// カーブ用向き
+	m_fHeight = ADD_HEIGHT;	// 追加の高さ
 	m_bRight = true;		// 前回の右向き状況
 }
 
@@ -58,7 +69,9 @@ HRESULT CMachidori::Init(void)
 
 	// 全ての値を初期化する
 	m_state = STATE_FLY;	// 状態
+	m_nStateCount = 0;		// 状態カウント
 	m_fCurveRot = 0.0f;		// カーブ用向き
+	m_fHeight = ADD_HEIGHT;	// 追加の高さ
 	m_bRight = true;		// 前回の右向き状況
 
 	// 値を返す
@@ -102,9 +115,64 @@ void CMachidori::Update(void)
 
 	case STATE_STANDBY:
 
+		// スタンバイ状態
+		StandBy();
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		if (m_nStateCount % STANDBY_COUNT == 0)
+		{ // 状態カウントが一定以上になった場合
+
+			// 状態カウントを0にする
+			m_nStateCount = 0;
+
+			// 攻撃状態にする
+			m_state = STATE_ATTACK;
+
+			// 追加の高さを設定する
+			m_fHeight = 0.0f;
+		}
+
 		break;
 
 	case STATE_ATTACK:
+
+		// 攻撃状態での向きの設定処理
+		AttackRot();
+
+		// 攻撃状態の降下処理
+		AttackDown();
+
+		// 起伏地面との当たり判定
+		if (ElevationCollision() == true)
+		{
+			// 状態カウントを加算する
+			m_nStateCount++;
+		}
+
+		if (m_nStateCount >= ATTACK_COUNT)
+		{ // 状態カウントが一定以上の場合
+
+			// 前回の左右状況の設定処理
+			SetRightOld();
+
+			// 状態カウントを初期化する
+			m_nStateCount = 0;
+
+			// 上昇状態にする
+			m_state = STATE_UP;
+		}
+
+		break;
+
+	case STATE_UP:
+
+		// 起伏地面の当たり判定
+		Elevation();
+
+		// 上昇状態の上昇処理
+		UpAscent();
 
 		break;
 	}
@@ -140,14 +208,16 @@ void CMachidori::SetData(const D3DXVECTOR3& pos)
 
 	// 全ての値を設定する
 	m_state = STATE_FLY;	// 状態
+	m_nStateCount = 0;		// 状態カウント
 	m_fCurveRot = 0.0f;		// カーブ用向き
+	m_fHeight = ADD_HEIGHT;	// 追加の高さ
+
+	// 前回の左右状況の設定処理
+	SetRightOld();
 
 	// 情報の設定処理
 	SetEnableStep(true);			// 踏みつけられる設定
 	SetCollSize(COLLISION_SIZE);	// 当たり判定のサイズ
-
-	// 前回の左右状況の設定処理
-	SetRightOld();
 }
 
 //=====================================
@@ -167,7 +237,7 @@ void CMachidori::CheckPlayer(void)
 		{ // プレイヤーの位置が自身よりも右にいる場合
 
 			// 向きを設定する
-			move.x = 2.0f;
+			move.x = MOVE_WIDTH;
 
 			if (m_bRight == false)
 			{ // 前回が左向きの場合
@@ -180,7 +250,7 @@ void CMachidori::CheckPlayer(void)
 		{ // 上記以外
 
 			// 向きを設定する
-			move.x = -2.0f;
+			move.x = -MOVE_WIDTH;
 
 			if (m_bRight == true)
 			{ // 前回が右向きの場合
@@ -226,7 +296,7 @@ void CMachidori::Height(void)
 	useful::RotNormalize(&m_fCurveRot);
 
 	// 位置を設定する
-	pos.y += sinf(m_fCurveRot) * CURVE_HEIGHT + ADD_HEIGHT;
+	pos.y += sinf(m_fCurveRot) * MOVE_HEIGHT + m_fHeight;
 
 	// 位置を適用する
 	SetPos(pos);
@@ -284,4 +354,77 @@ void CMachidori::SetRightOld(void)
 			m_bRight = false;
 		}
 	}
+}
+
+//=====================================
+// スタンバイ処理
+//=====================================
+void CMachidori::StandBy(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 rot = GetRot();		// 向きを取得する
+
+	// 向きの補正処理
+	useful::RotCorrect(STANDBY_ROT_DEST, &rot.x, STANDBY_CORRECT);
+
+	// 向きを適用する
+	SetRot(rot);
+}
+
+//=====================================
+// 攻撃状態での向きの設定処理
+//=====================================
+void CMachidori::AttackRot(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 rot = GetRot();		// 向きを取得する
+
+	// 向きの補正処理
+	useful::RotCorrect(ATTACK_ROT_DEST, &rot.x, ATTACK_CORRECT);
+
+	// 向きを適用する
+	SetRot(rot);
+}
+
+//=====================================
+// 攻撃状態の降下処理
+//=====================================
+void CMachidori::AttackDown(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
+
+	// 位置を下げる
+	pos.y -= ATTACK_DOWN;
+
+	// 位置を適用する
+	SetPos(pos);
+}
+
+//=====================================
+// 上昇状態の上昇処理
+//=====================================
+void CMachidori::UpAscent(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();				// 位置を取得する
+
+	// 追加の高さを設定する
+	m_fHeight += UP_HEIGHT;
+
+	if (m_fHeight >= ADD_HEIGHT)
+	{ // 高さが一定数以上になった場合
+
+		// 高さを設定する
+		m_fHeight = ADD_HEIGHT;
+
+		// 浮遊状態にする
+		m_state = STATE_FLY;
+	}
+
+	// 位置を設定する
+	pos.y += sinf(m_fCurveRot) * MOVE_HEIGHT + m_fHeight;
+
+	// 位置を適用する
+	SetPos(pos);
 }

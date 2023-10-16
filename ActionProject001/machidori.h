@@ -25,6 +25,7 @@ public:			// 誰でもアクセスできる
 		STATE_FLY = 0,		// 浮遊状態
 		STATE_STANDBY,		// スタンバイ状態
 		STATE_ATTACK,		// 攻撃状態
+		STATE_UP,			// 上昇処理
 		STATE_MAX			// この列挙型の総数
 	};
 
@@ -48,10 +49,16 @@ private:		// 自分だけアクセスできる
 	void Height(void);		// 高さ設定処理
 	void Elevation(void);	// 起伏地面の当たり判定
 	void SetRightOld(void);	// 前回の左右状況の設定処理
+	void StandBy(void);		// スタンバイ処理
+	void AttackRot(void);	// 攻撃状態での向きの設定処理
+	void AttackDown(void);	// 攻撃状態の降下処理
+	void UpAscent(void);	// 上昇状態の上昇処理
 
 	// メンバ変数
 	STATE m_state;			// 状態
+	int m_nStateCount;		// 状態カウント
 	float m_fCurveRot;		// カーブ用向き
+	float m_fHeight;		// 追加の高さ
 	bool m_bRight;			// 右向き状況
 };
 

@@ -264,6 +264,9 @@
     <ClCompile Include="machidori.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="fraction.cpp">
+      <Filter>Staging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -466,6 +469,9 @@
     </ClInclude>
     <ClInclude Include="machidori.h">
       <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="fraction.h">
+      <Filter>Staging</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
