@@ -20,7 +20,10 @@ const char* CXFile::c_apModelData[CXFile::TYPE_MAX] =		// モデルの名前
 {
 	// オブジェクトモデル
 	"data\\MODEL\\Airplane.x",			// 飛行機
-	"data\\MODEL\\Screw.x",				// ネジ
+	"data\\MODEL\\Screw.x",				// ネジ(アイテム)
+	"data\\MODEL\\ScrewParts.x",		// ネジ(破片)
+	"data\\MODEL\\GearParts.x",			// 歯車(破片)
+	"data\\MODEL\\RingParts.x",			// 輪(破片)
 
 	// 敵モデル
 	"data\\MODEL\\Itocan.x",			// イトキャン

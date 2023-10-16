@@ -41,7 +41,7 @@
 // 位置・距離関係
 #define POS_SPEED					(30.0f)				// 移動速度
 #define DIS_SPEED					(16.0f)				// 距離の移動量
-#define CAMERA_DISTANCE				(500.0f)			// カメラの距離
+#define CAMERA_DISTANCE				(600.0f)			// カメラの距離
 #define POSR_POINT					(40.0f)				// 追従モードの注視点の位置
 #define POSV_POINT					(40.0f)				// 追従モードの視点の位置
 #define CORRECT_POSR				(0.22f)				// 注視点の補正倍率
@@ -747,12 +747,12 @@ void CCamera::Chase(void)
 
 		// 目的の注視点を設定する
 		m_posRDest.x = pos.x + CHASE_SHIFT_X;
-		m_posRDest.y = pos.y + 150.0f;
+		m_posRDest.y = pos.y + 100.0f;
 		m_posRDest.z = pos.z;
 
 		// 目的の視点を設定する
 		m_posVDest.x = m_posRDest.x + sinf(m_rot.y) * -m_Dis;
-		m_posVDest.y = pos.y + 170.0f;
+		m_posVDest.y = pos.y + 130.0f;
 		m_posVDest.z = m_posRDest.z + cosf(m_rot.y) * -m_Dis;
 
 		// 注視点を補正

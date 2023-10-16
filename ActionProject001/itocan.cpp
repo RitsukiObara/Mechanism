@@ -15,13 +15,13 @@
 #include "player.h"
 #include "destruction.h"
 #include "Particle.h"
-#include "debugproc.h"
+#include "fraction.h"
 
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
 #define COLLISION_SIZE		(D3DXVECTOR3(32.0f, 128.0f, 40.0f))	// 当たり判定のサイズ
-#define MOVE_DISTANCE		(1200.0f)							// 移動する距離
+#define MOVE_DISTANCE		(1300.0f)							// 移動する距離
 #define MOVE				(D3DXVECTOR3(3.0f, 0.0f, 0.0f))		// 移動量
 #define ROT_MOVE_MAGNI		(0.15f)								// 向きの移動量の倍率
 #define CHECK_COUNT			(15)								// チェックするカウント数
@@ -31,6 +31,7 @@
 #define DEATH_DSTR_SIZE		(D3DXVECTOR3(40.0f,40.0f,0.0f))		// 死亡時の撃破のサイズ
 #define DEATH_DSTR_COL		(D3DXCOLOR(1.0f, 0.2f, 0.2f, 1.0f))	// 死亡時の撃破の色
 #define DEATH_DSTR_LIFE		(20)								// 死亡時の撃破の寿命
+#define FRACTION_COUNT		(8)									// 破片の数
 
 //==============================
 // コンストラクタ
@@ -138,6 +139,18 @@ void CItocan::Update(void)
 
 			// パーティクルの生成処理
 			CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
+
+			// ローカル変数宣言
+			CFraction::TYPE type = CFraction::TYPE_SCREW;
+
+			for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
+			{
+				// 種類を設定する
+				type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
+
+				// 破片の生成処理
+				CFraction::Create(GetPos(), type);
+			}
 
 			// 終了処理
 			Uninit();

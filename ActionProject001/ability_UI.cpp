@@ -30,7 +30,7 @@
 const char* CAbilityUI::m_acTextureFileName[CAbility::TYPE_MAX] = 			// テクスチャの名前
 {
 	"data\\TEXTURE\\HoverMark.png",			// ホバージェット
-	"data\\TEXTURE\\SkyDashMark.png",		// 空中ダッシュ
+	"data\\TEXTURE\\SkyDashMark.png",		// ジェットダッシュ
 	"data\\TEXTURE\\",						// グラウンドクエイク
 	"data\\TEXTURE\\",						// スタードロップ
 };
@@ -114,7 +114,7 @@ HRESULT CAbilityUI::Init(void)
 			{ // 小技の場合
 
 				// テクスチャの割り当て処理
-				m_apObjectUI[nCnt]->BindTexture(m_aTexInfo[CAbility::TYPE_SKYDASH].m_nTexIdx);
+				m_apObjectUI[nCnt]->BindTexture(m_aTexInfo[CAbility::TYPE_JETDASH].m_nTexIdx);
 			}
 		}
 		else
@@ -167,7 +167,7 @@ void CAbilityUI::Update(void)
 
 		// サイズ変更処理
 		Size(CAbility::TYPE_HOVER, CAbilityUI::GAGE_BIG_METER, HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));			// ホバージェット
-		Size(CAbility::TYPE_SKYDASH, CAbilityUI::GAGE_SMALL_METER, SKYDASH_INTERVAL, (SMALLUI_SIZE.y / SKYDASH_INTERVAL));	// 空中ダッシュ
+		Size(CAbility::TYPE_JETDASH, CAbilityUI::GAGE_SMALL_METER, JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));	// ジェットダッシュ
 
 		break;
 

@@ -41,6 +41,7 @@ public:			// 誰でもアクセスできる
 		TYPE_DESTRUCTION,		// 撃破
 		TYPE_ABILITYUI,			// 能力UI
 		TYPE_ENEMY,				// 敵
+		TYPE_FRACTION,			// 破片
 		TYPE_NEWRECORD,			// 新記録
 		TYPE_MAX				// この列挙型の総数
 	};

@@ -15,24 +15,26 @@
 #include "objectElevation.h"
 #include "elevation_manager.h"
 #include "player.h"
+#include "fraction.h"
 
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
-#define MOVE_DISTANCE			(1400.0f)								// 移動する距離
 #define COLLISION_SIZE			(D3DXVECTOR3(40.0f, 93.0f, 44.0f))		// 当たり判定のサイズ
-#define ROT_MOVE				(0.05f)									// 向きの移動量
-#define ADD_HEIGHT				(300.0f)								// 追加する高さ
-#define MOVE_HEIGHT				(50.0f)									// Y軸の移動量
-#define MOVE_WIDTH				(2.0f)									// X軸の移動量
-#define STANDBY_CORRECT			(0.08f)									// スタンバイ状態の補正
-#define STANDBY_ROT_DEST		(0.4f)									// スタンバイ状態の目的の向き
-#define STANDBY_COUNT			(60)									// スタンバイ状態のカウント
-#define ATTACK_CORRECT			(0.6f)									// スタンバイ状態の補正
-#define ATTACK_ROT_DEST			(0.0f)									// スタンバイ状態の目的の向き
-#define ATTACK_DOWN				(20.0f)									// 攻撃状態の降下量
-#define ATTACK_COUNT			(80)									// 攻撃状態のカウント
-#define UP_HEIGHT				(10.0f)									// 攻撃状態の高さ
+#define MOVE_DISTANCE			(1400.0f)		// 移動する距離
+#define ROT_MOVE				(0.05f)			// 向きの移動量
+#define ADD_HEIGHT				(300.0f)		// 追加する高さ
+#define MOVE_HEIGHT				(50.0f)			// Y軸の移動量
+#define MOVE_WIDTH				(2.0f)			// X軸の移動量
+#define STANDBY_CORRECT			(0.08f)			// スタンバイ状態の補正
+#define STANDBY_ROT_DEST		(0.4f)			// スタンバイ状態の目的の向き
+#define STANDBY_COUNT			(60)			// スタンバイ状態のカウント
+#define ATTACK_CORRECT			(0.6f)			// スタンバイ状態の補正
+#define ATTACK_ROT_DEST			(0.0f)			// スタンバイ状態の目的の向き
+#define ATTACK_DOWN				(20.0f)			// 攻撃状態の降下量
+#define ATTACK_COUNT			(80)			// 攻撃状態のカウント
+#define UP_HEIGHT				(10.0f)			// 攻撃状態の高さ
+#define FRACTION_COUNT			(6)				// 破片の数
 
 //==============================
 // コンストラクタ
@@ -192,7 +194,17 @@ void CMachidori::Draw(void)
 //=====================================
 void CMachidori::Hit(void)
 {
+	// ローカル変数宣言
+	CFraction::TYPE type = CFraction::TYPE_SCREW;
 
+	for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
+	{
+		// 種類を設定する
+		type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
+
+		// 破片の生成処理
+		CFraction::Create(GetPos(), type);
+	}
 }
 
 //=====================================

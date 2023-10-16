@@ -16,8 +16,8 @@
 // マクロ定義
 //--------------------------------------------
 #define HOVER_COUNT		(100)				// ホバー状態のカウント
-#define SKYDASH_COUNT	(20)				// 空中ダッシュ状態のカウント
-#define SKYDASH_SPEED	(30.0f)				// 空中ダッシュ時のスピード
+#define JETDASH_COUNT	(20)				// ジェットダッシュ状態のカウント
+#define JETDASH_SPEED	(30.0f)				// ジェットダッシュ時のスピード
 
 //============================================
 // コンストラクタ
@@ -92,9 +92,9 @@ void CAbility::Update(CPlayer& player)
 
 		break;
 
-	case ABILITY_SKYDASH:	// 空中ダッシュ
+	case ABILITY_JETDASH:	// ジェットダッシュ
 
-		// 空中ダッシュ処理
+		// ジェットダッシュ処理
 		SkyDash(player);
 
 		break;
@@ -243,7 +243,7 @@ void CAbility::HoverJet(CPlayer& player)
 }
 
 //============================================
-// 空中ダッシュ処理
+// ジェットダッシュ処理
 //============================================
 void CAbility::SkyDash(CPlayer& player)
 {
@@ -252,12 +252,12 @@ void CAbility::SkyDash(CPlayer& player)
 	D3DXVECTOR3 rot = player.GetRot();		// 向きを取得する
 
 	// 位置を設定する
-	pos.x += sinf(rot.y) * SKYDASH_SPEED;
+	pos.x += sinf(rot.y) * JETDASH_SPEED;
 
 	// カウントを加算する
 	m_nAblCount++;
 
-	if (m_nAblCount >= SKYDASH_COUNT)
+	if (m_nAblCount >= JETDASH_COUNT)
 	{ // カウントが一定数以上の場合
 
 		// カウントを初期化する

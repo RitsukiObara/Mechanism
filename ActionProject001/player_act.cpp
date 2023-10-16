@@ -353,7 +353,7 @@ void CPlayerAct::ModeSpeed(CPlayer& player)
 
 		switch (player.GetAbility()->GetAbility())
 		{
-		case CAbility::ABILITY_SKYDASH:		// 空中ダッシュ
+		case CAbility::ABILITY_JETDASH:		// ジェットダッシュ
 
 			// 速度を設定する
 			player.SetSpeed(0.0f);
@@ -424,18 +424,18 @@ void CPlayerAct::Ability(CPlayer& player)
 		{
 		case CPlayer::MODE_ACROBAT:		// アクロバットモード
 
-			if (player.GetAbility()->GetPossible(CAbility::TYPE_SKYDASH) == true &&
+			if (player.GetAbility()->GetPossible(CAbility::TYPE_JETDASH) == true &&
 				player.IsJump() == true)
 			{ // ジャンプ状況が true の場合
 
-				// 空中ダッシュ状態にする
-				player.GetAbility()->SetAbility(CAbility::ABILITY_SKYDASH);
+				// ジェットダッシュ状態にする
+				player.GetAbility()->SetAbility(CAbility::ABILITY_JETDASH);
 
 				// 使用可能状況を false にする
-				player.GetAbility()->SetPossible(CAbility::TYPE_SKYDASH, false);
+				player.GetAbility()->SetPossible(CAbility::TYPE_JETDASH, false);
 
 				// 間隔カウントを設定する
-				player.GetAbility()->SetInterval(CAbility::TYPE_SKYDASH, SKYDASH_INTERVAL);
+				player.GetAbility()->SetInterval(CAbility::TYPE_JETDASH, JETDASH_INTERVAL);
 			}
 
 			break;
@@ -500,7 +500,7 @@ void CPlayerAct::Gravity(CPlayer& player)
 
 			break;
 
-		case CAbility::ABILITY_SKYDASH:
+		case CAbility::ABILITY_JETDASH:
 
 			// 重力を加算する
 			move.y = 0.0f;

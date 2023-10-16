@@ -24,7 +24,7 @@ public:			// 誰でもアクセスできる
 	{
 		ABILITY_NONE = 0,		// 無状態
 		ABILITY_HOVER,			// ホバージェット
-		ABILITY_SKYDASH,		// 空中ダッシュ
+		ABILITY_JETDASH,		// ジェットダッシュ
 		ABILITY_MAX				// この列挙型の総数
 	};
 
@@ -32,7 +32,7 @@ public:			// 誰でもアクセスできる
 	enum TYPE
 	{
 		TYPE_HOVER = 0,			// ホバージェット
-		TYPE_SKYDASH,			// 空中ダッシュ
+		TYPE_JETDASH,			// ジェットダッシュ
 		TYPE_GROUNDQUAKE,		// グラウンドクエイク
 		TYPE_STARDROP,			// スタードロップ
 		TYPE_MAX				// この列挙型の総数
@@ -63,7 +63,7 @@ private:		// 自分だけアクセスできる
 
 	// メンバ関数
 	void HoverJet(CPlayer& player);		// ホバージェット処理
-	void SkyDash(CPlayer& player);		// 空中ダッシュ処理
+	void SkyDash(CPlayer& player);		// ジェットダッシュ処理
 
 	void Interval(void);				// 間隔カウント処理
 

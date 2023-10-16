@@ -29,7 +29,10 @@ public:			// 誰でもアクセスできる
 	{
 		// 通常モデル
 		TYPE_AIRPLANE = 0,		// 飛行機
-		TYPE_SCREW,				// ネジ
+		TYPE_SCREW,				// ネジ(アイテム)
+		TYPE_FRAC_SCREW,		// ネジ(破片)
+		TYPE_FRAC_GEAR,			// 歯車(破片)
+		TYPE_FRAC_RING,			// 輪(破片)
 
 		// 敵モデル
 		TYPE_ITOCAN,			// イトキャン
