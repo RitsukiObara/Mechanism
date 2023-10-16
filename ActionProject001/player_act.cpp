@@ -424,8 +424,7 @@ void CPlayerAct::Ability(CPlayer& player)
 		{
 		case CPlayer::MODE_ACROBAT:		// アクロバットモード
 
-			if (player.GetAbility()->GetPossible(CAbility::TYPE_JETDASH) == true &&
-				player.IsJump() == true)
+			if (player.GetAbility()->GetPossible(CAbility::TYPE_JETDASH) == true)
 			{ // ジャンプ状況が true の場合
 
 				// ジェットダッシュ状態にする
