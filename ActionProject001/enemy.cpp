@@ -23,7 +23,11 @@
 #include "machidori.h"
 
 // マクロ定義
-#define GRAVITY		(0.5f)		// 重力
+#define GRAVITY			(0.5f)				// 重力
+#define SMASH_MOVE		(8.5f)				// 吹き飛ばす移動量
+#define SMASH_JUMP		(18.0f)				// 吹き飛ばすジャンプ量
+#define SMASH_ADD_RIGHT	(14.0f)				// 右に吹き飛ばす追加の移動量
+#define SMASH_ADD_LEFT	(12.0f)				// 左に吹き飛ばす追加の移動量
 
 //==============================
 // コンストラクタ
@@ -174,7 +178,38 @@ void CEnemy::Hit(void)
 //=====================================
 void CEnemy::SmashHit(void)
 {
+	// ローカル変数宣言
+	D3DXVECTOR3 posCamera = CManager::Get()->GetCamera()->GetPosV();		// 視点の位置を取得する
+	CPlayer* player = CPlayer::Get();										// プレイヤーの情報を取得する
+	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
+	D3DXVECTOR3 rot = GetRot();		// 向きを取得する
+	float fSmashRot;				// 吹き飛ばす向き
+	
+	// 吹き飛ばす向きを設定する
+	fSmashRot = atan2f(posCamera.x - pos.x, posCamera.z - pos.z);
 
+	// 向きを0.0fにする
+	rot.y = 0.0f;
+
+	if (player->IsRight() == true)
+	{ // 右向きの場合
+
+		// 向きを設定する
+		m_move.x = sinf(fSmashRot) * SMASH_MOVE + sinf(player->GetRot().y) * SMASH_ADD_RIGHT;
+		m_move.y = SMASH_JUMP;
+		m_move.z = cosf(fSmashRot) * SMASH_MOVE;
+	}
+	else
+	{ // 上記以外
+
+		// 向きを設定する
+		m_move.x = sinf(fSmashRot) * SMASH_MOVE + sinf(player->GetRot().y) * SMASH_ADD_LEFT;
+		m_move.y = SMASH_JUMP;
+		m_move.z = cosf(fSmashRot) * SMASH_MOVE;
+	}
+
+	// 情報を適用する
+	SetRot(rot);		// 向き
 }
 
 //=====================================

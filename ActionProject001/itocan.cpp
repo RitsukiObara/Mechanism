@@ -32,6 +32,12 @@
 #define DEATH_DSTR_COL		(D3DXCOLOR(1.0f, 0.2f, 0.2f, 1.0f))	// 死亡時の撃破の色
 #define DEATH_DSTR_LIFE		(20)								// 死亡時の撃破の寿命
 #define FRACTION_COUNT		(8)									// 破片の数
+#define SMASH_ROTMOVE_X		(0.3f)								// 吹き飛ぶ向きの移動量(X軸)
+#define SMASH_ROTMOVE_Z		(0.2f)								// 吹き飛ぶ向きの移動量(Z軸)
+#define SMASH_DEATH_COUNT	(70)								// 吹き飛んで死亡するまでのカウント
+#define HIT_DSTR_SIZE		(D3DXVECTOR3(40.0f,40.0f,0.0f))		// ヒット時の撃破のサイズ
+#define HIT_DSTR_COL		(D3DXCOLOR(1.0f, 0.7f, 0.1f, 1.0f))	// ヒット時の撃破の色
+#define HIT_DSTR_LIFE		(10)								// ヒット時の撃破の寿命
 
 //==============================
 // コンストラクタ
@@ -160,6 +166,26 @@ void CItocan::Update(void)
 		}
 
 		break;
+
+	case STATE_SMASH:		// 吹き飛び状態
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		// 吹き飛び状態処理
+		Smash();
+
+		if (m_nStateCount >= SMASH_DEATH_COUNT)
+		{ // 状態カウントが一定数になった場合
+
+			// 終了処理
+			Uninit();
+
+			// この先の処理を行わない
+			return;
+		}
+
+		break;
 	}
 
 	// 重力処理
@@ -186,6 +212,9 @@ void CItocan::Draw(void)
 //=====================================
 void CItocan::Hit(void)
 {
+	// ローカル変数宣言
+	D3DXVECTOR3 posDstr = GetPos();		// 撃破を出す位置
+
 	// 当たり判定状況を OFF にする
 	SetEnableCollision(false);
 
@@ -194,6 +223,48 @@ void CItocan::Hit(void)
 
 	// 死亡状態に設定する
 	m_state = STATE_DEATH;
+
+	// エフェクトを出す位置を設定する
+	posDstr.y += GetCollSize().y;
+
+	// 撃破の生成処理
+	CDestruction::Create(posDstr, HIT_DSTR_SIZE, HIT_DSTR_COL, CDestruction::TYPE_AIRY, HIT_DSTR_LIFE);
+}
+
+//=====================================
+// 吹き飛びヒット処理
+//=====================================
+void CItocan::SmashHit(void)
+{
+	// 吹き飛ばし処理
+	CEnemy::SmashHit();
+
+	// 当たり判定状況を OFF にする
+	SetEnableCollision(false);
+
+	// 状態カウントを初期化する
+	m_nStateCount = 0;
+
+	// 吹き飛び状態に設定する
+	m_state = STATE_SMASH;
+
+	// 撃破の生成処理
+	CDestruction::Create(GetPos(), DEATH_DSTR_SIZE, DEATH_DSTR_COL, CDestruction::TYPE_THORN, DEATH_DSTR_LIFE);
+
+	// パーティクルの生成処理
+	CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
+
+	// ローカル変数宣言
+	CFraction::TYPE type = CFraction::TYPE_SCREW;
+
+	for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
+	{
+		// 種類を設定する
+		type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
+
+		// 破片の生成処理
+		CFraction::Create(GetPos(), type);
+	}
 }
 
 //=====================================
@@ -332,4 +403,31 @@ void CItocan::DeathScaling(void)
 
 	// 拡大率の設定処理
 	SetScale(scale);
+}
+
+//=======================================
+// 吹き飛び状態処理
+//=======================================
+void CItocan::Smash(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置
+	D3DXVECTOR3 rot = GetRot();		// 向き
+	D3DXVECTOR3 move = GetMove();	// 移動量
+
+	// 向きを設定する
+	rot.x += SMASH_ROTMOVE_X;
+	rot.z += SMASH_ROTMOVE_Z;
+
+	// 向きの正規化処理
+	useful::RotNormalize(&rot.x);
+	useful::RotNormalize(&rot.z);
+
+	// 位置を更新する
+	pos.x += move.x;
+	pos.z += move.z;
+
+	// 情報を適用する
+	SetPos(pos);		// 位置
+	SetRot(rot);		// 向き
 }

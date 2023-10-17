@@ -25,6 +25,7 @@ public:			// 誰でもアクセスできる
 		STATE_STOP = 0,			// 停止状態
 		STATE_MOVE,				// 移動状態
 		STATE_DEATH,			// 死亡状態
+		STATE_SMASH,			// 吹き飛び状態
 		STATE_MAX				// この列挙型の総数
 	};
 
@@ -38,6 +39,7 @@ public:			// 誰でもアクセスできる
 	void Draw(void);		// 描画処理
 
 	void Hit(void);			// ヒット処理
+	void SmashHit(void);	// 吹き飛びヒット処理
 	void SetData(const D3DXVECTOR3& pos);				// 情報の設定処理
 
 private:		// 自分だけアクセスできる
@@ -48,6 +50,7 @@ private:		// 自分だけアクセスできる
 	void Move(void);				// 移動処理
 	void RotMove(void);				// 向き移動処理
 	void DeathScaling(void);		// 死亡時の拡大率
+	void Smash(void);				// 吹き飛び状態処理
 
 	// メンバ変数
 	STATE m_state;					// 状態

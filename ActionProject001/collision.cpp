@@ -205,7 +205,7 @@ void collision::EnemyHit(CPlayer& player)
 				{ // ジェットダッシュ状態の場合
 
 					// 敵のヒット処理
-					pEnemy->Hit();
+					pEnemy->SmashHit();
 				}
 				else
 				{ // 上記以外

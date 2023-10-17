@@ -16,6 +16,8 @@
 #include "elevation_manager.h"
 #include "player.h"
 #include "fraction.h"
+#include "destruction.h"
+#include "Particle.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -35,6 +37,16 @@
 #define ATTACK_COUNT			(80)			// 攻撃状態のカウント
 #define UP_HEIGHT				(10.0f)			// 攻撃状態の高さ
 #define FRACTION_COUNT			(6)				// 破片の数
+#define DEATH_VIB_COUNT			(4)				// 死亡時の振動するカウント
+#define DEATH_COUNT				(60)			// 死亡するまでのカウント
+#define DEATH_DSTR_SIZE			(D3DXVECTOR3(40.0f,40.0f,0.0f))			// 死亡時の撃破のサイズ
+#define DEATH_DSTR_COL			(D3DXCOLOR(1.0f, 0.2f, 0.2f, 1.0f))		// 死亡時の撃破の色
+#define DEATH_DSTR_LIFE			(20)			// 死亡時の撃破の寿命
+#define SMASH_ROTMOVE_Z			(0.02f)			// 吹き飛び時の向きの移動量
+#define SMASH_DEATH_COUNT		(70)			// 吹き飛んでから死ぬまでのカウント
+#define HIT_DSTR_SIZE			(D3DXVECTOR3(40.0f,40.0f,0.0f))			// ヒット時の撃破のサイズ
+#define HIT_DSTR_COL			(D3DXCOLOR(1.0f, 0.7f, 0.1f, 1.0f))		// ヒット時の撃破の色
+#define HIT_DSTR_LIFE			(10)			// ヒット時の撃破の寿命
 
 //==============================
 // コンストラクタ
@@ -177,6 +189,73 @@ void CMachidori::Update(void)
 		UpAscent();
 
 		break;
+
+	case STATE_DEATH:
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		// 死亡時の振動処理
+		DeathVib();
+
+		// 重力処理
+		Gravity();
+
+		// 起伏地面との当たり判定
+		ElevationCollision();
+
+		if (m_nStateCount >= DEATH_COUNT)
+		{ // 状態カウントが一定数になった場合
+
+			// 撃破の生成処理
+			CDestruction::Create(GetPos(), DEATH_DSTR_SIZE, DEATH_DSTR_COL, CDestruction::TYPE_THORN, DEATH_DSTR_LIFE);
+
+			// パーティクルの生成処理
+			CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
+
+			// ローカル変数宣言
+			CFraction::TYPE type = CFraction::TYPE_SCREW;
+
+			for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
+			{
+				// 種類を設定する
+				type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
+
+				// 破片の生成処理
+				CFraction::Create(GetPos(), type);
+			}
+
+			// 終了処理
+			Uninit();
+
+			// この先の処理を行わない
+			return;
+		}
+
+		break;
+
+	case STATE_SMASH:
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		// 重力処理
+		Gravity();
+
+		// 吹き飛び処理
+		Smash();
+
+		if (m_nStateCount >= SMASH_DEATH_COUNT)
+		{ // 状態カウントが一定数になった場合
+
+			// 終了処理
+			Uninit();
+
+			// この先の処理を行わない
+			return;
+		}
+
+		break;
 	}
 }
 
@@ -194,6 +273,55 @@ void CMachidori::Draw(void)
 //=====================================
 void CMachidori::Hit(void)
 {
+	// ローカル変数宣言
+	D3DXVECTOR3 posDstr = GetPos();		// 撃破を出す位置
+	D3DXVECTOR3 move = GetMove();		// 移動量
+
+	// 当たり判定状況を OFF にする
+	SetEnableCollision(false);
+
+	// 状態カウントを初期化する
+	m_nStateCount = 0;
+
+	// 死亡状態に設定する
+	m_state = STATE_DEATH;
+
+	// 移動量を設定する
+	move.y = 0.0f;
+
+	// 移動量を適用する
+	SetMove(move);
+
+	// エフェクトを出す位置を設定する
+	posDstr.y += GetCollSize().y;
+
+	// 撃破の生成処理
+	CDestruction::Create(posDstr, HIT_DSTR_SIZE, HIT_DSTR_COL, CDestruction::TYPE_AIRY, HIT_DSTR_LIFE);
+}
+
+//=====================================
+// 吹き飛びヒット処理
+//=====================================
+void CMachidori::SmashHit(void)
+{
+	// 吹き飛びヒット処理
+	CEnemy::SmashHit();
+
+	// 当たり判定状況を OFF にする
+	SetEnableCollision(false);
+
+	// 状態カウントを初期化する
+	m_nStateCount = 0;
+
+	// 吹き飛び状態に設定する
+	m_state = STATE_SMASH;
+
+	// 撃破の生成処理
+	CDestruction::Create(GetPos(), DEATH_DSTR_SIZE, DEATH_DSTR_COL, CDestruction::TYPE_THORN, DEATH_DSTR_LIFE);
+
+	// パーティクルの生成処理
+	CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
+
 	// ローカル変数宣言
 	CFraction::TYPE type = CFraction::TYPE_SCREW;
 
@@ -439,4 +567,48 @@ void CMachidori::UpAscent(void)
 
 	// 位置を適用する
 	SetPos(pos);
+}
+
+//=====================================
+// 死亡時の振動処理
+//=====================================
+void CMachidori::DeathVib(void)
+{
+	if (m_nStateCount % DEATH_VIB_COUNT == 0)
+	{
+		// ローカル変数宣言
+		D3DXVECTOR3 rot = GetRot();		// 向き
+
+		// 向きを設定する
+		rot.x = (rand() % 51 - 25) * 0.01f;
+		rot.z = (rand() % 51 - 25) * 0.01f;
+
+		// 向きを適用する
+		SetRot(rot);
+	}
+}
+
+//=====================================
+// 吹き飛び状態の処理
+//=====================================
+void CMachidori::Smash(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置
+	D3DXVECTOR3 rot = GetRot();		// 向き
+	D3DXVECTOR3 move = GetMove();	// 移動量
+
+	// 向きを設定する
+	rot.z += SMASH_ROTMOVE_Z;
+
+	// 向きの正規化処理
+	useful::RotNormalize(&rot.z);
+
+	// 位置を更新する
+	pos.x += move.x;
+	pos.z += move.z;
+
+	// 情報を適用する
+	SetPos(pos);		// 位置
+	SetRot(rot);		// 向き
 }

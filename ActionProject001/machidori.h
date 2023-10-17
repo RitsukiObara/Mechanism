@@ -25,7 +25,9 @@ public:			// 誰でもアクセスできる
 		STATE_FLY = 0,		// 浮遊状態
 		STATE_STANDBY,		// スタンバイ状態
 		STATE_ATTACK,		// 攻撃状態
-		STATE_UP,			// 上昇処理
+		STATE_UP,			// 上昇状態
+		STATE_DEATH,		// 死亡状態
+		STATE_SMASH,		// 吹き飛び状態
 		STATE_MAX			// この列挙型の総数
 	};
 
@@ -39,6 +41,7 @@ public:			// 誰でもアクセスできる
 	void Draw(void);		// 描画処理
 
 	void Hit(void);			// ヒット処理
+	void SmashHit(void);	// 吹き飛びヒット処理
 	void SetData(const D3DXVECTOR3& pos);				// 情報の設定処理
 
 private:		// 自分だけアクセスできる
@@ -53,6 +56,8 @@ private:		// 自分だけアクセスできる
 	void AttackRot(void);	// 攻撃状態での向きの設定処理
 	void AttackDown(void);	// 攻撃状態の降下処理
 	void UpAscent(void);	// 上昇状態の上昇処理
+	void DeathVib(void);	// 死亡時の振動処理
+	void Smash(void);		// 吹き飛び状態の処理
 
 	// メンバ変数
 	STATE m_state;			// 状態
