@@ -11,6 +11,7 @@
 #include "player_act.h"
 #include "player_ability.h"
 #include "ability_UI.h"
+#include "screwUI.h"
 #include "manager.h"
 #include "game.h"
 #include "renderer.h"
@@ -49,6 +50,7 @@ CPlayer::CPlayer() : CCharacter(CObject::TYPE_PLAYER, CObject::PRIORITY_PLAYER)
 	m_pAction = nullptr;			// プレイヤーの行動の情報
 	m_pAbility = nullptr;			// 能力の情報
 	m_pAbilityUI = nullptr;			// 能力UIの情報
+	m_pScrewUI = nullptr;			// ネジUIの情報
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_mode = MODE_ACROBAT;			// モード
@@ -126,6 +128,9 @@ HRESULT CPlayer::Init(void)
 	// 能力UIの情報を生成
 	m_pAbilityUI = CAbilityUI::Create(D3DXVECTOR3(1000.0f, 600.0f, 0.0f), D3DXVECTOR3(1140.0f, 600.0f, 0.0f));
 
+	// ネジUIの情報を生成
+	m_pScrewUI = CScrewUI::Create();
+
 	// 全ての値を初期化する
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
@@ -160,6 +165,10 @@ void CPlayer::Uninit(void)
 	// 能力UIの終了処理
 	m_pAbilityUI->Uninit();
 	m_pAbilityUI = nullptr;
+
+	// ネジUIの終了処理
+	m_pScrewUI->Uninit();
+	m_pScrewUI = nullptr;
 
 	// 終了処理
 	CCharacter::Uninit();
@@ -250,6 +259,15 @@ CAbilityUI* CPlayer::GetAbilityUI(void) const
 {
 	// 能力UIの情報を返す
 	return m_pAbilityUI;
+}
+
+//===========================================
+// ネジUIの情報の取得処理
+//===========================================
+CScrewUI* CPlayer::GetScrewUI(void) const
+{
+	// ネジUIの情報を返す
+	return m_pScrewUI;
 }
 
 //===========================================

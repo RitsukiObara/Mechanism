@@ -43,6 +43,7 @@ public:			// 誰でもアクセスできる
 		TYPE_ENEMY,				// 敵
 		TYPE_FRACTION,			// 破片
 		TYPE_NEWRECORD,			// 新記録
+		TYPE_SCREWUI,			// ネジのUI
 		TYPE_MAX				// この列挙型の総数
 	};
 

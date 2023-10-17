@@ -14,6 +14,7 @@
 #include "player.h"
 #include "player_act.h"
 #include "player_ability.h"
+#include "screwUI.h"
 #include "airplane.h"
 #include "airplane_manager.h"
 #include "screw.h"
@@ -131,6 +132,9 @@ void collision::ScrewHit(CPlayer& player)
 
 			// ヒット処理
 			pScrew->Hit(pScrew->GetPos());
+
+			// スコアの加算処理
+			player.GetScrewUI()->AddScore(1);
 		}
 
 		// 次のオブジェクトを代入する

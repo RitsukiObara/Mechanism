@@ -158,6 +158,7 @@
     <ClCompile Include="airplane.cpp" />
     <ClCompile Include="airplane_manager.cpp" />
     <ClCompile Include="collpolygon.cpp" />
+    <ClCompile Include="edit.cpp" />
     <ClCompile Include="fraction.cpp" />
     <ClCompile Include="machidori.cpp" />
     <ClCompile Include="new_record.cpp" />
@@ -215,6 +216,7 @@
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="screw.cpp" />
+    <ClCompile Include="screwUI.cpp" />
     <ClCompile Include="screw_manager.cpp" />
     <ClCompile Include="objectScroll.cpp" />
     <ClCompile Include="shadowCircle.cpp" />
@@ -231,6 +233,7 @@
     <ClInclude Include="airplane.h" />
     <ClInclude Include="airplane_manager.h" />
     <ClInclude Include="collpolygon.h" />
+    <ClInclude Include="edit.h" />
     <ClInclude Include="fraction.h" />
     <ClInclude Include="machidori.h" />
     <ClInclude Include="objectAnim.h" />
@@ -285,6 +288,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="screw.h" />
+    <ClInclude Include="screwUI.h" />
     <ClInclude Include="screw_manager.h" />
     <ClInclude Include="objectScroll.h" />
     <ClInclude Include="shadowCircle.h" />
