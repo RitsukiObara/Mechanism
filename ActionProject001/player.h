@@ -21,6 +21,7 @@ class CPlayerAct;			// プレイヤーの行動
 class CAbility;				// 能力
 class CAbilityUI;			// 能力UI
 class CScrewUI;				// ネジUI
+class CCombo;				// コンボ
 
 //--------------------------------------------
 // クラス(プレイヤークラス)
@@ -97,6 +98,7 @@ public:			// 誰でもアクセスできる
 	CAbility* GetAbility(void) const;			// 能力の情報の取得処理
 	CAbilityUI* GetAbilityUI(void) const;		// 能力UIの情報の取得処理
 	CScrewUI* GetScrewUI(void) const;			// ネジUIの情報の取得処理
+	CCombo* GetCombo(void) const;				// コンボの情報の取得処理
 
 	// 静的メンバ関数
 	static CPlayer* Get(void);					// 取得処理
@@ -116,6 +118,7 @@ private:		// 自分だけアクセスできる
 	CAbility* m_pAbility;			// 能力の情報
 	CAbilityUI* m_pAbilityUI;		// 能力UIの情報
 	CScrewUI* m_pScrewUI;			// ネジUIの情報
+	CCombo* m_pCombo;				// コンボの情報
 
 	D3DXVECTOR3 m_move;				// 移動量
 	D3DXVECTOR3 m_rotDest;			// 目的の向き

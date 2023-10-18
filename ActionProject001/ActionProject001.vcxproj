@@ -158,6 +158,8 @@
     <ClCompile Include="airplane.cpp" />
     <ClCompile Include="airplane_manager.cpp" />
     <ClCompile Include="collpolygon.cpp" />
+    <ClCompile Include="combo.cpp" />
+    <ClCompile Include="combo_circle.cpp" />
     <ClCompile Include="edit.cpp" />
     <ClCompile Include="fraction.cpp" />
     <ClCompile Include="machidori.cpp" />
@@ -235,6 +237,8 @@
     <ClInclude Include="airplane.h" />
     <ClInclude Include="airplane_manager.h" />
     <ClInclude Include="collpolygon.h" />
+    <ClInclude Include="combo.h" />
+    <ClInclude Include="combo_circle.h" />
     <ClInclude Include="edit.h" />
     <ClInclude Include="fraction.h" />
     <ClInclude Include="machidori.h" />

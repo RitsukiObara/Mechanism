@@ -12,6 +12,7 @@
 #include "player_ability.h"
 #include "ability_UI.h"
 #include "screwUI.h"
+#include "combo.h"
 #include "manager.h"
 #include "game.h"
 #include "renderer.h"
@@ -52,6 +53,7 @@ CPlayer::CPlayer() : CCharacter(CObject::TYPE_PLAYER, CObject::PRIORITY_PLAYER)
 	m_pAbility = nullptr;			// 能力の情報
 	m_pAbilityUI = nullptr;			// 能力UIの情報
 	m_pScrewUI = nullptr;			// ネジUIの情報
+	m_pCombo = nullptr;				// コンボの情報
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_mode = MODE_ACROBAT;			// モード
@@ -167,6 +169,19 @@ HRESULT CPlayer::Init(void)
 
 		// ネジUIの情報を生成
 		m_pScrewUI = CScrewUI::Create();
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+	}
+
+	if (m_pCombo == nullptr)
+	{ // コンボが NULL の場合
+
+		// コンボの情報を生成
+		m_pCombo = CCombo::Create();
 	}
 	else
 	{ // 上記以外
@@ -318,6 +333,15 @@ CScrewUI* CPlayer::GetScrewUI(void) const
 }
 
 //===========================================
+// コンボの情報の取得処理
+//===========================================
+CCombo* CPlayer::GetCombo(void) const
+{
+	// コンボの情報を返す
+	return m_pCombo;
+}
+
+//===========================================
 // 取得処理
 //===========================================
 CPlayer* CPlayer::Get(void)
@@ -401,6 +425,9 @@ void CPlayer::StepHit(void)
 {
 	// 移動量を上げる
 	m_move.y = STEPHIT_JUMP;
+
+	// コンボの加算処理
+	m_pCombo->AddCombo();
 }
 
 //=======================================

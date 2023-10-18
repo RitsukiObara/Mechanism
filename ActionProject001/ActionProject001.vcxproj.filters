@@ -282,6 +282,12 @@
     <ClCompile Include="table_manager.cpp">
       <Filter>Gimmick</Filter>
     </ClCompile>
+    <ClCompile Include="combo.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="combo_circle.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -499,6 +505,12 @@
     </ClInclude>
     <ClInclude Include="table_manager.h">
       <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="combo.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="combo_circle.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
