@@ -21,6 +21,8 @@
 #include "screw_manager.h"
 #include "enemy.h"
 #include "enemy_manager.h"
+#include "table.h"
+#include "table_manager.h"
 #include "useful.h"
 
 //===============================
@@ -278,4 +280,37 @@ void collision::EnemyPenetrate(CPlayer& player)
 		// 次のオブジェクトを代入する
 		pEnemy = pEnemyNext;
 	}
+}
+
+//===============================
+// 台との当たり判定
+//===============================
+bool collision::TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth)
+{
+	// ローカル変数宣言
+	CTable* pTable = CTableManager::Get()->GetTop();		// 敵の情報
+	bool bLand = false;										// 着地判定
+
+	while (pTable != nullptr)
+	{ // 敵の情報が NULL じゃない場合
+
+		if (posOld.y >= pTable->GetPosOld().y + pTable->GetFileData().vtxMax.y &&
+			pos->y <= pTable->GetPosOld().y + pTable->GetFileData().vtxMax.y &&
+			pos->x + fWidth >= pTable->GetPos().x + pTable->GetFileData().vtxMin.x &&
+			pos->x - fWidth <= pTable->GetPos().x + pTable->GetFileData().vtxMax.x)
+		{ // 上からの当たり判定
+
+			// 位置を補正
+			pos->y = pTable->GetPos().y + pTable->GetFileData().vtxMax.y + COLLISION_ADD_DIFF_LENGTH;
+
+			// 着地判定を付与する
+			bLand = true;
+		}
+
+		// 次のオブジェクトを代入する
+		pTable = pTable->GetNext();
+	}
+
+	// 着地判定を返す
+	return bLand;
 }

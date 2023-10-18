@@ -23,6 +23,7 @@
 #include "airplane_manager.h"
 #include "screw_manager.h"
 #include "enemy_manager.h"
+#include "table_manager.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -55,6 +56,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CAirplaneManager::Create();			// 飛行機マネージャー
 	CScrewManager::Create();			// ネジマネージャー
 	CEnemyManager::Create();			// 敵マネージャー
+	CTableManager::Create();			// 台マネージャー
 
 	if (m_pFile == nullptr)
 	{ // ファイルへのポインタが nullptr の場合
@@ -505,6 +507,7 @@ void CManager::Uninit(void)
 	CAirplaneManager::Get()->Uninit();		// 飛行機マネージャー
 	CScrewManager::Get()->Uninit();			// ネジマネージャー
 	CEnemyManager::Get()->Uninit();			// 敵マネージャー
+	CTableManager::Get()->Uninit();			// 台マネージャー
 
 	// マネージャーのメモリを解放する
 	delete m_pManager;

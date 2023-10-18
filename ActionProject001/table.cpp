@@ -1,6 +1,6 @@
 //===========================================
 //
-// 飛行機のメイン処理[airplane.cpp]
+// 台のメイン処理[table.cpp]
 // Author 小原立暉
 //
 //===========================================
@@ -10,31 +10,31 @@
 #include "main.h"
 #include "manager.h"
 #include "renderer.h"
-#include "airplane.h"
-#include "airplane_manager.h"
+#include "table.h"
+#include "table_manager.h"
 #include "useful.h"
 
 //==============================
 // コンストラクタ
 //==============================
-CAirplane::CAirplane() : CModel(CObject::TYPE_AIRPLANE, CObject::PRIORITY_ENTITY)
+CTable::CTable() : CModel(CObject::TYPE_AIRPLANE, CObject::PRIORITY_ENTITY)
 {
 	// 全ての値をクリアする
 	m_pPrev = nullptr;		// 前へのポインタ
 	m_pNext = nullptr;		// 次へのポインタ
 
-	if (CAirplaneManager::Get() != nullptr)
+	if (CTableManager::Get() != nullptr)
 	{ // マネージャーが存在していた場合
 
 		// マネージャーへの登録処理
-		CAirplaneManager::Get()->Regist(this);
+		CTableManager::Get()->Regist(this);
 	}
 }
 
 //==============================
 // デストラクタ
 //==============================
-CAirplane::~CAirplane()
+CTable::~CTable()
 {
 
 }
@@ -42,7 +42,7 @@ CAirplane::~CAirplane()
 //============================
 // 前のポインタの設定処理
 //============================
-void CAirplane::SetPrev(CAirplane* pPrev)
+void CTable::SetPrev(CTable* pPrev)
 {
 	// 前のポインタを設定する
 	m_pPrev = pPrev;
@@ -51,7 +51,7 @@ void CAirplane::SetPrev(CAirplane* pPrev)
 //============================
 // 後のポインタの設定処理
 //============================
-void CAirplane::SetNext(CAirplane* pNext)
+void CTable::SetNext(CTable* pNext)
 {
 	// 次のポインタを設定する
 	m_pNext = pNext;
@@ -60,7 +60,7 @@ void CAirplane::SetNext(CAirplane* pNext)
 //============================
 // 前のポインタの設定処理
 //============================
-CAirplane* CAirplane::GetPrev(void) const
+CTable* CTable::GetPrev(void) const
 {
 	// 前のポインタを返す
 	return m_pPrev;
@@ -69,7 +69,7 @@ CAirplane* CAirplane::GetPrev(void) const
 //============================
 // 次のポインタの設定処理
 //============================
-CAirplane* CAirplane::GetNext(void) const
+CTable* CTable::GetNext(void) const
 {
 	// 次のポインタを返す
 	return m_pNext;
@@ -78,7 +78,7 @@ CAirplane* CAirplane::GetNext(void) const
 //==============================
 //ブロックの初期化処理
 //==============================
-HRESULT CAirplane::Init(void)
+HRESULT CTable::Init(void)
 {
 	if (FAILED(CModel::Init()))
 	{ // 初期化処理に失敗した場合
@@ -94,16 +94,16 @@ HRESULT CAirplane::Init(void)
 //========================================
 //ブロックの終了処理
 //========================================
-void CAirplane::Uninit(void)
+void CTable::Uninit(void)
 {
 	// 終了処理
 	CModel::Uninit();
 
-	if (CAirplaneManager::Get() != nullptr)
+	if (CTableManager::Get() != nullptr)
 	{ // マネージャーが存在していた場合
 
 		// リスト構造の引き抜き処理
-		CAirplaneManager::Get()->Pull(this);
+		CTableManager::Get()->Pull(this);
 	}
 
 	// リスト構造関係のポインタを NULL にする
@@ -114,15 +114,16 @@ void CAirplane::Uninit(void)
 //========================================
 //ブロックの更新処理
 //========================================
-void CAirplane::Update(void)
+void CTable::Update(void)
 {
-
+	// 前回の位置を設定する
+	SetPosOld(GetPos());
 }
 
 //=====================================
 //ブロックの描画処理
 //=====================================
-void CAirplane::Draw(void)
+void CTable::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();
@@ -131,29 +132,29 @@ void CAirplane::Draw(void)
 //=====================================
 // 情報の設定処理
 //=====================================
-void CAirplane::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
+void CTable::SetData(const D3DXVECTOR3& pos)
 {
 	// 情報の設定処理
 	SetPos(pos);								// 位置
 	SetPosOld(pos);								// 前回の位置
-	SetRot(rot);								// 向き
+	SetRot(NONE_D3DXVECTOR3);					// 向き
 	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
-	SetFileData(CXFile::TYPE_AIRPLANE);			// モデルの情報
+	SetFileData(CXFile::TYPE_TABLE);			// モデルの情報
 }
 
 //=======================================
 // 生成処理
 //=======================================
-CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
+CTable* CTable::Create(const D3DXVECTOR3& pos)
 {
 	// ローカルオブジェクトを生成
-	CAirplane* pAirplane = nullptr;	// インスタンスを生成
+	CTable* pTable = nullptr;	// インスタンスを生成
 
-	if (pAirplane == nullptr)
+	if (pTable == nullptr)
 	{ // オブジェクトが NULL の場合
 
 		// インスタンスを生成
-		pAirplane = new CAirplane;
+		pTable = new CTable;
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
@@ -165,11 +166,11 @@ CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
 		return nullptr;
 	}
 
-	if (pAirplane != nullptr)
+	if (pTable != nullptr)
 	{ // オブジェクトが NULL じゃない場合
 
 		// 初期化処理
-		if (FAILED(pAirplane->Init()))
+		if (FAILED(pTable->Init()))
 		{ // 初期化に失敗した場合
 
 			// 停止
@@ -180,7 +181,7 @@ CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
 		}
 
 		// 情報の設定処理
-		pAirplane->SetData(pos, rot);
+		pTable->SetData(pos);
 	}
 	else
 	{ // オブジェクトが NULL の場合
@@ -192,6 +193,6 @@ CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
 		return nullptr;
 	}
 
-	// 飛行機のポインタを返す
-	return pAirplane;
+	// 台のポインタを返す
+	return pTable;
 }

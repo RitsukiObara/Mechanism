@@ -276,6 +276,12 @@
     <ClCompile Include="edit.cpp">
       <Filter>Edit</Filter>
     </ClCompile>
+    <ClCompile Include="table.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="table_manager.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -487,6 +493,12 @@
     </ClInclude>
     <ClInclude Include="edit.h">
       <Filter>Edit</Filter>
+    </ClInclude>
+    <ClInclude Include="table.h">
+      <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="table_manager.h">
+      <Filter>Gimmick</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

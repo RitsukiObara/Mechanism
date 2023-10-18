@@ -34,6 +34,9 @@ namespace collision
 	// 敵の当たり判定
 	void EnemyHit(CPlayer& player);									// プレイヤーと敵との当たり判定
 	void EnemyPenetrate(CPlayer& player);							// プレイヤーと敵とのめりこみ判定
+
+	// テーブルの当たり判定
+	bool TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth);				// 台との当たり判定
 }
 
 #endif

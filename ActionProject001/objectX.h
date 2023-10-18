@@ -32,7 +32,8 @@ public:			// 誰でもアクセスできる
 		TYPE_SCREW,				// ネジ(アイテム)
 		TYPE_FRAC_SCREW,		// ネジ(破片)
 		TYPE_FRAC_GEAR,			// 歯車(破片)
-		TYPE_FRAC_RING,			// 輪(破片)
+		TYPE_FRAC_RING,			// 輪(破片
+		TYPE_TABLE,				// 台
 
 		// 敵モデル
 		TYPE_ITOCAN,			// イトキャン

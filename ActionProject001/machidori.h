@@ -54,7 +54,6 @@ private:		// 自分だけアクセスできる
 	void SetRightOld(void);	// 前回の左右状況の設定処理
 	void StandBy(void);		// スタンバイ処理
 	void AttackRot(void);	// 攻撃状態での向きの設定処理
-	void AttackDown(void);	// 攻撃状態の降下処理
 	void UpAscent(void);	// 上昇状態の上昇処理
 	void DeathVib(void);	// 死亡時の振動処理
 	void Smash(void);		// 吹き飛び状態の処理
@@ -64,6 +63,7 @@ private:		// 自分だけアクセスできる
 	int m_nStateCount;		// 状態カウント
 	float m_fCurveRot;		// カーブ用向き
 	float m_fHeight;		// 追加の高さ
+	float m_fElevPos;		// 起伏の位置
 	bool m_bRight;			// 右向き状況
 };
 

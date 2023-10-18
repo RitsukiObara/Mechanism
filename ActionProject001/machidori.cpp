@@ -116,6 +116,12 @@ void CMachidori::Update(void)
 		// 起伏地面の当たり判定
 		Elevation();
 
+		// カーブ用の向きを加算する
+		m_fCurveRot += ROT_MOVE;
+
+		// 向きの正規化
+		useful::RotNormalize(&m_fCurveRot);
+
 		// 高さの設定処理
 		Height();
 
@@ -143,9 +149,6 @@ void CMachidori::Update(void)
 
 			// 攻撃状態にする
 			m_state = STATE_ATTACK;
-
-			// 追加の高さを設定する
-			m_fHeight = 0.0f;
 		}
 
 		break;
@@ -155,14 +158,21 @@ void CMachidori::Update(void)
 		// 攻撃状態での向きの設定処理
 		AttackRot();
 
-		// 攻撃状態の降下処理
-		AttackDown();
+		// 高さの設定処理
+		Height();
 
 		// 起伏地面との当たり判定
-		if (ElevationCollision() == true)
+		if (ElevationCollision() == true ||
+			TableCollision() == true)
 		{
 			// 状態カウントを加算する
 			m_nStateCount++;
+		}
+		else
+		{ // 上記以外
+
+			// 高さを下げる
+			m_fHeight -= ATTACK_DOWN;
 		}
 
 		if (m_nStateCount >= ATTACK_COUNT)
@@ -181,9 +191,6 @@ void CMachidori::Update(void)
 		break;
 
 	case STATE_UP:
-
-		// 起伏地面の当たり判定
-		Elevation();
 
 		// 上昇状態の上昇処理
 		UpAscent();
@@ -436,14 +443,8 @@ void CMachidori::Height(void)
 	// ローカル変数宣言
 	D3DXVECTOR3 pos = GetPos();				// 位置を取得する
 
-	// カーブ用の向きを加算する
-	m_fCurveRot += ROT_MOVE;
-
-	// 向きの正規化
-	useful::RotNormalize(&m_fCurveRot);
-
 	// 位置を設定する
-	pos.y += sinf(m_fCurveRot) * MOVE_HEIGHT + m_fHeight;
+	pos.y = m_fElevPos + sinf(m_fCurveRot) * MOVE_HEIGHT + m_fHeight;
 
 	// 位置を適用する
 	SetPos(pos);
@@ -466,14 +467,14 @@ void CMachidori::Elevation(void)
 		fHeight = pMesh->ElevationCollision(pos);
 
 		// 高さを設定する
-		pos.y = fHeight;
+		m_fElevPos = fHeight;
+
+		// 位置を設定する(ここで一時的に決めるだけ)
+		pos.y = m_fElevPos;
 
 		// 次のポインタを取得する
 		pMesh = pMesh->GetNext();
 	}
-
-	// 位置を更新する
-	SetPos(pos);
 }
 
 //=====================================
@@ -534,21 +535,6 @@ void CMachidori::AttackRot(void)
 }
 
 //=====================================
-// 攻撃状態の降下処理
-//=====================================
-void CMachidori::AttackDown(void)
-{
-	// ローカル変数宣言
-	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
-
-	// 位置を下げる
-	pos.y -= ATTACK_DOWN;
-
-	// 位置を適用する
-	SetPos(pos);
-}
-
-//=====================================
 // 上昇状態の上昇処理
 //=====================================
 void CMachidori::UpAscent(void)
@@ -570,7 +556,7 @@ void CMachidori::UpAscent(void)
 	}
 
 	// 位置を設定する
-	pos.y += sinf(m_fCurveRot) * MOVE_HEIGHT + m_fHeight;
+	pos.y = m_fElevPos + sinf(m_fCurveRot) * MOVE_HEIGHT + m_fHeight;
 
 	// 位置を適用する
 	SetPos(pos);

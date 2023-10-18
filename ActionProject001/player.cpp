@@ -33,7 +33,8 @@
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
-#define STEPHIT_JUMP		(20.0f)		// 踏みつけたときのジャンプ力
+#define STEPHIT_JUMP			(20.0f)		// 踏みつけたときのジャンプ力
+#define TABLE_COLLISION_WIDTH	(20.0f)		// 台との当たり判定の時の幅
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -122,8 +123,8 @@ HRESULT CPlayer::Init(void)
 	// モーションの設定処理
 	m_pMotion->Set(MOTIONTYPE_NEUTRAL);
 
-	if (m_pAction != nullptr)
-	{ // 行動状態の情報がある場合
+	if (m_pAction == nullptr)
+	{ // 行動状態が NULL の場合
 
 		// プレイヤーの行動状態を生成
 		m_pAction = CPlayerAct::Create();
@@ -135,14 +136,44 @@ HRESULT CPlayer::Init(void)
 		assert(false);
 	}
 
-	// 能力の情報を生成
-	m_pAbility = CAbility::Create();
+	if (m_pAbility == nullptr)
+	{ // 能力状態が NULL の場合
 
-	// 能力UIの情報を生成
-	m_pAbilityUI = CAbilityUI::Create(D3DXVECTOR3(1000.0f, 600.0f, 0.0f), D3DXVECTOR3(1140.0f, 600.0f, 0.0f));
+		// 能力の情報を生成
+		m_pAbility = CAbility::Create();
+	}
+	else
+	{ // 上記以外
 
-	// ネジUIの情報を生成
-	m_pScrewUI = CScrewUI::Create();
+		// 停止
+		assert(false);
+	}
+
+	if (m_pAbilityUI == nullptr)
+	{ // 能力UIが NULL の場合
+
+		// 能力UIの情報を生成
+		m_pAbilityUI = CAbilityUI::Create(D3DXVECTOR3(1000.0f, 600.0f, 0.0f), D3DXVECTOR3(1140.0f, 600.0f, 0.0f));
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+	}
+
+	if (m_pScrewUI == nullptr)
+	{ // ネジUIが NULL の場合
+
+		// ネジUIの情報を生成
+		m_pScrewUI = CScrewUI::Create();
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+	}
 
 	// 全ての値を初期化する
 	m_move = NONE_D3DXVECTOR3;		// 移動量
@@ -204,9 +235,6 @@ void CPlayer::Update(void)
 	// モーションの更新処理
 	m_pMotion->Update();
 
-	// 起伏地面との当たり判定処理
-	ElevationCollision();
-
 	// 飛行機との当たり判定
 	collision::AirplaneHit(*this);
 
@@ -218,6 +246,12 @@ void CPlayer::Update(void)
 
 	// 敵とのめり込み判定処理
 	collision::EnemyPenetrate(*this);
+
+	// 起伏地面との当たり判定処理
+	ElevationCollision();
+
+	// 台との当たり判定
+	TableCollision();
 
 	// 影の位置向き設定処理
 	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
@@ -652,5 +686,28 @@ void CPlayer::CollisionMagicWall(void)
 	}
 
 	// 位置を適用する
+	SetPos(pos);
+}
+
+//=======================================
+// 台との当たり判定
+//=======================================
+void CPlayer::TableCollision(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();			// 位置
+	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
+
+	if (collision::TableCollision(&pos, posOld, TABLE_COLLISION_WIDTH) == true)
+	{ // 台との当たり判定が true だった場合
+
+		// 縦の移動量を無くす
+		m_move.y = 0.0f;
+
+		// ジャンプ状況を false にする
+		m_bJump = false;
+	}
+
+	// 位置を適用させる
 	SetPos(pos);
 }

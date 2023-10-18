@@ -222,6 +222,8 @@
     <ClCompile Include="shadowCircle.cpp" />
     <ClCompile Include="shadowModel.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="table.cpp" />
+    <ClCompile Include="table_manager.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
@@ -294,6 +296,8 @@
     <ClInclude Include="shadowCircle.h" />
     <ClInclude Include="shadowModel.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="table.h" />
+    <ClInclude Include="table_manager.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />

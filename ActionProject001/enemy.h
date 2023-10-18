@@ -66,6 +66,7 @@ public:			// 誰でもアクセスできる
 	// その他の関数
 	void Gravity(void);				// 重力処理
 	bool ElevationCollision(void);	// 起伏地面の当たり判定処理
+	bool TableCollision(void);		// 台との当たり判定
 
 	// 静的メンバ関数
 	static CEnemy* Create(const D3DXVECTOR3& pos, const TYPE type);		// 生成処理

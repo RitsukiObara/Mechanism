@@ -201,6 +201,14 @@ void CItocan::Update(void)
 	// 起伏地面との当たり判定
 	ElevationCollision();
 
+	// 台との当たり判定
+	if (TableCollision() == true)
+	{ // 着地判定が true の場合
+
+		// 台の着地判定処理
+		TableLand();
+	}
+
 	// 状態カウントを加算する
 	m_nStateCount++;
 }
@@ -437,4 +445,19 @@ void CItocan::Smash(void)
 	// 情報を適用する
 	SetPos(pos);		// 位置
 	SetRot(rot);		// 向き
+}
+
+//=======================================
+// 台の着地判定処理
+//=======================================
+void CItocan::TableLand(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 move = GetMove();		// 移動量を取得する
+
+	// 重力を0.0fにする
+	move.y = 0.0f;
+
+	// 移動量を適用する
+	SetMove(move);
 }

@@ -24,6 +24,7 @@
 #include "player.h"
 #include "screw.h"
 #include "enemy.h"
+#include "table.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -83,6 +84,8 @@ HRESULT CGame::Init(void)
 	// 敵の生成処理
 	CEnemy::Create(D3DXVECTOR3(3000.0f, 0.0f, 0.0f), CEnemy::TYPE_ITOCAN);
 	CEnemy::Create(D3DXVECTOR3(-1000.0f, 0.0f, 0.0f), CEnemy::TYPE_MACHIDORI);
+
+	CTable::Create(D3DXVECTOR3(400.0f, 270.0f, 0.0f));
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント

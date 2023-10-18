@@ -24,7 +24,7 @@
 #define JUMP_MOVE				(20.0f)				// ジャンプの移動量
 #define CANNON_Y_MOVE			(30.0f)				// 大砲のY軸の移動量
 #define CANNON_Z_MOVE			(15.0f)				// 大砲のZ軸の移動量
-#define PLAYER_ACROBAT_SPEED	(7.0f)				// アクロバット状態のスピード
+#define PLAYER_ACROBAT_SPEED	(10.0f)				// アクロバット状態のスピード
 #define PLAYER_MASSIVE_SPEED	(5.0f)				// マッシブ状態のスピード
 
 // 重力関係
@@ -504,7 +504,11 @@ void CPlayerAct::Ability(CPlayer& player)
 	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_O) == true)
 	{ // Oキーを押した場合
 
+		// モードを設定する
 		player.SetMode((player.GetMode() == CPlayer::MODE_ACROBAT) ? CPlayer::MODE_MASSIVE : CPlayer::MODE_ACROBAT);
+
+		// 無能力に設定する
+		player.GetAbility()->SetAbility(CAbility::ABILITY_NONE, player);
 	}
 }
 

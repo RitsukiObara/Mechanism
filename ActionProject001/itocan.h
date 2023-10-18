@@ -51,6 +51,7 @@ private:		// 自分だけアクセスできる
 	void RotMove(void);				// 向き移動処理
 	void DeathScaling(void);		// 死亡時の拡大率
 	void Smash(void);				// 吹き飛び状態処理
+	void TableLand(void);			// 台の着地判定処理
 
 	// メンバ変数
 	STATE m_state;					// 状態

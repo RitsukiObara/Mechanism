@@ -440,3 +440,23 @@ bool CEnemy::ElevationCollision(void)
 	// 着地判定を返す
 	return bLand;
 }
+
+//=======================================
+// 台との当たり判定
+//=======================================
+bool CEnemy::TableCollision(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();			// 位置
+	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
+	bool bLand = false;					// 着地判定
+
+	// 着地判定を取得する
+	bLand = collision::TableCollision(&pos, posOld, m_sizeColl.x);
+
+	// 位置を適用させる
+	SetPos(pos);
+
+	// 着地判定を返す
+	return bLand;
+}
