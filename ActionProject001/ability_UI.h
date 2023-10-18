@@ -64,7 +64,6 @@ private:			// 自分だけアクセスできる
 	// メンバ関数
 	HRESULT AcrobatCreate(void);		// アクロバットの生成処理
 	HRESULT MassiveCreate(void);		// マッシブの生成処理
-	void Size(const CAbility::TYPE type, CObject2D& pData, const int nInterval, float fSizeMove);		// サイズ設定処理
 
 	// メンバ変数
 	CObject2D* m_apAcrobat[GAGE_MAX];			// アクロバットの情報

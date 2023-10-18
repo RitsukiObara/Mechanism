@@ -133,12 +133,6 @@ void CAbilityUI::Uninit(void)
 //========================
 void CAbilityUI::Update(void)
 {
-	// サイズ変更処理
-	Size(CAbility::TYPE_HOVER, *m_apAcrobat[GAGE_BIG_METER], HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));				// ホバージェット
-	Size(CAbility::TYPE_JETDASH, *m_apAcrobat[GAGE_SMALL_METER], JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));	// ジェットダッシュ
-	Size(CAbility::TYPE_GROUNDQUAKE, *m_apMassive[GAGE_BIG_METER], HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));		// グラウンドクエイク
-	Size(CAbility::TYPE_STARDROP, *m_apMassive[GAGE_SMALL_METER], JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));	// スタードロップ
-
 	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
 	{
 		// 頂点座標の設定処理
@@ -495,24 +489,4 @@ HRESULT CAbilityUI::MassiveCreate(void)
 
 	// 成功を返す
 	return S_OK;
-}
-
-//========================
-// サイズ設定処理
-//========================
-void CAbilityUI::Size(const CAbility::TYPE type, CObject2D& pData, const int nInterval, float fSizeMove)
-{
-	// ローカル変数宣言
-	D3DXVECTOR3 size = pData.GetSize();				// 大技のサイズ
-	int nCount = CPlayer::Get()->GetAbility()->GetInterval(type);	// カウント
-
-	// サイズを設定する
-	size.y = ((nInterval - nCount) * fSizeMove);
-	m_aTexInfo[type].m_fTexSizeY = (float)((1.0f / nInterval) * nCount);
-
-	// サイズを適用する
-	pData.SetSize(size);
-	
-	// 下中心の縦のテクスチャ座標の設定処理
-	pData.SetVtxTextureUnderHeight(m_aTexInfo[type].m_fTexSizeY);
 }

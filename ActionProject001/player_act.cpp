@@ -413,9 +413,6 @@ void CPlayerAct::Ability(CPlayer& player)
 
 				// 使用可能状況を false にする
 				player.GetAbility()->SetPossible(CAbility::TYPE_HOVER, false);
-
-				// 間隔カウントを設定する
-				player.GetAbility()->SetInterval(CAbility::TYPE_HOVER, HOVER_INTERVAL);
 			}
 
 			break;
@@ -430,9 +427,6 @@ void CPlayerAct::Ability(CPlayer& player)
 
 				// 使用可能状況を false にする
 				player.GetAbility()->SetPossible(CAbility::TYPE_GROUNDQUAKE, false);
-
-				// 間隔カウントを設定する
-				player.GetAbility()->SetInterval(CAbility::TYPE_GROUNDQUAKE, HOVER_INTERVAL);
 			}
 
 			break;
@@ -464,9 +458,6 @@ void CPlayerAct::Ability(CPlayer& player)
 
 				// 使用可能状況を false にする
 				player.GetAbility()->SetPossible(CAbility::TYPE_JETDASH, false);
-
-				// 間隔カウントを設定する
-				player.GetAbility()->SetInterval(CAbility::TYPE_JETDASH, JETDASH_INTERVAL);
 			}
 
 			break;
@@ -481,9 +472,6 @@ void CPlayerAct::Ability(CPlayer& player)
 
 				// 使用可能状況を false にする
 				player.GetAbility()->SetPossible(CAbility::TYPE_STARDROP, false);
-
-				// 間隔カウントを設定する
-				player.GetAbility()->SetInterval(CAbility::TYPE_STARDROP, JETDASH_INTERVAL);
 			}
 
 			break;

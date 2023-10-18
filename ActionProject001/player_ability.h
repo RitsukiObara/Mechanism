@@ -55,8 +55,6 @@ public:			// 誰でもアクセスできる
 	ABILITY GetAbility(void) const;				// 能力の取得処理
 	void SetPossible(const TYPE type, const bool bPossible);		// 可能状況の設定処理
 	bool GetPossible(const TYPE type);								// 可能状況の取得処理
-	void SetInterval(const TYPE type, const int nCount);			// 間隔カウントの設定処理
-	int GetInterval(const TYPE type) const;							// 間隔カウントの取得処理
 
 	// 静的メンバ関数
 	static CAbility* Create(void);	// 生成処理
@@ -69,14 +67,11 @@ private:		// 自分だけアクセスできる
 	void GroundQuake(CPlayer& player);	// グラウンドクエイク処理
 	void StarDrop(CPlayer& player);		// スタードロップ処理
 
-	void Interval(void);				// 間隔カウント処理
-
 	void SearchVertex(const D3DXVECTOR3& pos);		// 起伏地面の頂点の探索処理
 
 	// メンバ変数
 	ABILITY m_ability;					// 能力
 	int m_nAblCount;					// 能力カウント
-	int m_aIntervalCount[TYPE_MAX];		// 間隔カウント
 	bool m_aPossible[TYPE_MAX];			// 能力の使用状況
 };
 

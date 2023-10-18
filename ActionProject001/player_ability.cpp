@@ -32,7 +32,6 @@ CAbility::CAbility()
 	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
 	{
 		m_aPossible[nCnt] = true;			// 能力の使用状況
-		m_aIntervalCount[nCnt] = 0;			// 間隔カウント
 	}
 }
 
@@ -56,7 +55,6 @@ HRESULT CAbility::Init(void)
 	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
 	{
 		m_aPossible[nCnt] = true;			// 能力の使用状況
-		m_aIntervalCount[nCnt] = 0;			// 間隔カウント
 	}
 
 	// 成功を返す
@@ -121,9 +119,6 @@ void CAbility::Update(CPlayer& player)
 
 		break;
 	}
-
-	// 間隔カウント処理
-	Interval();
 }
 
 //============================================
@@ -217,24 +212,6 @@ bool CAbility::GetPossible(const TYPE type)
 {
 	// 可能状況を返す
 	return m_aPossible[type];
-}
-
-//============================================
-// 間隔カウントの設定処理
-//============================================
-void CAbility::SetInterval(const TYPE type, const int nCount)
-{
-	// 間隔カウントを設定する
-	m_aIntervalCount[type] = nCount;
-}
-
-//============================================
-// 間隔カウントの取得処理
-//============================================
-int CAbility::GetInterval(const TYPE type) const
-{
-	// 間隔カウントを返す
-	return m_aIntervalCount[type];
 }
 
 //============================================
@@ -351,32 +328,6 @@ void CAbility::GroundQuake(CPlayer& player)
 void CAbility::StarDrop(CPlayer& player)
 {
 
-}
-
-//============================================
-// 間隔カウント処理
-//============================================
-void CAbility::Interval(void)
-{
-	for (int nCnt = 0; nCnt < CAbility::TYPE_MAX; nCnt++)
-	{
-		if (m_aPossible[nCnt] == false)
-		{ // 能力状況が false の場合
-
-			// 間隔カウント減算する
-			m_aIntervalCount[nCnt]--;
-
-			if (m_aIntervalCount[nCnt] <= 0)
-			{ // 間隔カウントが 0 以上になった場合
-
-				// 間隔カウントを 0 にする
-				m_aIntervalCount[nCnt] = 0;
-
-				// 使用可能状況を true にする
-				m_aPossible[nCnt] = true;
-			}
-		}
-	}
 }
 
 //============================================
