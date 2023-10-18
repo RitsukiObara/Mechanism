@@ -160,8 +160,11 @@
     <ClCompile Include="collpolygon.cpp" />
     <ClCompile Include="combo.cpp" />
     <ClCompile Include="combo_circle.cpp" />
+    <ClCompile Include="combo_magni.cpp" />
+    <ClCompile Include="combo_score.cpp" />
     <ClCompile Include="edit.cpp" />
     <ClCompile Include="fraction.cpp" />
+    <ClCompile Include="game_score.cpp" />
     <ClCompile Include="machidori.cpp" />
     <ClCompile Include="new_record.cpp" />
     <ClCompile Include="objectAnim.cpp" />
@@ -239,8 +242,11 @@
     <ClInclude Include="collpolygon.h" />
     <ClInclude Include="combo.h" />
     <ClInclude Include="combo_circle.h" />
+    <ClInclude Include="combo_magni.h" />
+    <ClInclude Include="combo_score.h" />
     <ClInclude Include="edit.h" />
     <ClInclude Include="fraction.h" />
+    <ClInclude Include="game_score.h" />
     <ClInclude Include="machidori.h" />
     <ClInclude Include="objectAnim.h" />
     <ClInclude Include="camera.h" />

@@ -13,6 +13,7 @@
 #include "ability_UI.h"
 #include "screwUI.h"
 #include "combo.h"
+#include "combo_magni.h"
 #include "manager.h"
 #include "game.h"
 #include "renderer.h"
@@ -427,7 +428,7 @@ void CPlayer::StepHit(void)
 	m_move.y = STEPHIT_JUMP;
 
 	// ƒRƒ“ƒ{‚Ì‰ÁŽZˆ—
-	m_pCombo->AddCombo();
+	m_pCombo->AddCombo(100);
 }
 
 //=======================================

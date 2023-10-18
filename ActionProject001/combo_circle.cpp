@@ -22,6 +22,7 @@ CComboCircle::CComboCircle() : CDonut2D(CObject::TYPE_NONE, CObject::PRIORITY_UI
 {
 	// 全ての値をクリアする
 	m_nVtx = 0;				// 頂点数
+	m_bEnd = false;			// 制限時間状況
 }
 
 //=========================
@@ -43,6 +44,10 @@ HRESULT CComboCircle::Init(void)
 		// 失敗を返す
 		return E_FAIL;
 	}
+
+	// 全ての値を初期化する
+	m_nVtx = 0;				// 頂点数
+	m_bEnd = false;			// 制限時間状況
 
 	// 色を設定する
 	SetVtxColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -73,6 +78,9 @@ void CComboCircle::Update(void)
 
 		// 頂点数を設定する
 		m_nVtx = 0;
+
+		// 終了状況にする
+		m_bEnd = true;
 	}
 
 	// 頂点カラーの設定処理(範囲設定)
@@ -103,6 +111,7 @@ void CComboCircle::SetData(const D3DXVECTOR3& pos, const float fSize, const floa
 
 	// 全ての値を設定する
 	m_nVtx = 0;				// 頂点数
+	m_bEnd = false;			// 制限時間状況
 }
 
 //=========================
@@ -167,4 +176,25 @@ void CComboCircle::ResetNumVtx(void)
 {
 	// 頂点を最大に設定する
 	m_nVtx = GetNumVtx();
+
+	// 終了状況を false にする
+	m_bEnd = false;
+}
+
+//=========================
+// 終了状況の設定処理
+//=========================
+void CComboCircle::SetEnd(const bool bEnd)
+{
+	// 終了状況を設定する
+	m_bEnd = bEnd;
+}
+
+//=========================
+// 終了状況の取得処理
+//=========================
+bool CComboCircle::GetEnd(void)
+{
+	// 終了状況を返す
+	return m_bEnd;
 }

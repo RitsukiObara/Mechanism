@@ -30,6 +30,7 @@
 // 静的メンバ変数宣言
 //--------------------------------------------
 CPause* CGame::m_pPause = nullptr;							// ポーズの情報
+CScore* CGame::m_pGameScore = nullptr;					// スコアの情報
 CGame::STATE CGame::m_GameState = CGame::STATE_FINISH;		// ゲームの進行状態
 int CGame::m_nFinishCount = 0;								// 終了カウント
 
@@ -39,6 +40,8 @@ int CGame::m_nFinishCount = 0;								// 終了カウント
 CGame::CGame() : CScene(TYPE_NONE, PRIORITY_BG)
 {
 	// 全ての値をクリアする
+	m_pPause = nullptr;			// ポーズスコア
+	m_pGameScore = nullptr;		// ゲームスコア
 	m_nFinishCount = 0;			// 終了カウント
 	m_GameState = STATE_FINISH;	// 状態
 }
@@ -85,7 +88,10 @@ HRESULT CGame::Init(void)
 	CEnemy::Create(D3DXVECTOR3(3000.0f, 0.0f, 0.0f), CEnemy::TYPE_ITOCAN);
 	CEnemy::Create(D3DXVECTOR3(-1000.0f, 0.0f, 0.0f), CEnemy::TYPE_MACHIDORI);
 
-	CTable::Create(D3DXVECTOR3(400.0f, 270.0f, 0.0f));
+	CTable::Create(D3DXVECTOR3(400.0f, 400.0f, 0.0f));
+
+	// スコアを生成する
+	m_pGameScore = CScore::Create(D3DXVECTOR3(70.0f,500.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f),CScore::TYPE_GAME);
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント
@@ -221,6 +227,15 @@ CPause* CGame::GetPause(void)
 {
 	// ポーズの情報を返す
 	return m_pPause;
+}
+
+//======================================
+// スコアの取得処理
+//======================================
+CScore* CGame::GetScore(void)
+{
+	// スコアの情報を返す
+	return m_pGameScore;
 }
 
 //======================================

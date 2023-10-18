@@ -11,32 +11,36 @@
 #include "number.h"
 #include "combo.h"
 #include "combo_circle.h"
+#include "combo_score.h"
+#include "combo_magni.h"
+#include "game.h"
+#include "score.h"
 #include "texture.h"
 #include "useful.h"
 
 // マクロ定義
-#define SCORE_TEXTURE		"data\\TEXTURE\\Number.png"					// 数値のテクスチャ
 #define LIMIT_POS			(D3DXVECTOR3(1080.0f, 70.0f, 0.0f))			// コンボ制限の位置
 #define LIMIT_SIZE			(40.0f)										// コンボ制限のサイズ
 #define LIMIT_DISTANCE		(25.0f)										// コンボ制限の距離
 #define LIMIT_DIVI			(96)										// コンボ制限の分割数
+
 #define COMBO_POS			(D3DXVECTOR3(900.0f, 70.0f, 0.0f))			// コンボの数値の位置
 #define COMBO_SIZE			(D3DXVECTOR3(20.0f, 30.0f, 0.0f))			// コンボの数値のサイズ
 #define COMBO_SHIFT			(40.0f)										// コンボの数値のずらす幅
+
+#define SCORE_POS			(D3DXVECTOR3(1050.0f, 40.0f, 0.0f))			// スコアの位置
+#define SCORE_SIZE			(D3DXVECTOR3(10.0f, 15.0f, 0.0f))			// スコアのサイズ
+#define SCORE_SHIFT			(20.0f)										// スコアのずらす幅
 
 //========================
 // コンストラクタ
 //========================
 CCombo::CCombo() : CObject(TYPE_COMBO, PRIORITY_UI)
 {
-	// 全ての値を初期化する
-	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
-	{
-		// 数字の情報
-		m_apNumber[nCnt] = nullptr;
-	}
+	// 全ての値をクリアする
+	m_pMagni = nullptr;			// コンボの倍率
 	m_pTimeLimit = nullptr;		// コンボの制限
-	m_nCombo = 0;				// コンボ数
+	m_pScore = nullptr;			// コンボスコア
 }
 
 //========================
@@ -51,10 +55,7 @@ CCombo::~CCombo()
 // 初期化処理
 //========================
 HRESULT CCombo::Init(void)
-{
-	// 全ての値を初期化する
-	m_nCombo = 0;		// コンボ数
- 
+{ 
 	// コンボの生成処理
 	if (FAILED(CreateCombo()))
 	{ // 失敗した場合
@@ -77,6 +78,17 @@ HRESULT CCombo::Init(void)
 		return E_FAIL;
 	}
 
+	// コンボスコアの生成処理
+	if (FAILED(CreateComboScore()))
+	{ // 失敗した場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
+
 	// 成功を返す
 	return S_OK;
 }
@@ -86,15 +98,14 @@ HRESULT CCombo::Init(void)
 //========================
 void CCombo::Uninit(void)
 {
-	// 全ての値を初期化する
-	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
-	{
-		// 数字の終了処理
-		m_apNumber[nCnt]->Uninit();
-	}
+	// コンボ倍率の終了処理
+	m_pMagni->Uninit();
 
 	// コンボ制限の終了処理
 	m_pTimeLimit->Uninit();
+
+	// コンボスコアの終了処理
+	m_pScore->Uninit();
 
 	// 数字の終了処理
 	Release();
@@ -105,18 +116,27 @@ void CCombo::Uninit(void)
 //========================
 void CCombo::Update(void)
 {
-	// 計算処理
-	Calculate();
-
-	// 全ての値を初期化する
-	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
-	{
-		// テクスチャ座標の設定処理
-		m_apNumber[nCnt]->SetVtxTextureAnim(NUMBER_TEXTURE_PATTERN, m_apNumber[nCnt]->GetNumber());
-	}
+	// コンボ倍率の更新処理
+	m_pMagni->Update();
 
 	// コンボの制限円の更新処理
 	m_pTimeLimit->Update();
+
+	// コンボスコアの更新処理
+	m_pScore->Update();
+
+	if (m_pTimeLimit->GetEnd() == true)
+	{ // 終了状況にする
+
+		// スコアを加算する
+		CGame::GetScore()->AddScore(m_pMagni->GetMagni() * m_pScore->GetScore());
+
+		// スコアを初期化する
+		m_pScore->SetScore(0);
+
+		// 倍率を初期化する
+		m_pMagni->SetMagni(0);
+	}
 }
 
 //========================
@@ -131,49 +151,86 @@ void CCombo::Draw(void)
 		m_pTimeLimit->Draw();
 	}
 
-	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
-	{
-		if (m_apNumber[nCnt] != nullptr)
-		{ // 数字が NULL じゃない場合
+	if (m_pScore != nullptr)
+	{ // コンボスコアが NULL じゃない場合
 
-			// 描画処理
-			m_apNumber[nCnt]->Draw();
+		// 描画処理
+		m_pScore->Draw();
+	}
+
+	if (m_pMagni != nullptr)
+	{ // コンボ倍率が NULL じゃない場合
+
+		// 描画処理
+		m_pMagni->Draw();
+	}
+}
+
+//========================
+// コンボの加算処理
+//========================
+void CCombo::AddCombo(const int nScore)
+{
+	// 倍率の加算処理
+	m_pMagni->AddMagni();
+
+	// 制限時間のリセット処理
+	m_pTimeLimit->ResetNumVtx();
+
+	// スコアの加算処理
+	m_pScore->AddScore(nScore);
+}
+
+//========================
+// 生成処理
+//========================
+CCombo* CCombo::Create(void)
+{
+	// ローカルオブジェクトを生成
+	CCombo* pCombo = nullptr;	// プレイヤーのインスタンスを生成
+
+	if (pCombo == nullptr)
+	{ // オブジェクトが NULL の場合
+
+		// オブジェクトを生成
+		pCombo = new CCombo;
+	}
+	else
+	{ // オブジェクトが NULL じゃない場合
+
+		// 停止
+		assert(false);
+
+		// NULL を返す
+		return nullptr;
+	}
+
+	if (pCombo != nullptr)
+	{ // オブジェクトが NULL じゃない場合
+
+		// 初期化処理
+		if (FAILED(pCombo->Init()))
+		{ // 初期化に失敗した場合
+
+			// 停止
+			assert(false);
+
+			// NULL を返す
+			return nullptr;
 		}
 	}
-}
+	else
+	{ // オブジェクトが NULL の場合
 
-//========================
-// 情報の設定処理
-//========================
-void CCombo::SetData(void)
-{
-	// コンボの情報の設定処理
-	SetDataCombo();
-}
+		// 停止
+		assert(false);
 
-//========================
-// コンボの情報の設定処理
-//========================
-void CCombo::SetDataCombo(void)
-{
-	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
-	{
-		// 設定処理
-		m_apNumber[nCnt]->SetPos(D3DXVECTOR3(COMBO_POS.x + (nCnt * COMBO_SHIFT), COMBO_POS.y, 0.0f));				// 位置設定
-		m_apNumber[nCnt]->SetRot(NONE_D3DXVECTOR3);		// 向き設定
-		m_apNumber[nCnt]->SetSize(COMBO_SIZE);			// サイズ設定
-		m_apNumber[nCnt]->SetLength();					// 長さ設定
-		m_apNumber[nCnt]->SetAngle();					// 方向設定
-
-		m_apNumber[nCnt]->SetType(CNumber::TYPE_DECIMAL);	// 番号の種類
-		m_apNumber[nCnt]->SetNumber(0);					// 番号を設定する
-
-		// 頂点情報の設定処理
-		m_apNumber[nCnt]->SetVertex();
-
-		// テクスチャの設定処理(アニメーションバージョン)
-		m_apNumber[nCnt]->SetVtxTextureAnim(NUMBER_TEXTURE_PATTERN, 0);
+		// NULL を返す
+		return nullptr;
 	}
+
+	// コンボのポインタを返す
+	return pCombo;
 }
 
 //========================
@@ -181,51 +238,20 @@ void CCombo::SetDataCombo(void)
 //========================
 HRESULT CCombo::CreateCombo(void)
 {
-	// メモリを確保する
-	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
-	{
-		if (m_apNumber[nCnt] == nullptr)
-		{ // ポインタが NULL の場合
+	if (m_pMagni == nullptr)
+	{ // ポインタが NULL の場合
 
-			// メモリを確保する
-			m_apNumber[nCnt] = new CNumber(CObject::TYPE_NONE, CObject::PRIORITY_UI);
-		}
-		else
-		{ // ポインタが NULL じゃない場合
+		// メモリを確保する
+		m_pMagni = CComboMagni::Create(COMBO_POS, NONE_D3DXVECTOR3, COMBO_SIZE, COMBO_SHIFT);
+	}
+	else
+	{ // ポインタが NULL じゃない場合
 
-			// 停止
-			assert(false);
+		// 停止
+		assert(false);
 
-			// 失敗を返す
-			return E_FAIL;
-		}
-
-		if (m_apNumber[nCnt] != nullptr)
-		{ // ポインタが NULL じゃない場合
-
-			// 初期化処理
-			if (FAILED(m_apNumber[nCnt]->Init()))
-			{ // 初期化処理に失敗した場合
-
-				// 停止
-				assert(false);
-
-				// 失敗を返す
-				return E_FAIL;
-			}
-
-			// テクスチャの割り当て処理
-			m_apNumber[nCnt]->BindTexture(CManager::Get()->GetTexture()->Regist(SCORE_TEXTURE));
-		}
-		else
-		{ // ポインタが　NULL の場合
-
-		  // 停止
-			assert(false);
-
-			// 失敗を返す
-			return E_FAIL;
-		}
+		// 失敗を返す
+		return E_FAIL;
 	}
 
 	// 成功を返す
@@ -274,104 +300,26 @@ HRESULT CCombo::CreateLimit(void)
 }
 
 //========================
-// 計算処理
+// コンボスコアの生成処理
 //========================
-void CCombo::Calculate(void)
+HRESULT CCombo::CreateComboScore(void)
 {
-	// ローカル変数宣言
-	int aNum[MAX_COMBO_DIGIT];		// 数値
+	if (m_pScore == nullptr)
+	{ // ポインタが NULL の場合
 
-	// 10進数への計算処理
-	useful::DecimalCalculation(MAX_COMBO_DIGIT, m_nCombo, &aNum[0]);
-
-	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
-	{
-		//値の計算
-		m_apNumber[nCnt]->SetNumber(aNum[nCnt]);
-	}
-}
-
-//========================
-// コンボの設定処理
-//========================
-void CCombo::SetCombo(const int nCombo)
-{
-	// コンボ数を設定する
-	m_nCombo = nCombo;
-}
-
-//========================
-// コンボの取得処理
-//========================
-int CCombo::GetCombo(void) const
-{
-	// コンボを返す
-	return m_nCombo;
-}
-
-//========================
-// コンボの加算処理
-//========================
-void CCombo::AddCombo(void)
-{
-	// コンボを設定する
-	m_nCombo++;
-
-	// 頂点のリセット処理
-	m_pTimeLimit->ResetNumVtx();
-}
-
-//========================
-// 生成処理
-//========================
-CCombo* CCombo::Create(void)
-{
-	// ローカルオブジェクトを生成
-	CCombo* pScrew = nullptr;	// プレイヤーのインスタンスを生成
-
-	if (pScrew == nullptr)
-	{ // オブジェクトが NULL の場合
-
-		// オブジェクトを生成
-		pScrew = new CCombo;
+		// メモリを確保する
+		m_pScore = CComboScore::Create(LIMIT_POS, NONE_D3DXVECTOR3, SCORE_SIZE, SCORE_SHIFT);
 	}
 	else
-	{ // オブジェクトが NULL じゃない場合
+	{ // ポインタが NULL じゃない場合
 
 		// 停止
 		assert(false);
 
-		// NULL を返す
-		return nullptr;
+		// 失敗を返す
+		return E_FAIL;
 	}
 
-	if (pScrew != nullptr)
-	{ // オブジェクトが NULL じゃない場合
-
-		// 初期化処理
-		if (FAILED(pScrew->Init()))
-		{ // 初期化に失敗した場合
-
-			// 停止
-			assert(false);
-
-			// NULL を返す
-			return nullptr;
-		}
-
-		// 情報の設定処理
-		pScrew->SetData();
-	}
-	else
-	{ // オブジェクトが NULL の場合
-
-		// 停止
-		assert(false);
-
-		// NULL を返す
-		return nullptr;
-	}
-
-	// ネジUIのポインタを返す
-	return pScrew;
+	// 成功を返す
+	return S_OK;
 }

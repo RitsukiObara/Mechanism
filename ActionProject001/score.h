@@ -23,16 +23,27 @@ class CScore : public CObject
 {
 public:				// 誰でもアクセスできる
 
-	CScore();				// コンストラクタ
-	~CScore();				// デストラクタ
+	// 列挙型定義(種類)
+	enum TYPE
+	{
+		TYPE_GAME = 0,		// ゲーム
+		TYPE_MAX			// この列挙型の総数
+	};
+
+	CScore();						// コンストラクタ
+	CScore(CObject::TYPE type, CObject::PRIORITY priority = PRIORITY_UI);		// オーバーロードコンストラクタ
+	virtual ~CScore();				// デストラクタ
+	void Box(void);					// コンストラクタの箱
 
 	// メンバ関数
-	HRESULT Init(void);		// 初期化処理
-	void Uninit(void);		// 終了処理
-	void Update(void);		// 更新処理
-	void Draw(void);		// 描画処理
+	virtual HRESULT Init(void);		// 初期化処理
+	virtual void Uninit(void);		// 終了処理
+	virtual void Update(void);		// 更新処理
+	virtual void Draw(void);		// 描画処理
 
-	void Calculate(void);	// 計算処理
+	virtual void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size);		// 情報の設定処理
+
+	void Calculate(void);			// 計算処理
 
 	// セット・ゲット関係
 	void SetScore(const int nScore);	// スコアの設定処理
@@ -40,7 +51,7 @@ public:				// 誰でもアクセスできる
 
 	// 静的メンバ変数
 	void AddScore(const int nScore);	// スコアの加算処理
-	static CScore* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size);		// 生成処理
+	static CScore* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const TYPE type);		// 生成処理
 
 private:			// 自分だけアクセスできる
 

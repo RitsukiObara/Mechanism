@@ -1,72 +1,49 @@
 //============================================
 //
-// スコア処理[score.cpp]
+// コンボ倍率処理[combo_magni.cpp]
 // Author：小原立暉
 //
 //============================================
 //********************************************
 // インクルードファイル
 //********************************************
-#include "score.h"
 #include "manager.h"
-#include "game.h"
+#include "combo_magni.h"
 #include "renderer.h"
 #include "texture.h"
 #include "useful.h"
 
-#include "game_score.h"
-
+//--------------------------------------------
 // マクロ定義
+//--------------------------------------------
 #define SCORE_TEXTURE		"data\\TEXTURE\\Number.png"		// スコアのテクスチャ
-#define DISP_ADD_SCORE		(10)							// 描画用スコアの加算数
-#define NUMBER_SHIFT		(50.0f)							// 数字のずらす幅
 
 //========================
 // コンストラクタ
 //========================
-CScore::CScore() : CObject(TYPE_SCORE, PRIORITY_UI)
+CComboMagni::CComboMagni() : CObject(TYPE_NONE, PRIORITY_UI)
 {
-	// コンストラクタの箱
-	Box();
-}
-
-//========================
-// オーバーロードコンストラクタ
-//========================
-CScore::CScore(CObject::TYPE type, CObject::PRIORITY priority) : CObject(type, priority)
-{
-	// コンストラクタの箱
-	Box();
+	// 全ての値を初期化する
+	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
+	{
+		// 数字の情報
+		m_apNumber[nCnt] = nullptr;
+	}
+	m_nMagni = 0;		// コンボ倍率
 }
 
 //========================
 // デストラクタ
 //========================
-CScore::~CScore()
+CComboMagni::~CComboMagni()
 {
 
-}
-
-//========================
-// コンストラクタの箱
-//========================
-void CScore::Box(void)
-{
-	// 全ての値を初期化する
-	for (int nCnt = 0; nCnt < MAX_SCORE_DIGIT; nCnt++)
-	{
-		// 数字の情報
-		m_apNumber[nCnt] = nullptr;
-	}
-
-	m_nScore = 0;		// スコア
-	m_nDispScore = 0;	// 表示用スコア
 }
 
 //========================
 // 初期化処理
 //========================
-HRESULT CScore::Init(void)
+HRESULT CComboMagni::Init(void)
 {
 	//ローカル変数宣言
 	int nTexIdx = NONE_TEXIDX;		// テクスチャのインデックス
@@ -75,11 +52,10 @@ HRESULT CScore::Init(void)
 	nTexIdx = CManager::Get()->GetTexture()->Regist(SCORE_TEXTURE);
 
 	// 全ての値を初期化する
-	m_nScore = 0;		// スコア
-	m_nDispScore = 0;	// 表示用スコア
+	m_nMagni = 0;			// コンボ倍率
 
 	// メモリを確保する
-	for (int nCnt = 0; nCnt < MAX_SCORE_DIGIT; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
 	{
 		if (m_apNumber[nCnt] == nullptr)
 		{ // ポインタが NULL の場合
@@ -132,10 +108,10 @@ HRESULT CScore::Init(void)
 //========================
 // 終了処理
 //========================
-void CScore::Uninit(void)
+void CComboMagni::Uninit(void)
 {
 	// 全ての値を初期化する
-	for (int nCnt = 0; nCnt < MAX_SCORE_DIGIT; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
 	{
 		// 終了処理
 		m_apNumber[nCnt]->Uninit();
@@ -148,26 +124,13 @@ void CScore::Uninit(void)
 //========================
 // 更新処理
 //========================
-void CScore::Update(void)
+void CComboMagni::Update(void)
 {
-	if (m_nDispScore >= m_nScore)
-	{ // 描画用スコアが実際のスコアを上回った場合
-
-		// 描画用スコアを設定する
-		m_nDispScore = m_nScore;
-	}
-	else
-	{ // 上記以外
-
-		// 描画用スコアを加算する
-		m_nDispScore += DISP_ADD_SCORE;
-	}
-
 	// 計算処理
 	Calculate();
 
 	// 全ての値を初期化する
-	for (int nCnt = 0; nCnt < MAX_SCORE_DIGIT; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
 	{
 		// テクスチャ座標の設定処理
 		m_apNumber[nCnt]->SetVtxTextureAnim(NUMBER_TEXTURE_PATTERN, m_apNumber[nCnt]->GetNumber());
@@ -177,10 +140,10 @@ void CScore::Update(void)
 //========================
 // 描画処理
 //========================
-void CScore::Draw(void)
+void CComboMagni::Draw(void)
 {
 	// 全ての値を初期化する
-	for (int nCnt = 0; nCnt < MAX_SCORE_DIGIT; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
 	{
 		// 描画処理
 		m_apNumber[nCnt]->Draw();
@@ -190,12 +153,12 @@ void CScore::Draw(void)
 //========================
 // 情報の設定処理
 //========================
-void CScore::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size)
+void CComboMagni::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const float fShift)
 {
-	for (int nCnt = 0; nCnt < MAX_SCORE_DIGIT; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
 	{
 		// 設定処理
-		m_apNumber[nCnt]->SetPos(D3DXVECTOR3(pos.x + (nCnt * NUMBER_SHIFT), pos.y, 0.0f));		// 位置設定
+		m_apNumber[nCnt]->SetPos(D3DXVECTOR3(pos.x + (nCnt * fShift), pos.y, 0.0f));		// 位置設定
 		m_apNumber[nCnt]->SetRot(rot);				// 向き設定
 		m_apNumber[nCnt]->SetSize(size);			// サイズ設定
 		m_apNumber[nCnt]->SetLength();				// 長さ設定
@@ -215,15 +178,15 @@ void CScore::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 //========================
 // 計算処理
 //========================
-void CScore::Calculate(void)
+void CComboMagni::Calculate(void)
 {
 	// ローカル変数宣言
-	int aNum[MAX_SCORE_DIGIT];		// 数値
+	int aNum[MAX_COMBO_DIGIT];		// 数値
 
 	// 10進数への計算処理
-	useful::DecimalCalculation(MAX_SCORE_DIGIT, m_nDispScore, &aNum[0]);
+	useful::DecimalCalculation(MAX_COMBO_DIGIT, m_nMagni, &aNum[0]);
 
-	for (int nCnt = 0; nCnt < MAX_SCORE_DIGIT; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_COMBO_DIGIT; nCnt++)
 	{
 		//値の計算
 		m_apNumber[nCnt]->SetNumber(aNum[nCnt]);
@@ -231,59 +194,45 @@ void CScore::Calculate(void)
 }
 
 //========================
-// スコアの設定処理
+// 倍率の設定処理
 //========================
-void CScore::SetScore(const int nScore)
+void CComboMagni::SetMagni(const int nMagni)
 {
-	// スコアを代入する
-	m_nScore = nScore;
+	// コンボ倍率を設定する
+	m_nMagni = nMagni;
 }
 
 //========================
 // スコアの取得処理
 //========================
-int CScore::GetScore(void) const
+int CComboMagni::GetMagni(void) const
 {
 	// スコアを返す
-	return m_nScore;
+	return m_nMagni;
 }
 
 //========================
 // スコアの加算処理
 //========================
-void CScore::AddScore(const int nScore)
+void CComboMagni::AddMagni(void)
 {
 	// スコアを設定する
-	m_nScore += nScore;
+	m_nMagni++;
 }
 
 //========================
 // 生成処理
 //========================
-CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const TYPE type)
+CComboMagni* CComboMagni::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const float fShift)
 {
 	// ローカルオブジェクトを生成
-	CScore* pScore = nullptr;	// プレイヤーのインスタンスを生成
+	CComboMagni* pMagni = nullptr;	// プレイヤーのインスタンスを生成
 
-	if (pScore == nullptr)
+	if (pMagni == nullptr)
 	{ // オブジェクトが NULL の場合
 
-		switch (type)
-		{
-		case TYPE_GAME:		// ゲーム
-
-			// オブジェクトを生成
-			pScore = new CGameScore;
-
-			break;
-
-		default:			// 上記以外
-
-			// 停止
-			assert(false);
-
-			break;
-		}
+		// オブジェクトを生成
+		pMagni = new CComboMagni;
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
@@ -295,11 +244,11 @@ CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 		return nullptr;
 	}
 
-	if (pScore != nullptr)
+	if (pMagni != nullptr)
 	{ // オブジェクトが NULL じゃない場合
 
 		// 初期化処理
-		if (FAILED(pScore->Init()))
+		if (FAILED(pMagni->Init()))
 		{ // 初期化に失敗した場合
 
 			// 停止
@@ -310,7 +259,7 @@ CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 		}
 
 		// 情報の設定処理
-		pScore->SetData(pos, rot, size);
+		pMagni->SetData(pos, rot, size, fShift);
 	}
 	else
 	{ // オブジェクトが NULL の場合
@@ -323,5 +272,5 @@ CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 	}
 
 	// オブジェクト2Dのポインタを返す
-	return pScore;
+	return pMagni;
 }

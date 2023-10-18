@@ -15,6 +15,7 @@
 #include "player_act.h"
 #include "player_ability.h"
 #include "combo.h"
+#include "combo_magni.h"
 #include "screwUI.h"
 #include "airplane.h"
 #include "airplane_manager.h"
@@ -140,7 +141,7 @@ void collision::ScrewHit(CPlayer& player)
 			player.GetScrewUI()->AddScore(1);
 
 			// コンボの加算処理
-			player.GetCombo()->AddCombo();
+			player.GetCombo()->AddCombo(10);
 		}
 
 		// 次のオブジェクトを代入する
@@ -218,7 +219,7 @@ void collision::EnemyHit(CPlayer& player)
 					pEnemy->SmashHit();
 
 					// コンボの加算処理
-					player.GetCombo()->AddCombo();
+					player.GetCombo()->AddCombo(100);
 				}
 				else
 				{ // 上記以外
@@ -240,7 +241,7 @@ void collision::EnemyHit(CPlayer& player)
 					pEnemy->SmashHit();
 
 					// コンボの加算処理
-					player.GetCombo()->AddCombo();
+					player.GetCombo()->AddCombo(100);
 				}
 				else
 				{ // 上記以外

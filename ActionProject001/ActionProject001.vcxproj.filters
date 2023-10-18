@@ -64,6 +64,9 @@
     <Filter Include="Edit">
       <UniqueIdentifier>{c9bb4e21-e702-4f01-86db-6b165e693f90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player\Combo">
+      <UniqueIdentifier>{bc06db95-8bce-4e4f-940e-689ca3013a18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fade.cpp">
@@ -282,11 +285,20 @@
     <ClCompile Include="table_manager.cpp">
       <Filter>Gimmick</Filter>
     </ClCompile>
+    <ClCompile Include="game_score.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
     <ClCompile Include="combo.cpp">
-      <Filter>Player</Filter>
+      <Filter>Player\Combo</Filter>
     </ClCompile>
     <ClCompile Include="combo_circle.cpp">
-      <Filter>Player</Filter>
+      <Filter>Player\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="combo_score.cpp">
+      <Filter>Player\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="combo_magni.cpp">
+      <Filter>Player\Combo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -506,11 +518,20 @@
     <ClInclude Include="table_manager.h">
       <Filter>Gimmick</Filter>
     </ClInclude>
+    <ClInclude Include="game_score.h">
+      <Filter>UI</Filter>
+    </ClInclude>
     <ClInclude Include="combo.h">
-      <Filter>Player</Filter>
+      <Filter>Player\Combo</Filter>
     </ClInclude>
     <ClInclude Include="combo_circle.h">
-      <Filter>Player</Filter>
+      <Filter>Player\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="combo_score.h">
+      <Filter>Player\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="combo_magni.h">
+      <Filter>Player\Combo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

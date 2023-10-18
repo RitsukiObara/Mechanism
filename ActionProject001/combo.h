@@ -15,12 +15,12 @@
 // 前方宣言
 //--------------------------------------------
 class CComboCircle;		// コンボの円
-class CNumber;			// 数字
+class CComboScore;		// コンボスコア
+class CComboMagni;		// コンボ倍率
 
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
-#define MAX_COMBO_DIGIT		(3)			// コンボの桁数
 
 //--------------------------------------------
 // クラス定義(コンボ)
@@ -38,13 +38,7 @@ public:				// 誰でもアクセスできる
 	void Update(void);			// 更新処理
 	void Draw(void);			// 描画処理
 
-	void SetData(void);			// 情報の設定処理
-	void SetDataCombo(void);	// コンボの情報の設定処理
-
-	// セット・ゲット関係
-	void SetCombo(const int nCombo);	// コンボの設定処理
-	int GetCombo(void) const;			// コンボの取得処理
-	void AddCombo(void);				// コンボの加算処理
+	void AddCombo(const int nScore);	// コンボの加算処理
 
 	// 静的メンバ変数
 	static CCombo* Create(void);		// 生成処理
@@ -52,14 +46,14 @@ public:				// 誰でもアクセスできる
 private:			// 自分だけアクセスできる
 
 	// メンバ関数
-	HRESULT CreateCombo(void);	// コンボの生成処理
-	HRESULT CreateLimit(void);	// コンボ制限の生成処理
-	void Calculate(void);		// 計算処理
+	HRESULT CreateCombo(void);		// コンボの生成処理
+	HRESULT CreateLimit(void);		// コンボ制限の生成処理
+	HRESULT CreateComboScore(void);	// コンボスコアの生成処理
 
 	// メンバ変数
+	CComboMagni* m_pMagni;			// 倍率
 	CComboCircle* m_pTimeLimit;		// コンボ制限
-	CNumber *m_apNumber[MAX_COMBO_DIGIT];		// 番号の情報
-	int m_nCombo;				// コンボ数
+	CComboScore* m_pScore;			// コンボスコア
 };
 
 #endif

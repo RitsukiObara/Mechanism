@@ -30,18 +30,20 @@ public:			// 誰でもアクセスできる
 
 	void SetData(const D3DXVECTOR3& pos, const float fSize, const float fDist, const int nDivi);					// 情報の設定処理
 
-	// セット・ゲット関係
 	void ResetNumVtx(void);		// 頂点のリセット処理
+
+	// セット・ゲット関係
+	void SetEnd(const bool bEnd);		// 終了状況の設定処理
+	bool GetEnd(void);					// 終了状況の取得処理
 
 	// 静的メンバ関数
 	static CComboCircle* Create(const D3DXVECTOR3& pos, const float fSize, const float fDist, const int nDivi);		// 生成処理
 
 private:		// 自分だけアクセスできる
 
-	// メンバ関数
-
 	// メンバ変数
 	int m_nVtx;			// 頂点数
+	bool m_bEnd;		// 終了状況
 };
 
 #endif

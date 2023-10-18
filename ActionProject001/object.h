@@ -28,6 +28,7 @@ public:			// 誰でもアクセスできる
 		TYPE_TIME,				// 時間
 		TYPE_SHADOW,			// 影
 		TYPE_SCORE,				// スコア
+		TYPE_GAMESCORE,			// ゲームスコア
 		TYPE_PAUSE,				// ポーズ
 		TYPE_3DPOLYGON,			// 3Dポリゴン
 		TYPE_CHARA,				// キャラクター
