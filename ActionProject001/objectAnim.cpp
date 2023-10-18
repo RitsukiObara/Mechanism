@@ -55,11 +55,12 @@ void CAnim::Box(void)
 //===========================================
 HRESULT CAnim::Init(void)
 {
-	// ローカル変数宣言
-	HRESULT hr = S_OK;		// エラー結果の変数
+	if (FAILED(CObject2D::Init()))
+	{ // 初期化に失敗した場合
 
-	// 初期化
-	hr = CObject2D::Init();
+		// 失敗を返す
+		return E_FAIL;
+	}
 
 	// 全ての値を初期化する
 	m_nCounter = 0;				// アニメーションカウンター
@@ -68,8 +69,8 @@ HRESULT CAnim::Init(void)
 	m_nReplayPattern = 0;			// 再生パターン
 	m_fTexPattern = 0.0f;			// テクスチャの再生パターン
 
-	// 結果を返す
-	return hr;
+	// 成功を返す
+	return S_OK;
 }
 
 //===========================================
@@ -161,6 +162,9 @@ CAnim* CAnim::Create(const CObject::TYPE type, const PRIORITY priority)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -172,12 +176,18 @@ CAnim* CAnim::Create(const CObject::TYPE type, const PRIORITY priority)
 		if (FAILED(pAnim->Init()))
 		{ // 初期化に失敗した場合
 
+			// 停止
+			assert(false);
+
 			// NULL を返す
 			return nullptr;
 		}
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

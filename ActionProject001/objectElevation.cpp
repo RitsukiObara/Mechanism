@@ -104,8 +104,8 @@ CElevation* CElevation::GetNext(void) const
 //================================
 HRESULT CElevation::Init(void)
 {
-	// ポインタを宣言
-	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();	// デバイスへのポインタ
+	// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();
 
 	// 頂点バッファの生成
 	if (FAILED(pDevice->CreateVertexBuffer
@@ -118,6 +118,9 @@ HRESULT CElevation::Init(void)
 		NULL
 	)))
 	{ // 頂点の生成に失敗した場合
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -134,6 +137,9 @@ HRESULT CElevation::Init(void)
 		NULL
 	)))
 	{ // インデックスの生成に失敗した場合
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -199,10 +205,8 @@ void CElevation::Update(void)
 //================================
 void CElevation::Draw(void)
 {
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();
-
-	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
+	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();	// デバイスの取得
+	D3DXMATRIX mtxRot, mtxTrans;		// 計算用マトリックス
 
 	// ライティングをOFFにする
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -301,11 +305,30 @@ D3DXVECTOR3 CElevation::GetSize(void)
 }
 
 //================================
+// 頂点の加算処理
+//================================
+void CElevation::AddVertex(const int nNum, const float fAdd)
+{
+	// 頂点情報へのポインタ
+	VERTEX_3D *pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 頂点の高さを加算する
+	pVtx[nNum].pos.y += fAdd;
+
+	// 頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+}
+
+//================================
 // 頂点の設定処理
 //================================
 void CElevation::SetVertex(void)
 {
-	VERTEX_3D *pVtx;							// 頂点情報へのポインタ
+	// 頂点情報へのポインタ
+	VERTEX_3D *pVtx;
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -344,6 +367,7 @@ void CElevation::SetVertex(void)
 //================================
 void CElevation::SetNormalize(void)
 {
+	// ローカル変数宣言
 	VERTEX_3D *pVtx;							// 頂点情報へのポインタ
 	D3DXVECTOR3 nor[6] = {};					// 保存用法線
 	D3DXVECTOR3 vec[2] = {};					// 保存用ベクトル
@@ -679,28 +703,28 @@ void CElevation::SetIndex(void)
 //================================
 // 起伏の当たり判定
 //================================
-float CElevation::ElevationCollision(const D3DXVECTOR3 pos)
+float CElevation::ElevationCollision(const D3DXVECTOR3& pos)
 {
+	// ローカル変数宣言
+	D3DXVECTOR3 nor, vec1, vec2;	// 位置
+	float fHeight = pos.y;			// 対象の高さ
+	int nNum = 0;					// 現在の番号
+
+	// 頂点の番号
+	int nVtxLeftUp;		// 左上
+	int nVtxLeftDown;	// 左下
+	int nVtxRightUp;	// 右上
+	int nVtxRightDown;	// 右下
+	D3DXVECTOR3 vtxLeftUp;		// 左上の位置
+	D3DXVECTOR3 vtxLeftDown;	// 左下の位置
+	D3DXVECTOR3 vtxRightUp;		// 右上の位置
+	D3DXVECTOR3 vtxRightDown;	// 右下の位置
+
 	if (pos.x <= m_pos.x + m_size.x &&
 		pos.x >= m_pos.x - m_size.x &&
 		pos.z <= m_pos.z + m_size.z &&
 		pos.z >= m_pos.z - m_size.z)
 	{ // 地面の範囲にいる場合
-
-		// ローカル変数宣言
-		D3DXVECTOR3 nor, vec1, vec2;	// 位置
-		float fHeight = pos.y;			// 対象の高さ
-		int nNum = 0;					// 現在の番号
-
-		// 頂点の番号
-		int nVtxLeftUp;		// 左上
-		int nVtxLeftDown;	// 左下
-		int nVtxRightUp;	// 右上
-		int nVtxRightDown;	// 右下
-		D3DXVECTOR3 vtxLeftUp;		// 左上の位置
-		D3DXVECTOR3 vtxLeftDown;	// 左下の位置
-		D3DXVECTOR3 vtxRightUp;		// 右上の位置
-		D3DXVECTOR3 vtxRightDown;	// 右下の位置
 
 		VERTEX_3D * pVtx;				//頂点情報へのポインタ
 
@@ -801,6 +825,65 @@ float CElevation::ElevationCollision(const D3DXVECTOR3 pos)
 }
 
 //================================
+// 近くの頂点を探す処理
+//================================
+int CElevation::NearVertexSearch(const D3DXVECTOR3& pos)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 distance;		// 距離
+	int nNum = 0;				// 頂点の番号
+	int nNearNum = 0;			// 一番近い番号
+	float fSum = 0.0f;			// 合計値
+	float fNearSum = 0.0f;		// 一番近い頂点の合計値
+
+	VERTEX_3D * pVtx;			//頂点情報へのポインタ
+
+	//頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntDep = 0; nCntDep < m_nVtxZ; nCntDep++)
+	{
+		for (int nCntWid = 0; nCntWid < m_nVtxX; nCntWid++)
+		{
+			// 現在の頂点の番号を設定する
+			nNum = (m_nVtxX * nCntDep) + nCntWid;
+
+			// 距離を測る
+			distance.x = fabsf(pos.x - pVtx[nNum].pos.x);
+			distance.z = fabsf(pos.z - pVtx[nNum].pos.z);
+
+			// 合計値を取る
+			fSum = distance.x + distance.z;
+
+			if (nNum == 0)
+			{ // 一番近い番号が無い場合
+
+				// 候補の距離を設定する
+				fNearSum = fSum;
+
+				// 候補の番号を設定する
+				nNearNum = nNum;
+			}
+			else if(fNearSum >= fSum)
+			{ // 現在の距離の方が短い場合
+
+				// 候補の距離を設定する
+				fNearSum = fSum;
+
+				// 候補の番号を設定する
+				nNearNum = nNum;
+			}
+		}
+	}
+
+	//頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+
+	// 番号を返す
+	return nNearNum;
+}
+
+//================================
 // 生成処理
 //================================
 CElevation* CElevation::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ, char* texturename)
@@ -817,6 +900,9 @@ CElevation* CElevation::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, c
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -831,6 +917,9 @@ CElevation* CElevation::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, c
 		if (FAILED(pMesh->Init()))
 		{ // 初期化処理に失敗した場合
 
+			// 停止
+			assert(false);
+
 			// NULL を返す
 			return nullptr;
 		}
@@ -840,6 +929,9 @@ CElevation* CElevation::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, c
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;
@@ -961,7 +1053,7 @@ void CElevation::TxtSet(void)
 	else
 	{ // ファイルが開けなかった場合
 
-		// エラーメッセージボックス
-		MessageBox(NULL, "起伏地面の読み込みに失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 }

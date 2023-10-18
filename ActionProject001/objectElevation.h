@@ -36,13 +36,15 @@ public:			// 誰でもアクセスできる
 	void SetVertex(void);		// フィールドの設定処理
 	void SetNormalize(void);	// 法線の設定処理
 	void SetIndex(void);		// インデックスの設定処理
-	float ElevationCollision(const D3DXVECTOR3 pos);	// 起伏の当たり判定
+	float ElevationCollision(const D3DXVECTOR3& pos);		// 起伏の当たり判定
+	int NearVertexSearch(const D3DXVECTOR3& pos);			// 近くの頂点を探す処理
 
 	void BindTexture(int nIdx);		// テクスチャの割り当て処理
 
 	// セット・ゲット関係
 	D3DXVECTOR3 GetPos(void);		// 位置の取得処理
 	D3DXVECTOR3 GetSize(void);		// サイズの取得処理
+	void AddVertex(const int nNum, const float fAdd);		// 頂点の加算処理
 
 	// 静的メンバ変数
 	static CElevation* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const float fSizeX, const float fSizeZ, const int nDiviX, const int nDiviZ, char* texturename);		// 生成処理

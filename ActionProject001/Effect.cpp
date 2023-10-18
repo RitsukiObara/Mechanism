@@ -120,6 +120,13 @@ void CEffect::Update(void)
 		RuptureProcess();
 
 		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
 	}
 
 	// 寿命を減らしていく
@@ -243,6 +250,9 @@ CEffect* CEffect::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const 
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -266,6 +276,9 @@ CEffect* CEffect::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const 
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

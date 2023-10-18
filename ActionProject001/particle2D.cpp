@@ -71,46 +71,56 @@ void CParticle2D::Create(const D3DXVECTOR3& pos, const CEffect2D::TYPE type)
 		pParticle = new CParticle2D;
 	}
 
-	switch (type)
-	{
-	case CEffect2D::TYPE_NONE:			// 無し
+	if (pParticle != nullptr)
+	{ // 情報があった場合
 
-		break;
+		switch (type)
+		{
+		case CEffect2D::TYPE_NONE:			// 無し
 
-	case CEffect2D::TYPE_SHINING:		// 輝き系
+			break;
 
-		//// 輝き処理
-		//InitShining(pos, type);
+		case CEffect2D::TYPE_SHINING:		// 輝き系
 
-		break;
+			//// 輝き処理
+			//InitShining(pos, type);
 
-	case CEffect2D::TYPE_OVERTOP:		// 限界突破
+			break;
 
-		// ブーストの初期化
-		pParticle->InitBoost(pos, type);
+		case CEffect2D::TYPE_OVERTOP:		// 限界突破
 
-		break;
+			// ブーストの初期化
+			pParticle->InitBoost(pos, type);
 
-	case CEffect2D::TYPE_INFIRE:		// 内側の炎
+			break;
 
-		// ブーストの初期化
-		pParticle->InitBoost(pos, type);
+		case CEffect2D::TYPE_INFIRE:		// 内側の炎
 
-		break;
+			// ブーストの初期化
+			pParticle->InitBoost(pos, type);
 
-	case CEffect2D::TYPE_OUTFIRE:		// 外側の炎
+			break;
 
-		// ブーストの初期化
-		pParticle->InitBoost(pos, type);
+		case CEffect2D::TYPE_OUTFIRE:		// 外側の炎
 
-		break;
+			// ブーストの初期化
+			pParticle->InitBoost(pos, type);
 
-	default:			// 上記以外
+			break;
 
-		// 警告文
-		MessageBox(NULL, "パーティクル2Dの種類で予定外の数値が検知された！", "警告！", MB_ICONWARNING);
+		default:			// 上記以外
 
-		break;
+			// 停止
+			assert(false);
+
+			break;
+		}
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
 	}
 
 	if (pParticle != nullptr)

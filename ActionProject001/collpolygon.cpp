@@ -190,8 +190,8 @@ void CCollPolygon::SetPosRot(const int nIdx, const D3DXVECTOR3& pos, const D3DXV
 		else
 		{ // ポインタが NULL の場合
 
-		  // 警告文
-			MessageBox(NULL, "当たり判定ポリゴンのポインタがNULL！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 		}
 	}
 }
@@ -213,6 +213,9 @@ int CCollPolygon::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& VtxMax, cons
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// -1 を返す
 		return NONE_COLLIDX;
 	}
@@ -224,8 +227,8 @@ int CCollPolygon::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& VtxMax, cons
 		if (FAILED(pCollPolygon->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "当たり判定ポリゴンの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// -1 を返す
 			return NONE_COLLIDX;
@@ -236,6 +239,9 @@ int CCollPolygon::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& VtxMax, cons
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// -1 を返す
 		return NONE_COLLIDX;

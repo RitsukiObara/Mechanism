@@ -194,6 +194,13 @@ void CCamera::Update(void)
 #endif
 
 				break;
+
+			default:
+
+				// 停止
+				assert(false);
+
+				break;
 			}
 		}
 		else
@@ -231,6 +238,9 @@ void CCamera::Update(void)
 		break;
 
 	default:					// 上記以外
+
+		// 停止
+		assert(false);
 
 		// 情報のリセット処理
 		Reset();

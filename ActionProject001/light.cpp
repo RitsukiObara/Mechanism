@@ -89,6 +89,13 @@ HRESULT CLight::Init(void)
 			vecDir = THREE_LIGHT_VEC;
 
 			break;				// 抜け出す
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
 		}
 
 		D3DXVec3Normalize(&vecDir, &vecDir);				// ベクトルを正規化する

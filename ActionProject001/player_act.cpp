@@ -25,10 +25,12 @@
 #define CANNON_Y_MOVE			(30.0f)				// 大砲のY軸の移動量
 #define CANNON_Z_MOVE			(15.0f)				// 大砲のZ軸の移動量
 #define PLAYER_ACROBAT_SPEED	(7.0f)				// アクロバット状態のスピード
+#define PLAYER_MASSIVE_SPEED	(5.0f)				// マッシブ状態のスピード
 
 // 重力関係
 #define ACROBAT_GRAVITY		(-0.9f)					// アクロバットモードの重力
 #define HOVER_GRAVITY		(0.8f)					// ホバー状態の重力
+#define JETDASH_GRAVITY		(-0.5f)					// ジェットダッシュ状態の重力
 #define MASSIVE_GRAVITY		(-1.2f)					// マッシブモードの重力
 #define FLY_GRAVITY			(-0.9f)					// フライ状態の重力
 
@@ -148,6 +150,13 @@ void CPlayerAct::Update(CPlayer& player)
 			// 移動量を設定する
 			player.SetMove(move);
 		}
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
 
 		break;
 	}
@@ -372,6 +381,9 @@ void CPlayerAct::ModeSpeed(CPlayer& player)
 
 	case CPlayer::MODE_MASSIVE:		// マッシブモード
 
+		// 速度を設定する
+		player.SetSpeed(PLAYER_MASSIVE_SPEED);
+
 		break;
 
 	case CPlayer::MODE_REBOOT:		// リブートドライブモード
@@ -394,10 +406,10 @@ void CPlayerAct::Ability(CPlayer& player)
 
 			if (player.GetAbility()->GetPossible(CAbility::TYPE_HOVER) == true &&
 				player.IsJump() == true)
-			{ // ジャンプ状況が true の場合
+			{ // ホバージェットが使えるかつ、ジャンプ中の場合
 
 				// ホバージェット状態にする
-				player.GetAbility()->SetAbility(CAbility::ABILITY_HOVER);
+				player.GetAbility()->SetAbility(CAbility::ABILITY_HOVER, player);
 
 				// 使用可能状況を false にする
 				player.GetAbility()->SetPossible(CAbility::TYPE_HOVER, false);
@@ -410,9 +422,29 @@ void CPlayerAct::Ability(CPlayer& player)
 
 		case CPlayer::MODE_MASSIVE:		// マッシブモード
 
+			if (player.GetAbility()->GetPossible(CAbility::TYPE_GROUNDQUAKE) == true)
+			{ // グラウンドクエイクが使える場合
+
+				// ホバージェット状態にする
+				player.GetAbility()->SetAbility(CAbility::ABILITY_GROUNDQUAKE, player);
+
+				// 使用可能状況を false にする
+				player.GetAbility()->SetPossible(CAbility::TYPE_GROUNDQUAKE, false);
+
+				// 間隔カウントを設定する
+				player.GetAbility()->SetInterval(CAbility::TYPE_GROUNDQUAKE, HOVER_INTERVAL);
+			}
+
 			break;
 
 		case CPlayer::MODE_REBOOT:		// リブートドライブ
+
+			break;
+
+		default:
+
+			// 停止
+			assert(false);
 
 			break;
 		}
@@ -425,10 +457,10 @@ void CPlayerAct::Ability(CPlayer& player)
 		case CPlayer::MODE_ACROBAT:		// アクロバットモード
 
 			if (player.GetAbility()->GetPossible(CAbility::TYPE_JETDASH) == true)
-			{ // ジャンプ状況が true の場合
+			{ // ジェットダッシュが使える場合
 
 				// ジェットダッシュ状態にする
-				player.GetAbility()->SetAbility(CAbility::ABILITY_JETDASH);
+				player.GetAbility()->SetAbility(CAbility::ABILITY_JETDASH, player);
 
 				// 使用可能状況を false にする
 				player.GetAbility()->SetPossible(CAbility::TYPE_JETDASH, false);
@@ -441,12 +473,38 @@ void CPlayerAct::Ability(CPlayer& player)
 
 		case CPlayer::MODE_MASSIVE:		// マッシブモード
 
+			if (player.GetAbility()->GetPossible(CAbility::TYPE_STARDROP) == true)
+			{ // スタードロップが使える場合
+
+				// ジェットダッシュ状態にする
+				player.GetAbility()->SetAbility(CAbility::ABILITY_STARDROP, player);
+
+				// 使用可能状況を false にする
+				player.GetAbility()->SetPossible(CAbility::TYPE_STARDROP, false);
+
+				// 間隔カウントを設定する
+				player.GetAbility()->SetInterval(CAbility::TYPE_STARDROP, JETDASH_INTERVAL);
+			}
+
 			break;
 
 		case CPlayer::MODE_REBOOT:		// リブートドライブ
 
 			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
 		}
+	}
+
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_O) == true)
+	{ // Oキーを押した場合
+
+		player.SetMode((player.GetMode() == CPlayer::MODE_ACROBAT) ? CPlayer::MODE_MASSIVE : CPlayer::MODE_ACROBAT);
 	}
 }
 
@@ -485,24 +543,31 @@ void CPlayerAct::Gravity(CPlayer& player)
 
 		switch (player.GetAbility()->GetAbility())
 		{
-		case CAbility::ABILITY_NONE:
+		case CAbility::ABILITY_NONE:		// 無状態
 
 			// 重力を加算する
 			move.y += ACROBAT_GRAVITY;
 
 			break;
 
-		case CAbility::ABILITY_HOVER:
+		case CAbility::ABILITY_HOVER:		// ホバージェット状態
 
 			// 重力を加算する
 			move.y = HOVER_GRAVITY;
 
 			break;
 
-		case CAbility::ABILITY_JETDASH:
+		case CAbility::ABILITY_JETDASH:		// ジェットダッシュ状態
 
 			// 重力を加算する
-			move.y = 0.0f;
+			move.y += JETDASH_GRAVITY;
+
+			break;
+
+		default:
+
+			// 停止
+			assert(false);
 
 			break;
 		}
@@ -517,6 +582,13 @@ void CPlayerAct::Gravity(CPlayer& player)
 		break;
 
 	case CPlayer::MODE_REBOOT:		// リブートドライブモード
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
 
 		break;
 	}

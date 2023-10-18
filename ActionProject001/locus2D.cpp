@@ -149,6 +149,9 @@ CLocus2D* CLocus2D::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& size, cons
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -160,8 +163,8 @@ CLocus2D* CLocus2D::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& size, cons
 		if (FAILED(pLocus2D->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "2D残像の初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -172,6 +175,9 @@ CLocus2D* CLocus2D::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& size, cons
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

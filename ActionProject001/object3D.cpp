@@ -71,8 +71,8 @@ HRESULT CObject3D::Init(void)
 		NULL)))
 	{ // バッファの生成に失敗した場合
 
-		// 警告文
-		MessageBox(NULL, "オブジェクト3Dの頂点バッファの生成に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -119,8 +119,8 @@ HRESULT CObject3D::Init(void)
 	if (m_pVtxBuff == nullptr)
 	{ // 頂点バッファのポインタがNULLの場合
 
-		// 警告文
-		MessageBox(NULL, "オブジェクト3Dの頂点バッファのポインタがNULL！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -569,6 +569,9 @@ CObject3D* CObject3D::Create(TYPE type)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -581,6 +584,9 @@ CObject3D* CObject3D::Create(TYPE type)
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

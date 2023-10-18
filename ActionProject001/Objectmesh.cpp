@@ -96,6 +96,9 @@ HRESULT CMesh::Init(void)
 	)))
 	{ // 頂点の生成に失敗した場合
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -111,6 +114,9 @@ HRESULT CMesh::Init(void)
 		NULL
 	)))
 	{ // インデックスの生成に失敗した場合
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -155,6 +161,13 @@ HRESULT CMesh::Init(void)
 
 		// インデックスの設定処理
 		SetIndex(m_vtx.y, m_vtx.x);
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
 
 		break;
 	}
@@ -726,10 +739,20 @@ CMesh* CMesh::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 			pMesh = new CMeshDome;
 
 			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
 		}
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;
@@ -767,11 +790,21 @@ CMesh* CMesh::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 			pMesh->SetDataDome(pos, rot, size.x, size.y, Divi.x, Divi.y);
 
 			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
 		}
 
 		// 初期化処理
 		if (FAILED(pMesh->Init()))
 		{ // 初期化処理に失敗した場合
+
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -785,6 +818,9 @@ CMesh* CMesh::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;
@@ -1058,7 +1094,7 @@ void CMesh::TxtSet(void)
 	else
 	{ // ファイルが開けなかった場合
 
-	  // エラーメッセージボックス
-		MessageBox(NULL, "メッシュフィールドの読み込みに失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 }

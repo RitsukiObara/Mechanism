@@ -195,6 +195,7 @@ void CRenderer::Draw(void)
 		//描画終了
 		m_pD3DDevice->EndScene();
 	}
+
 	//バックバッファとフロントバッファの入れ替え
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }

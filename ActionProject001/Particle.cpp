@@ -70,42 +70,52 @@ void CParticle::Create(const D3DXVECTOR3& pos, const CParticle::TYPE type)
 		pParticle = new CParticle;
 	}
 
-	switch (type)
-	{
-	case TYPE_FIRE:			// ‰ŠŒn
+	if (pParticle != nullptr)
+	{ // î•ñ‚ª NULL ‚¶‚á‚È‚¢ê‡
 
-		// ”š”­‚Ì‰Šú‰»ˆ—
-		pParticle->InitFire(pos);
+		switch (type)
+		{
+		case TYPE_FIRE:			// ‰ŠŒn
 
-		break;
+			// ”š”­‚Ì‰Šú‰»ˆ—
+			pParticle->InitFire(pos);
 
-	case TYPE_DUST:			// šºŒn
+			break;
 
-		// šº‚Ì‰Šú‰»ˆ—
-		pParticle->InitDust(pos);
+		case TYPE_DUST:			// šºŒn
 
-		break;
+			// šº‚Ì‰Šú‰»ˆ—
+			pParticle->InitDust(pos);
 
-	case TYPE_ITEMGET:		// ƒAƒCƒeƒ€æ“¾
+			break;
 
-		// ƒAƒCƒeƒ€ƒQƒbƒg‚Ì‰Šú‰»ˆ—
-		pParticle->InitItemGet(pos);
+		case TYPE_ITEMGET:		// ƒAƒCƒeƒ€æ“¾
 
-		break;
+			// ƒAƒCƒeƒ€ƒQƒbƒg‚Ì‰Šú‰»ˆ—
+			pParticle->InitItemGet(pos);
 
-	case TYPE_ENEMYDEATH:	// “G‚Ì€–S
+			break;
 
-		// “G‚Ì€–S‚Ì‰Šú‰»ˆ—
-		pParticle->InitEnemyDeath(pos);
+		case TYPE_ENEMYDEATH:	// “G‚Ì€–S
 
-		break;
+			// “G‚Ì€–S‚Ì‰Šú‰»ˆ—
+			pParticle->InitEnemyDeath(pos);
 
-	default:			// ã‹LˆÈŠO
+			break;
+
+		default:			// ã‹LˆÈŠO
+
+			// ’â~
+			assert(false);
+
+			break;
+		}
+	}
+	else
+	{ // ã‹LˆÈŠO
 
 		// ’â~
 		assert(false);
-
-		break;
 	}
 
 	if (pParticle != nullptr)

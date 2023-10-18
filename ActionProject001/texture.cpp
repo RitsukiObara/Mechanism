@@ -209,8 +209,8 @@ HRESULT CTexture::Load(void)
 	else
 	{ // ファイルが開けなかった場合
 
-		// エラーメッセージボックス
-		MessageBox(NULL, "テクスチャの読み込みに失敗!", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;

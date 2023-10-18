@@ -69,8 +69,8 @@ HRESULT CScore::Init(void)
 		else
 		{ // ポインタが NULL じゃない場合
 
-			// 警告文
-			MessageBox(NULL, "スコアのメモリが既に使われている！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;
@@ -83,8 +83,8 @@ HRESULT CScore::Init(void)
 			if (FAILED(m_apNumber[nCnt]->Init()))
 			{ // 初期化処理に失敗した場合
 
-				// 警告文
-				MessageBox(NULL, "スコアの初期化に失敗！", "警告！", MB_ICONWARNING);
+				// 停止
+				assert(false);
 
 				// 失敗を返す
 				return E_FAIL;
@@ -96,8 +96,8 @@ HRESULT CScore::Init(void)
 		else
 		{ // ポインタが　NULL の場合
 
-			// 警告文
-			MessageBox(NULL, "スコアのメモリの確保に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;
@@ -228,6 +228,9 @@ CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -239,8 +242,8 @@ CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 		if (FAILED(pScore->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "スコアの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -267,6 +270,9 @@ CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

@@ -112,6 +112,9 @@ CNewRecord* CNewRecord::Create(const D3DXVECTOR3 pos)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -123,8 +126,8 @@ CNewRecord* CNewRecord::Create(const D3DXVECTOR3 pos)
 		if (FAILED(pNewRecord->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "新記録の初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -135,6 +138,9 @@ CNewRecord* CNewRecord::Create(const D3DXVECTOR3 pos)
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

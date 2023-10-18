@@ -87,8 +87,8 @@ HRESULT CTime::Init(void)
 		else
 		{ // ポインタが NULL じゃない場合
 
-			// 警告文
-			MessageBox(NULL, "時間のメモリが既に使われている！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;
@@ -101,8 +101,8 @@ HRESULT CTime::Init(void)
 			if (FAILED(m_apNumber[nCnt]->Init()))
 			{ // 初期化処理に失敗した場合
 
-				// 警告文
-				MessageBox(NULL, "時間の初期化に失敗！", "警告！", MB_ICONWARNING);
+				// 停止
+				assert(false);
 
 				// 失敗を返す
 				return E_FAIL;
@@ -114,8 +114,8 @@ HRESULT CTime::Init(void)
 		else
 		{ // ポインタが　NULL の場合
 
-			// 警告文
-			MessageBox(NULL, "時間のメモリの確保に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;
@@ -135,8 +135,8 @@ HRESULT CTime::Init(void)
 	else
 	{ // 上記以外
 
-		// 警告文
-		MessageBox(NULL, "時間の点の確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -347,6 +347,9 @@ CTime* CTime::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -358,8 +361,8 @@ CTime* CTime::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 		if (FAILED(pTime->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "時間の初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -370,6 +373,9 @@ CTime* CTime::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

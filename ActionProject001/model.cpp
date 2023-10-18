@@ -476,10 +476,6 @@ D3DXMATERIAL CModel::GetMaterial(const int nCnt)
 {
 	// ポインタを宣言
 	D3DXMATERIAL     *pMat;						// マテリアルデータへのポインタ
-	D3DXMATERIAL	  matSpare;					// 予備のマテリアルデータ
-
-	// 構造体の要素をクリア
-	ZeroMemory(&matSpare, sizeof(D3DXMATERIAL));
 
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)m_XFileData.pBuffMat->GetBufferPointer();
@@ -493,8 +489,11 @@ D3DXMATERIAL CModel::GetMaterial(const int nCnt)
 	else
 	{ // 上記以外
 
+		// 停止
+		assert(false);
+
 		// 予備のマテリアルを返す
-		return matSpare;
+		return pMat[0];
 	}
 }
 
@@ -590,6 +589,12 @@ void CModel::SetFileData(const CXFile::TYPE type)
 		// ファイルのデータを代入する
 		m_XFileData = CXFile::GetXFile(type);
 	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+	}
 }
 
 //========================
@@ -618,6 +623,9 @@ CModel* CModel::Create(void)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -629,8 +637,8 @@ CModel* CModel::Create(void)
 		if (FAILED(pModel->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "モデルの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -639,10 +647,13 @@ CModel* CModel::Create(void)
 	else
 	{ // オブジェクトが NULL の場合
 
-	  // NULL を返す
+		// 停止
+		assert(false);
+
+		// NULL を返す
 		return nullptr;
 	}
 
-	// オブジェクト2Dのポインタを返す
+	// モデルのポインタを返す
 	return pModel;
 }

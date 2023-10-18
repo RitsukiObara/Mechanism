@@ -71,8 +71,8 @@ HRESULT CBillboard::Init(void)
 		NULL)))
 	{ // バッファの生成に失敗した場合
 
-		// 警告文
-		MessageBox(NULL, "ビルボードの頂点バッファの生成に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -118,8 +118,8 @@ HRESULT CBillboard::Init(void)
 	if (m_pVtxBuff == nullptr)
 	{ // 頂点バッファのポインタがNULLの場合
 
-		// 警告文
-		MessageBox(NULL, "ビルボードの頂点バッファのポインタがNULL！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -464,6 +464,9 @@ CBillboard* CBillboard::Create(TYPE type)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -472,10 +475,21 @@ CBillboard* CBillboard::Create(TYPE type)
 	{ // オブジェクトが NULL じゃない場合
 
 		// 初期化処理
-		pBillboard->Init();
+		if (FAILED(pBillboard->Init()))
+		{ // 失敗した場合
+
+			// 停止
+			assert(false);
+
+			// NULL を返す
+			return nullptr;
+		}
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;
@@ -645,6 +659,9 @@ CBillboardAnim* CBillboardAnim::Create(void)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -656,12 +673,18 @@ CBillboardAnim* CBillboardAnim::Create(void)
 		if (FAILED(pBillboard->Init()))
 		{ // 初期化処理に失敗した場合
 
+			// 停止
+			assert(false);
+
 			// NULL を返す
 			return nullptr;
 		}
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

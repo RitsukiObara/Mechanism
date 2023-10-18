@@ -52,18 +52,20 @@ void CScroll::Box(void)
 //===========================================
 HRESULT CScroll::Init(void)
 {
-	// ローカル変数宣言
-	HRESULT hr = S_OK;		// エラー結果の変数
-
 	// 初期化
-	hr = CObject2D::Init();
+	if (FAILED(CObject2D::Init()))
+	{ // 失敗した場合
+
+		// 失敗を返す
+		return E_FAIL;
+	}
 
 	// 全ての値を初期化する
 	m_tex = D3DXVECTOR2(0.0f, 0.0f);	// テクスチャ
 	m_speed = D3DXVECTOR2(0.0f, 0.0f);	// 速度
 
-	// 結果を返す
-	return hr;
+	// 成功を返す
+	return S_OK;
 }
 
 //===========================================

@@ -65,8 +65,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "ファイルのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pDebugProc == nullptr)
@@ -78,8 +78,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "デバッグ表示のポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pRenderer == nullptr)
@@ -91,8 +91,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "レンダラーのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pInputKeyboard == nullptr)
@@ -104,8 +104,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "キーボードのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pInputGamePad == nullptr)
@@ -117,8 +117,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "ゲームパッドのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pSound == nullptr)
@@ -130,8 +130,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "サウンドのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pCamera == nullptr)
@@ -143,8 +143,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "カメラのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pLight == nullptr)
@@ -156,8 +156,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "ライトのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pTexture == nullptr)
@@ -169,8 +169,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "テクスチャのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pRenderer != nullptr)
@@ -187,8 +187,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // 確保に失敗していた場合
 
-		// 警告文
-		MessageBox(NULL, "レンダラーの確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -208,8 +208,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // 確保に失敗していた場合
 
-		// 警告文
-		MessageBox(NULL, "キーボードの確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -229,8 +229,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // 確保に失敗していた場合
 
-		// 警告文
-		MessageBox(NULL, "ゲームパッドの確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -250,8 +250,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // 確保に失敗していた場合
 
-		// 警告文
-		MessageBox(NULL, "サウンドの確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -266,8 +266,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // 確保に失敗していた場合
 
-		// 警告文
-		MessageBox(NULL, "デバッグ表示の確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -287,8 +287,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // 確保に失敗していた場合
 
-		// 警告文
-		MessageBox(NULL, "カメラの確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -308,8 +308,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // 確保に失敗していた場合
 
-		// 警告文
-		MessageBox(NULL, "ライトの確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -329,8 +329,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // 確保に失敗した場合
 
-		// 警告文
-		MessageBox(NULL, "テクスチャの確保に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -340,8 +340,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	if (FAILED(TexLoad()))
 	{ // 読み込みに失敗した場合
 
-		// 警告文
-		MessageBox(NULL, "テクスチャの読み込みに失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -364,8 +364,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 	{ // ポインタが使われていた場合
 
-		// 警告文
-		MessageBox(NULL, "フェードのポインタが使われている！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	// 成功を返す

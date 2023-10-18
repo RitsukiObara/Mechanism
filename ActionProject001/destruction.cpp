@@ -106,6 +106,13 @@ void CDestruction::Update(void)
 		}
 
 		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
 	}
 
 	// 頂点カラーの設定処理
@@ -171,6 +178,13 @@ void CDestruction::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& size, cons
 		BindTexture(CManager::Get()->GetTexture()->Regist(AIRY_TEXTURE));
 
 		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
 	}
 }
 
@@ -191,6 +205,9 @@ CDestruction* CDestruction::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& si
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -202,8 +219,8 @@ CDestruction* CDestruction::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& si
 		if (FAILED(pDest->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "撃破の初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -214,6 +231,9 @@ CDestruction* CDestruction::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& si
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

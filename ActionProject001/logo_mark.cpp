@@ -76,6 +76,13 @@ HRESULT CLogoMark::Init(void)
 			m_aLogoMark[nCntUI]->BindTexture(CManager::Get()->GetTexture()->Regist(LOGO_MARK_TEXTURE));
 
 			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
 		}
 
 		// 頂点情報の初期化
@@ -143,6 +150,9 @@ CLogoMark* CLogoMark::Create(void)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -154,8 +164,8 @@ CLogoMark* CLogoMark::Create(void)
 		if (FAILED(pLogoMark->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "ロゴマークの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -163,6 +173,9 @@ CLogoMark* CLogoMark::Create(void)
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

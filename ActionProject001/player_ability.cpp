@@ -8,8 +8,9 @@
 // インクルードファイル
 //********************************************
 #include "player.h"
-#include "motion.h"
 #include "player_ability.h"
+#include "objectElevation.h"
+#include "elevation_manager.h"
 #include "useful.h"
 
 //--------------------------------------------
@@ -101,9 +102,22 @@ void CAbility::Update(CPlayer& player)
 
 	case ABILITY_GROUNDQUAKE:	// グラウンドクエイク
 
+		// グラウンドクエイク処理
+		GroundQuake(player);
+
 		break;
 
 	case ABILITY_STARDROP:		// スタードロップ
+
+		// スタードロップ処理
+		StarDrop(player);
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
 
 		break;
 	}
@@ -125,13 +139,57 @@ void CAbility::SetData(void)
 //============================================
 // 能力の設定処理
 //============================================
-void CAbility::SetAbility(const ABILITY ability)
+void CAbility::SetAbility(const ABILITY ability, CPlayer& player)
 {
 	// 能力を設定する
 	m_ability = ability;
 
 	// カウントを初期化する
 	m_nAblCount = 0;
+
+	switch (m_ability)
+	{
+	case ABILITY_NONE:			// 通常状態
+
+		break;
+
+	case ABILITY_HOVER:			// ホバージェット状態
+
+		break;
+
+	case ABILITY_JETDASH:		// ジェットダッシュ状態
+
+	{
+		// ローカル変数宣言
+		D3DXVECTOR3 move = player.GetMove();		// 移動量を取得する
+
+		// 移動量を設定する
+		move.y = 0.0f;
+
+		// 移動量を適用する
+		player.SetMove(move);
+	}
+
+		break;
+
+	case ABILITY_GROUNDQUAKE:	// グラウンドクエイク状態
+
+		// 頂点の探索処理
+		SearchVertex(player.GetPos());
+
+		break;
+
+	case ABILITY_STARDROP:		// スタードロップ状態
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
+	}
 }
 
 //============================================
@@ -280,6 +338,22 @@ void CAbility::SkyDash(CPlayer& player)
 }
 
 //============================================
+// グラウンドクエイク処理
+//============================================
+void CAbility::GroundQuake(CPlayer& player)
+{
+
+}
+
+//============================================
+// スタードロップ処理
+//============================================
+void CAbility::StarDrop(CPlayer& player)
+{
+
+}
+
+//============================================
 // 間隔カウント処理
 //============================================
 void CAbility::Interval(void)
@@ -302,5 +376,35 @@ void CAbility::Interval(void)
 				m_aPossible[nCnt] = true;
 			}
 		}
+	}
+}
+
+//============================================
+// 起伏地面の頂点の探索処理
+//============================================
+void CAbility::SearchVertex(const D3DXVECTOR3& pos)
+{
+	// ローカル変数宣言
+	CElevation* pElev = CElevationManager::Get()->GetTop();		// 起伏地面を取得する
+	int nNum;
+
+	while (pElev != nullptr)
+	{ // 起伏地面がある限り続く
+
+		if (pos.x <= pElev->GetPos().x + pElev->GetSize().x &&
+			pos.x >= pElev->GetPos().x - pElev->GetSize().x &&
+			pos.z <= pElev->GetPos().z + pElev->GetSize().z &&
+			pos.z >= pElev->GetPos().z - pElev->GetSize().z)
+		{ // ポリゴンの中にいた場合
+
+			// 近くの番号を取得する
+			nNum = pElev->NearVertexSearch(pos);
+
+			// 頂点を上げる
+			pElev->AddVertex(nNum, 200.0f);
+		}
+
+		// 次のポインタを取得する
+		pElev = pElev->GetNext();
 	}
 }

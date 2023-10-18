@@ -58,6 +58,9 @@ HRESULT CScrewUI::Init(void)
 	if (FAILED(CreateScore()))
 	{ // 失敗した場合
 		
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -65,6 +68,9 @@ HRESULT CScrewUI::Init(void)
 	// 背景の生成処理
 	if (FAILED(CreateBack()))
 	{ // 失敗した場合
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -355,6 +361,9 @@ CScrewUI* CScrewUI::Create(void)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -378,6 +387,9 @@ CScrewUI* CScrewUI::Create(void)
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

@@ -186,6 +186,13 @@ void CItocan::Update(void)
 		}
 
 		break;
+
+	default:
+
+		// ’â~
+		assert(false);
+
+		break;
 	}
 
 	// d—Íˆ—

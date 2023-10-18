@@ -256,6 +256,13 @@ void CMachidori::Update(void)
 		}
 
 		break;
+
+	default:
+
+		// í‚é~
+		assert(false);
+
+		break;
 	}
 }
 

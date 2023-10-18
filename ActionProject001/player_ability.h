@@ -51,7 +51,7 @@ public:			// 誰でもアクセスできる
 	void SetData(void);		// 情報の設定処理
 
 	// セット・ゲット関数
-	void SetAbility(const ABILITY ability);		// 能力の設定処理
+	void SetAbility(const ABILITY ability, CPlayer& player);		// 能力の設定処理
 	ABILITY GetAbility(void) const;				// 能力の取得処理
 	void SetPossible(const TYPE type, const bool bPossible);		// 可能状況の設定処理
 	bool GetPossible(const TYPE type);								// 可能状況の取得処理
@@ -66,8 +66,12 @@ private:		// 自分だけアクセスできる
 	// メンバ関数
 	void HoverJet(CPlayer& player);		// ホバージェット処理
 	void SkyDash(CPlayer& player);		// ジェットダッシュ処理
+	void GroundQuake(CPlayer& player);	// グラウンドクエイク処理
+	void StarDrop(CPlayer& player);		// スタードロップ処理
 
 	void Interval(void);				// 間隔カウント処理
+
+	void SearchVertex(const D3DXVECTOR3& pos);		// 起伏地面の頂点の探索処理
 
 	// メンバ変数
 	ABILITY m_ability;					// 能力

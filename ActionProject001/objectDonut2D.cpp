@@ -72,8 +72,8 @@ HRESULT CDonut2D::Init(void)
 		NULL)))
 	{ // バッファの生成に失敗した場合
 
-		// 警告文
-		MessageBox(NULL, "ドーナツ2Dの頂点バッファの生成に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -85,8 +85,8 @@ HRESULT CDonut2D::Init(void)
 	if (m_pVtxBuff == nullptr)
 	{ // 頂点バッファのポインタがNULLの場合
 
-		// 警告文
-		MessageBox(NULL, "ドーナツ2Dの頂点バッファのポインタがNULL！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -452,6 +452,9 @@ CDonut2D* CDonut2D::Create(const D3DXVECTOR3& pos, const float fSize, const floa
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -469,12 +472,18 @@ CDonut2D* CDonut2D::Create(const D3DXVECTOR3& pos, const float fSize, const floa
 		if (FAILED(pDonut->Init()))
 		{ // 初期化に失敗した場合
 
+			// 停止
+			assert(false);
+
 			// NULL を返す
 			return nullptr;
 		}
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

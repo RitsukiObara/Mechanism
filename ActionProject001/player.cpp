@@ -77,6 +77,9 @@ HRESULT CPlayer::Init(void)
 	if (FAILED(CCharacter::Init()))
 	{ // 初期化処理に失敗した場合
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -96,8 +99,8 @@ HRESULT CPlayer::Init(void)
 	else
 	{ // ポインタが NULL じゃない場合
 
-		// 警告文
-		MessageBox(NULL, "プレイヤーのモーションのポインタが使われています！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	if (m_pMotion != nullptr)
@@ -112,15 +115,25 @@ HRESULT CPlayer::Init(void)
 	else
 	{ // ポインタが NULL じゃない場合
 
-		// 警告文
-		MessageBox(NULL, "プレイヤーのモーションのメモリが確保できませんでした！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 
 	// モーションの設定処理
 	m_pMotion->Set(MOTIONTYPE_NEUTRAL);
 
-	// プレイヤーの行動状態を生成
-	m_pAction = CPlayerAct::Create();
+	if (m_pAction != nullptr)
+	{ // 行動状態の情報がある場合
+
+		// プレイヤーの行動状態を生成
+		m_pAction = CPlayerAct::Create();
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+	}
 
 	// 能力の情報を生成
 	m_pAbility = CAbility::Create();

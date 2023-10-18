@@ -122,6 +122,13 @@ void CFraction::Update(void)
 		}
 
 		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
 	}
 
 	// 移動処理
@@ -152,6 +159,13 @@ void CFraction::Draw(void)
 
 		// 描画処理
 		CModel::Draw(m_fAlpha);
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
 
 		break;
 	}
@@ -190,6 +204,13 @@ void CFraction::SetData(const D3DXVECTOR3& pos, const TYPE type)
 		SetFileData(CXFile::TYPE_FRAC_RING);
 
 		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
 	}
 
 	// 移動量の設定処理
@@ -218,6 +239,9 @@ CFraction* CFraction::Create(const D3DXVECTOR3& pos, const TYPE type)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -241,6 +265,9 @@ CFraction* CFraction::Create(const D3DXVECTOR3& pos, const TYPE type)
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

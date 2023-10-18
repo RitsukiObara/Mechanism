@@ -57,16 +57,16 @@ HRESULT CObject3DFan::Init(void)
 		NULL)))
 	{ // バッファの生成に失敗した場合
 
-		// 警告文
-		MessageBox(NULL, "オブジェクト3Dファンの頂点バッファの生成に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
 	}
 
-	float fAngle = D3DX_PI / m_nNumAngle;									// 角度
-
-	VERTEX_3D * pVtx;											//頂点情報へのポインタ
+	// ローカル変数宣言
+	float fAngle = D3DX_PI / m_nNumAngle;	// 角度
+	VERTEX_3D * pVtx;						//頂点情報へのポインタ
 
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -112,8 +112,8 @@ HRESULT CObject3DFan::Init(void)
 	if (m_pVtxBuff == nullptr)
 	{ // 頂点バッファのポインタがNULLの場合
 
-		// 警告文
-		MessageBox(NULL, "オブジェクト3Dファンの頂点バッファのポインタがNULL！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -283,6 +283,9 @@ CObject3DFan* CObject3DFan::Create(void)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -295,6 +298,9 @@ CObject3DFan* CObject3DFan::Create(void)
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

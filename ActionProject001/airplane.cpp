@@ -158,6 +158,9 @@ CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -169,8 +172,8 @@ CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
 		if (FAILED(pAirplane->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "飛行機の初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -181,6 +184,9 @@ CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

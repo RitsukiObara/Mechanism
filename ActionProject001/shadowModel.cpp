@@ -197,6 +197,9 @@ CShadowModel* CShadowModel::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& ro
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -208,8 +211,8 @@ CShadowModel* CShadowModel::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& ro
 		if (FAILED(pShadow->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "モデル影の初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -220,6 +223,9 @@ CShadowModel* CShadowModel::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& ro
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

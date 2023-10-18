@@ -73,8 +73,8 @@ HRESULT CObject2D::Init(void)
 		NULL)))
 	{ // バッファの生成に失敗した場合
 
-		// 警告文
-		MessageBox(NULL, "オブジェクト2Dの頂点バッファの生成に失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -94,8 +94,8 @@ HRESULT CObject2D::Init(void)
 	if (m_pVtxBuff == nullptr)
 	{ // 頂点バッファのポインタがNULLの場合
 
-		// 警告文
-		MessageBox(NULL, "オブジェクト2Dの頂点バッファのポインタがNULL！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -592,10 +592,20 @@ CObject2D* CObject2D::Create(const TYPE type2D, const CObject::TYPE type, const 
 			pObject2D = new CScroll(type, priority);
 
 			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
 		}
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;
@@ -609,6 +619,9 @@ CObject2D* CObject2D::Create(const TYPE type2D, const CObject::TYPE type, const 
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

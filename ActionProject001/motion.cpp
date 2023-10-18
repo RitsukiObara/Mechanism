@@ -258,6 +258,13 @@ void CMotion::Update(void)
 						m_bFinish = true;
 
 						break;
+
+					default:
+
+						// 停止
+						assert(false);
+
+						break;
 					}
 				}
 			}
@@ -327,6 +334,13 @@ void CMotion::Load(STYLE type)
 
 		// プレイヤーのモーションのロード処理
 		LoadPlayer();
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
 
 		break;
 	}
@@ -538,8 +552,8 @@ void CMotion::LoadPlayer(void)
 	else
 	{ // ファイルが開けなかった場合
 
-		// エラーメッセージボックス
-		MessageBox(NULL, "モーションファイルの読み込みに失敗！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 	}
 }
 
@@ -560,7 +574,10 @@ CMotion* CMotion::Create()
 	else
 	{ // オブジェクトが NULL じゃない場合
 
-	  // NULL を返す
+		// 停止
+		assert(false);
+
+		// NULL を返す
 		return nullptr;
 	}
 
@@ -571,8 +588,8 @@ CMotion* CMotion::Create()
 		if (FAILED(pMotion->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "モーションの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -580,6 +597,9 @@ CMotion* CMotion::Create()
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

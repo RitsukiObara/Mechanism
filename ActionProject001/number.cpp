@@ -127,19 +127,22 @@ CNumber* CNumber::Create(void)
 	else
 	{ // オブジェクトが NULL じゃない場合
 
-	  // NULL を返す
+		// 停止
+		assert(false);
+
+		// NULL を返す
 		return nullptr;
 	}
 
 	if (pNumber != nullptr)
 	{ // オブジェクトが NULL じゃない場合
 
-	  // 初期化処理
+		// 初期化処理
 		if (FAILED(pNumber->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "番号の初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -148,7 +151,10 @@ CNumber* CNumber::Create(void)
 	else
 	{ // オブジェクトが NULL の場合
 
-	  // NULL を返す
+		// 停止
+		assert(false);
+
+		// NULL を返す
 		return nullptr;
 	}
 

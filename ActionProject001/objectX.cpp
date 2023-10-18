@@ -93,6 +93,9 @@ HRESULT CXFile::Init(void)
 	if (FAILED(LoadXFile()))
 	{ // xファイルの読み込みに失敗した場合
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -103,6 +106,9 @@ HRESULT CXFile::Init(void)
 	// テクスチャの読み込み
 	if (FAILED(LoadTexture()))
 	{ // テクスチャの読み込みに失敗した場合
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -146,15 +152,15 @@ void CXFile::Uninit(void)
 		if (m_apModel[nCntModel].pMesh != nullptr)
 		{ // 変数 (m_apModel[nCntModel].pMesh) がNULLではない場合
 
-			// エラーメッセージボックス
-			MessageBox(NULL, "メッシュが破棄出来ていません！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 		}
 
 		if (m_apModel[nCntModel].pBuffMat != nullptr)
 		{ // 変数 (m_apModel[nCntModel].pBuffMat) がNULLではない場合
 
-			// エラーメッセージボックス
-			MessageBox(NULL, "バッファが破棄出来ていません！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 		}
 	}
 
@@ -191,8 +197,8 @@ HRESULT CXFile::LoadXFile(void)
 		if (FAILED(hr))
 		{ // xファイルの読み込みに失敗した場合
 
-			// エラーメッセージボックス
-			MessageBox(NULL, "Xファイルの読み込みに失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;
@@ -335,8 +341,8 @@ CXFile::SXFile CXFile::GetXFile(TYPE type)
 	else
 	{ // 種類が規定外の場合
 
-		// エラーメッセージボックス
-		MessageBox(NULL, "規定外のモデルの取得が要求されました！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		// 0番目を返す
 		return m_apModel[0];

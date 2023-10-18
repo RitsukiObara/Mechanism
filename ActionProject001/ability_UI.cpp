@@ -77,6 +77,9 @@ HRESULT CAbilityUI::Init(void)
 	if (FAILED(AcrobatCreate()))
 	{ // 生成に失敗した場合
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -84,6 +87,9 @@ HRESULT CAbilityUI::Init(void)
 	// マッシブの生成処理
 	if (FAILED(MassiveCreate()))
 	{ // 生成に失敗した場合
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -127,31 +133,11 @@ void CAbilityUI::Uninit(void)
 //========================
 void CAbilityUI::Update(void)
 {
-	// ローカル変数宣言
-	CPlayer* player = CPlayer::Get();		// プレイヤーの情報を取得する
-
-	switch (player->GetMode())
-	{
-	case CPlayer::MODE_ACROBAT:		// アクロバットモード
-
-		// サイズ変更処理
-		Size(CAbility::TYPE_HOVER, *m_apAcrobat[GAGE_BIG_METER], HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));			// ホバージェット
-		Size(CAbility::TYPE_JETDASH, *m_apAcrobat[GAGE_SMALL_METER], JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));	// ジェットダッシュ
-
-		break;
-
-	case CPlayer::MODE_MASSIVE:		// マッシブモード
-
-		// サイズ変更処理
-		Size(CAbility::TYPE_GROUNDQUAKE, *m_apMassive[GAGE_BIG_METER], HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));			// グラウンドクエイク
-		Size(CAbility::TYPE_STARDROP, *m_apMassive[GAGE_SMALL_METER], JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));		// スタードロップ
-
-		break;
-
-	case CPlayer::MODE_REBOOT:		// リブートドライブモード
-
-		break;
-	}
+	// サイズ変更処理
+	Size(CAbility::TYPE_HOVER, *m_apAcrobat[GAGE_BIG_METER], HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));				// ホバージェット
+	Size(CAbility::TYPE_JETDASH, *m_apAcrobat[GAGE_SMALL_METER], JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));	// ジェットダッシュ
+	Size(CAbility::TYPE_GROUNDQUAKE, *m_apMassive[GAGE_BIG_METER], HOVER_INTERVAL, (BIGUI_SIZE.y / HOVER_INTERVAL));		// グラウンドクエイク
+	Size(CAbility::TYPE_STARDROP, *m_apMassive[GAGE_SMALL_METER], JETDASH_INTERVAL, (SMALLUI_SIZE.y / JETDASH_INTERVAL));	// スタードロップ
 
 	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
 	{
@@ -330,47 +316,53 @@ void CAbilityUI::SetDataMassive(const D3DXVECTOR3& posBig, const D3DXVECTOR3& po
 CAbilityUI* CAbilityUI::Create(const D3DXVECTOR3& posBig, const D3DXVECTOR3& posSmall)
 {
 	// ローカルオブジェクトを生成
-	CAbilityUI* pTime = nullptr;	// プレイヤーのインスタンスを生成
+	CAbilityUI* pAblt = nullptr;	// プレイヤーのインスタンスを生成
 
-	if (pTime == nullptr)
+	if (pAblt == nullptr)
 	{ // オブジェクトが NULL の場合
 
 		// オブジェクトを生成
-		pTime = new CAbilityUI;
+		pAblt = new CAbilityUI;
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;
 	}
 
-	if (pTime != nullptr)
+	if (pAblt != nullptr)
 	{ // オブジェクトが NULL じゃない場合
 
 		// 初期化処理
-		if (FAILED(pTime->Init()))
+		if (FAILED(pAblt->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "能力UIの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
 		}
 
 		// 情報の設定処理
-		pTime->SetData(posBig, posSmall);
+		pAblt->SetData(posBig, posSmall);
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;
 	}
 
-	// オブジェクト2Dのポインタを返す
-	return pTime;
+	// 能力UIのポインタを返す
+	return pAblt;
 }
 
 //========================
@@ -390,8 +382,8 @@ HRESULT CAbilityUI::AcrobatCreate(void)
 		else
 		{ // ポインタが NULL じゃない場合
 
-			// 警告文
-			MessageBox(NULL, "能力UIのメモリが既に使われている！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;
@@ -404,8 +396,8 @@ HRESULT CAbilityUI::AcrobatCreate(void)
 			if (FAILED(m_apAcrobat[nCnt]->Init()))
 			{ // 初期化処理に失敗した場合
 
-				// 警告文
-				MessageBox(NULL, "能力UIの初期化に失敗！", "警告！", MB_ICONWARNING);
+				// 停止
+				assert(false);
 
 				// 失敗を返す
 				return E_FAIL;
@@ -427,8 +419,8 @@ HRESULT CAbilityUI::AcrobatCreate(void)
 		else
 		{ // ポインタが　NULL の場合
 
-			// 警告文
-			MessageBox(NULL, "能力UIのメモリの確保に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;
@@ -444,7 +436,7 @@ HRESULT CAbilityUI::AcrobatCreate(void)
 //========================
 HRESULT CAbilityUI::MassiveCreate(void)
 {
-		// メモリを確保する
+	// メモリを確保する
 	for (int nCnt = 0; nCnt < GAGE_MAX; nCnt++)
 	{
 		if (m_apMassive[nCnt] == nullptr)
@@ -456,8 +448,8 @@ HRESULT CAbilityUI::MassiveCreate(void)
 		else
 		{ // ポインタが NULL じゃない場合
 
-			// 警告文
-			MessageBox(NULL, "能力UIのメモリが既に使われている！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;
@@ -470,8 +462,8 @@ HRESULT CAbilityUI::MassiveCreate(void)
 			if (FAILED(m_apMassive[nCnt]->Init()))
 			{ // 初期化処理に失敗した場合
 
-				// 警告文
-				MessageBox(NULL, "能力UIの初期化に失敗！", "警告！", MB_ICONWARNING);
+				// 停止
+				assert(false);
 
 				// 失敗を返す
 				return E_FAIL;
@@ -493,8 +485,8 @@ HRESULT CAbilityUI::MassiveCreate(void)
 		else
 		{ // ポインタが　NULL の場合
 
-			// 警告文
-			MessageBox(NULL, "能力UIのメモリの確保に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// 失敗を返す
 			return E_FAIL;

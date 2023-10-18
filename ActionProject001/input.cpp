@@ -47,6 +47,9 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 			// 警告文
 			MessageBox(NULL, "DirectInputオブジェクトの生成に失敗！", "警告！", MB_ICONWARNING);
 
+			// 停止
+			assert(false);
+
 			// 失敗を返す
 			return E_FAIL;
 		}
@@ -118,6 +121,9 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 		// 警告文
 		MessageBox(NULL, "キーボードの入力デバイスの生成に失敗！", "警告！", MB_ICONWARNING);
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -129,6 +135,9 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 		// 警告文
 		MessageBox(NULL, "キーボードのデータフォーマット設定に失敗！", "警告！", MB_ICONWARNING);
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -139,6 +148,9 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 
 		// 警告文
 		MessageBox(NULL, "キーボードの協調モード設定に失敗！", "警告！", MB_ICONWARNING);
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -592,6 +604,9 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 		// 警告文
 		MessageBox(NULL, "マウスの入力デバイスの生成に失敗！", "警告！", MB_ICONWARNING);
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -602,6 +617,9 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 
 		// 警告文
 		MessageBox(NULL, "マウスのデータフォーマット設定に失敗！", "警告！", MB_ICONWARNING);
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;
@@ -614,6 +632,9 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 		// 警告文
 		MessageBox(NULL, "マウスの協調モード設定に失敗！", "警告！", MB_ICONWARNING);
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -625,6 +646,9 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 		// 警告文
 		MessageBox(NULL, "マウスのアクセス権の取得に失敗！", "警告！", MB_ICONWARNING);
 
+		// 停止
+		assert(false);
+
 		// 失敗を返す
 		return E_FAIL;
 	}
@@ -635,6 +659,9 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 
 		// 警告文
 		MessageBox(NULL, "マウスのポーリングに失敗！", "警告！", MB_ICONWARNING);
+
+		// 停止
+		assert(false);
 
 		// 失敗を返す
 		return E_FAIL;

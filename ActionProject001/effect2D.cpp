@@ -237,8 +237,8 @@ void CEffect2D::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const i
 
 	default:
 
-		// 警告文
-		MessageBox(NULL, "エフェクト2Dで規定外の値を検知しました！", "警告！", MB_ICONWARNING);
+		// 停止
+		assert(false);
 
 		break;
 	}
@@ -295,6 +295,13 @@ void CEffect2D::TypeProcess(void)
 	case TYPE_OUTFIRE:		// 外側の炎
 
 		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
 	}
 }
 
@@ -315,6 +322,9 @@ CEffect2D* CEffect2D::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, co
 	else
 	{ // オブジェクトが NULL じゃない場合
 
+		// 停止
+		assert(false);
+
 		// NULL を返す
 		return nullptr;
 	}
@@ -326,8 +336,8 @@ CEffect2D* CEffect2D::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, co
 		if (FAILED(pEffect->Init()))
 		{ // 初期化に失敗した場合
 
-			// 警告文
-			MessageBox(NULL, "エフェクト2Dの初期化に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -338,6 +348,9 @@ CEffect2D* CEffect2D::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, co
 	}
 	else
 	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;

@@ -141,6 +141,13 @@ void CScene::SetData(const MODE mode)
 		//	CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_BGM_RANKING);
 
 		//	break;
+
+		//default:
+
+		//	// 停止
+		//	assert(false);
+
+		//	break;
 		//}
 	}
 }
@@ -217,13 +224,28 @@ CScene* CScene::Create(const MODE mode)
 			pScene = new CRanking;
 
 			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
 		}
 
 		if (pScene != nullptr)
 		{ // シーンへのポインタが NULL じゃない場合
 
 			// 初期化処理
-			pScene->Init();
+			if (FAILED(pScene->Init()))
+			{ // 失敗した場合
+
+				// 停止
+				assert(false);
+
+				// NULL を返す
+				return nullptr;
+			}
 
 			// 情報の設定処理
 			pScene->SetData(mode);
@@ -231,8 +253,8 @@ CScene* CScene::Create(const MODE mode)
 		else
 		{ // シーンへのポインタが NULL の場合
 
-			// 警告文
-			MessageBox(NULL, "シーンの確保に失敗！", "警告！", MB_ICONWARNING);
+			// 停止
+			assert(false);
 
 			// NULL を返す
 			return nullptr;
@@ -240,6 +262,9 @@ CScene* CScene::Create(const MODE mode)
 	}
 	else
 	{ // シーンが NULL じゃない場合
+
+		// 停止
+		assert(false);
 
 		// NULL を返す
 		return nullptr;
