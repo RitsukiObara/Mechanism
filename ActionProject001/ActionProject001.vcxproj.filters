@@ -300,6 +300,15 @@
     <ClCompile Include="combo_magni.cpp">
       <Filter>Player\Combo</Filter>
     </ClCompile>
+    <ClCompile Include="ripple.cpp">
+      <Filter>Staging</Filter>
+    </ClCompile>
+    <ClCompile Include="macchina.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="macchina_manager.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -532,6 +541,15 @@
     </ClInclude>
     <ClInclude Include="combo_magni.h">
       <Filter>Player\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="ripple.h">
+      <Filter>Staging</Filter>
+    </ClInclude>
+    <ClInclude Include="macchina.h">
+      <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="macchina_manager.h">
+      <Filter>Gimmick</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

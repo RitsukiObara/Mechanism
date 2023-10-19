@@ -42,8 +42,12 @@ public:			// 誰でもアクセスできる
 	void BindTexture(int nIdx);		// テクスチャの割り当て処理
 
 	// セット・ゲット関係
-	D3DXVECTOR3 GetPos(void);		// 位置の取得処理
-	D3DXVECTOR3 GetSize(void);		// サイズの取得処理
+	D3DXVECTOR3 GetPos(void) const;			// 位置の取得処理
+	D3DXVECTOR3 GetSize(void) const;		// サイズの取得処理
+	int GetVtxX(void) const;				// X軸の頂点数の取得処理
+	int GetVtxZ(void) const;				// Z軸の頂点数の取得処理
+	int GetVtxNum(void) const;				// 全頂点数の取得処理
+	void SetVtxHeight(const int nNum, const float fHeight);	// 頂点の設定処理
 	void AddVertex(const int nNum, const float fAdd);		// 頂点の加算処理
 
 	// 静的メンバ変数

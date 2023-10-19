@@ -49,10 +49,10 @@ public:			// 誰でもアクセスできる
 private:		// 自分だけアクセスできる
 
 	// メンバ関数
+	void NoneControl(CPlayer& player);	// 通常時の操作処理
 	void Control(CPlayer& player);		// 操作処理
 	void MoveProcess(CPlayer& player);	// 移動の基本処理
 	void ModeSpeed(CPlayer& player);	// モードごとのスピード処理
-	void Ability(CPlayer& player);		// 能力操作処理
 	void Move(CPlayer& player);			// 移動処理
 	void Gravity(CPlayer& player);		// 重力処理
 	void RotMove(CPlayer& player);		// 向きの移動処理

@@ -25,6 +25,7 @@
 #include "screw.h"
 #include "enemy.h"
 #include "table.h"
+#include "macchina.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -92,6 +93,9 @@ HRESULT CGame::Init(void)
 
 	// スコアを生成する
 	m_pGameScore = CScore::Create(D3DXVECTOR3(70.0f,500.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f),CScore::TYPE_GAME);
+
+	// マキナ草の生成
+	CMacchina::Create(D3DXVECTOR3(-3000.0f, 0.0f, 100.0f));
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント

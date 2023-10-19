@@ -289,7 +289,7 @@ void CElevation::BindTexture(int nIdx)
 //================================
 // 位置の取得処理
 //================================
-D3DXVECTOR3 CElevation::GetPos(void)
+D3DXVECTOR3 CElevation::GetPos(void) const
 {
 	// 位置を返す
 	return m_pos;
@@ -298,10 +298,55 @@ D3DXVECTOR3 CElevation::GetPos(void)
 //================================
 // サイズの取得処理
 //================================
-D3DXVECTOR3 CElevation::GetSize(void)
+D3DXVECTOR3 CElevation::GetSize(void) const
 {
 	// サイズを返す
 	return m_size;
+}
+
+//================================
+// X軸の頂点数の取得処理
+//================================
+int CElevation::GetVtxX(void) const
+{
+	// X軸の頂点数を返す
+	return m_nVtxX;
+}
+
+//================================
+// Z軸の頂点数の取得処理
+//================================
+int CElevation::GetVtxZ(void) const
+{
+	// Z軸の頂点数を返す
+	return m_nVtxZ;
+}
+
+//================================
+// 全頂点数の取得処理
+//================================
+int CElevation::GetVtxNum(void) const
+{
+	// 全頂点数を返す
+	return m_nNumVtx;
+}
+
+//================================
+// 頂点の設定処理
+//================================
+void CElevation::SetVtxHeight(const int nNum, const float fHeight)
+{
+	// 頂点情報へのポインタ
+	VERTEX_3D *pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 頂点の高さを加算する
+	pVtx[nNum].pos.y = fHeight;
+
+	// 頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
 }
 
 //================================
@@ -849,8 +894,8 @@ int CElevation::NearVertexSearch(const D3DXVECTOR3& pos)
 			nNum = (m_nVtxX * nCntDep) + nCntWid;
 
 			// 距離を測る
-			distance.x = fabsf(pos.x - pVtx[nNum].pos.x);
-			distance.z = fabsf(pos.z - pVtx[nNum].pos.z);
+			distance.x = fabsf(pos.x - (m_pos.x + pVtx[nNum].pos.x));
+			distance.z = fabsf(pos.z - (m_pos.z + pVtx[nNum].pos.z));
 
 			// 合計値を取る
 			fSum = distance.x + distance.z;

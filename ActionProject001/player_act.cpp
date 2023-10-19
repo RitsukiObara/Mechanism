@@ -33,7 +33,7 @@
 // 重力関係
 #define NONE_GRAVITY		(-0.9f)					// 通常状態の重力
 #define HOVER_GRAVITY		(0.8f)					// ホバー状態の重力
-#define JETDASH_GRAVITY		(-0.5f)					// ジェットダッシュ状態の重力
+#define JETDASH_GRAVITY		(-0.3f)					// ジェットダッシュ状態の重力
 #define FLY_GRAVITY			(-0.9f)					// フライ状態の重力
 
 //============================================
@@ -87,26 +87,8 @@ void CPlayerAct::Update(CPlayer& player)
 	{
 	case STATE_NONE:		// 通常状態
 
-		// 操作処理
-		Control(player);
-
-		// 重力処理
-		Gravity(player);
-
-		// 能力操作処理
-		Ability(player);
-
-		// 向きの移動処理
-		RotMove(player);
-
-		// 移動処理
-		Move(player);
-
-		// 能力の更新処理
-		player.GetAbility()->Update(player);
-
-		// 能力UIの更新処理
-		player.GetAbilityUI()->Update();
+		// 通常時の操作処理
+		NoneControl(player);
 
 		// 透明度の設定処理
 		player.SetAlpha(1.0f);
@@ -132,26 +114,8 @@ void CPlayerAct::Update(CPlayer& player)
 
 	case STATE_INVINCIBLE:			// 無敵状態
 
-		// 操作処理
-		Control(player);
-
-		// 重力処理
-		Gravity(player);
-
-		// 能力操作処理
-		Ability(player);
-
-		// 向きの移動処理
-		RotMove(player);
-
-		// 移動処理
-		Move(player);
-
-		// 能力の更新処理
-		player.GetAbility()->Update(player);
-
-		// 能力UIの更新処理
-		player.GetAbilityUI()->Update();
+		// 通常時の操作処理
+		NoneControl(player);
 
 		// 状態カウントを加算する
 		m_nStateCount++;
@@ -329,6 +293,43 @@ CPlayerAct* CPlayerAct::Create(void)
 }
 
 //=======================================
+// 通常時の操作処理
+//=======================================
+void CPlayerAct::NoneControl(CPlayer& player)
+{
+	if (player.GetAbility()->GetAbility() != CAbility::ABILITY_GROUNDQUAKE)
+	{ // グラウンドクエイク状態以外の場合
+
+		// 操作処理
+		Control(player);
+
+		// 重力処理
+		Gravity(player);
+
+		// 向きの移動処理
+		RotMove(player);
+
+		// 移動処理
+		Move(player);
+	}
+	else
+	{ // 上記以外
+
+		// 速度を設定する
+		player.SetSpeed(0.0f);
+
+		// 移動量を設定する
+		player.SetMove(NONE_D3DXVECTOR3);
+	}
+
+	// 能力の更新処理
+	player.GetAbility()->Update(player);
+
+	// 能力UIの更新処理
+	player.GetAbilityUI()->Update();
+}
+
+//=======================================
 // 操作処理
 //=======================================
 void CPlayerAct::Control(CPlayer& player)
@@ -438,60 +439,6 @@ void CPlayerAct::ModeSpeed(CPlayer& player)
 		player.SetSpeed(PLAYER_SPEED);
 
 		break;
-	}
-}
-
-//=======================================
-// 能力操作処理
-//=======================================
-void CPlayerAct::Ability(CPlayer& player)
-{
-	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_Y) == true)
-	{ // Uキーを押した場合
-
-		if (player.GetAbility()->GetPossible(CAbility::TYPE_HOVER) == true &&
-			player.IsJump() == true)
-		{ // ホバージェットが使えるかつ、ジャンプ中の場合
-
-			// ホバージェット状態にする
-			player.GetAbility()->SetAbility(CAbility::ABILITY_HOVER, player);
-
-			// 使用可能状況を false にする
-			player.GetAbility()->SetPossible(CAbility::TYPE_HOVER, false);
-		}
-	}
-	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_U) == true)
-	{ // Iキーを押した場合
-
-		if (player.GetAbility()->GetPossible(CAbility::TYPE_JETDASH) == true)
-		{ // ジェットダッシュが使える場合
-
-			// ジェットダッシュ状態にする
-			player.GetAbility()->SetAbility(CAbility::ABILITY_JETDASH, player);
-
-			// 使用可能状況を false にする
-			player.GetAbility()->SetPossible(CAbility::TYPE_JETDASH, false);
-		}
-	}
-	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_I) == true)
-	{ // Kキーを押した場合
-
-		if (player.GetAbility()->GetPossible(CAbility::TYPE_GROUNDQUAKE) == true)
-		{ // グラウンドクエイクが使える場合
-
-			// ホバージェット状態にする
-			player.GetAbility()->SetAbility(CAbility::ABILITY_GROUNDQUAKE, player);
-
-			// 使用可能状況を false にする
-			player.GetAbility()->SetPossible(CAbility::TYPE_GROUNDQUAKE, false);
-		}
-	}
-
-	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_O) == true)
-	{ // Oキーを押した場合
-
-		// 無能力に設定する
-		player.GetAbility()->SetAbility(CAbility::ABILITY_NONE, player);
 	}
 }
 

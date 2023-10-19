@@ -1,24 +1,24 @@
 //============================================
 //
-// 飛行機マネージャー処理[airplane_manager.cpp]
+// マキナ草マネージャー処理[macchina_manager.cpp]
 // Author：小原立暉
 //
 //============================================
 //********************************************
 // インクルードファイル
 //********************************************
-#include "airplane.h"
-#include "airplane_manager.h"
+#include "macchina.h"
+#include "macchina_manager.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
-CAirplaneManager* CAirplaneManager::m_pManager = nullptr;			// プレイヤーの変数
+CMacchinaManager* CMacchinaManager::m_pManager = nullptr;			// プレイヤーの変数
 
 //============================
 // コンストラクタ
 //============================
-CAirplaneManager::CAirplaneManager()
+CMacchinaManager::CMacchinaManager()
 {
 	// 全ての値をクリアする
 	m_pTop = nullptr;		// 先頭のオブジェクト
@@ -28,7 +28,7 @@ CAirplaneManager::CAirplaneManager()
 //============================
 // 登録処理
 //============================
-void CAirplaneManager::Regist(CAirplane* pThis)
+void CMacchinaManager::Regist(CMacchina* pThis)
 {
 	if (m_pTop == nullptr)
 	{ // オブジェクトが NULL の場合
@@ -46,7 +46,7 @@ void CAirplaneManager::Regist(CAirplane* pThis)
 	{ // 上記以外
 
 		// ローカルポインタを宣言
-		CAirplane* pObject = m_pTop;			// 先頭のオブジェクト
+		CMacchina* pObject = m_pTop;			// 先頭のオブジェクト
 
 		while (pObject->GetNext() != nullptr)
 		{ // オブジェクトがある限り回る
@@ -72,10 +72,10 @@ void CAirplaneManager::Regist(CAirplane* pThis)
 //============================
 // 終了処理
 //============================
-void CAirplaneManager::Uninit(void)
+void CMacchinaManager::Uninit(void)
 {
 	// ローカル変数宣言
-	CAirplane* pObj = nullptr;		// 現在のオブジェクトのポインタ
+	CMacchina* pObj = nullptr;		// 現在のオブジェクトのポインタ
 
 	// オブジェクトを代入する
 	pObj = m_pTop;
@@ -98,7 +98,7 @@ void CAirplaneManager::Uninit(void)
 //============================
 // デストラクタ
 //============================
-CAirplaneManager::~CAirplaneManager()
+CMacchinaManager::~CMacchinaManager()
 {
 
 }
@@ -106,7 +106,7 @@ CAirplaneManager::~CAirplaneManager()
 //===========================================
 // オブジェクトの取得処理
 //===========================================
-CAirplane* CAirplaneManager::GetTop(void)
+CMacchina* CMacchinaManager::GetTop(void)
 {
 	// オブジェクトの情報を渡す
 	return m_pTop;
@@ -115,10 +115,10 @@ CAirplane* CAirplaneManager::GetTop(void)
 //===========================================
 // リスト構造の引き抜き処理
 //===========================================
-void CAirplaneManager::Pull(CAirplane* pThis)
+void CMacchinaManager::Pull(CMacchina* pThis)
 {
 	// ローカル変数宣言
-	CAirplane* pObj = nullptr;		// 現在のオブジェクトのポインタ
+	CMacchina* pObj = nullptr;		// 現在のオブジェクトのポインタ
 
 	// オブジェクトを代入する
 	pObj = m_pTop;
@@ -158,13 +158,13 @@ void CAirplaneManager::Pull(CAirplane* pThis)
 //============================
 //生成処理
 //============================
-CAirplaneManager* CAirplaneManager::Create(void)
+CMacchinaManager* CMacchinaManager::Create(void)
 {
 	if (m_pManager == nullptr)
 	{ // オブジェクトが NULL の場合
 
 		// オブジェクトを生成
-		m_pManager = new CAirplaneManager;
+		m_pManager = new CMacchinaManager;
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
@@ -190,7 +190,7 @@ CAirplaneManager* CAirplaneManager::Create(void)
 //============================
 // 取得処理
 //============================
-CAirplaneManager* CAirplaneManager::Get(void)
+CMacchinaManager* CMacchinaManager::Get(void)
 {
 	// マネージャーのポインタを返す
 	return m_pManager;

@@ -46,6 +46,8 @@ public:			// 誰でもアクセスできる
 		TYPE_NEWRECORD,			// 新記録
 		TYPE_SCREWUI,			// ネジのUI
 		TYPE_COMBO,				// コンボ
+		TYPE_VIVLIO,			// ビブリオ草
+		TYPE_RIPPLE,			// 波紋
 		TYPE_MAX				// この列挙型の総数
 	};
 

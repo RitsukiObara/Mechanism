@@ -7,19 +7,26 @@
 //********************************************
 // インクルードファイル
 //********************************************
+#include "manager.h"
 #include "player.h"
 #include "player_ability.h"
 #include "objectElevation.h"
 #include "elevation_manager.h"
+#include "input.h"
+#include "collision.h"
+#include "ripple.h"
 #include "useful.h"
 
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
-#define HOVER_COUNT			(100)				// ホバー状態のカウント
-#define JETDASH_COUNT		(20)				// ジェットダッシュ状態のカウント
-#define JETDASH_POSBL_COUNT	(30)				// ジェットダッシュ状態が使用可能になるカウント
-#define JETDASH_SPEED		(30.0f)				// ジェットダッシュ時のスピード
+#define HOVER_COUNT					(100)				// ホバー状態のカウント
+#define JETDASH_COUNT				(20)				// ジェットダッシュ状態のカウント
+#define JETDASH_POSBL_COUNT			(30)				// ジェットダッシュ状態が使用可能になるカウント
+#define GROUNDQUAKE_COUNT			(500)				// グラウンドクエイク状態の強制解除カウント
+#define GROUNDQUAKE_RIPPLE_COUNT	(10)				// グラウンドクエイク時の波紋が出る間隔
+#define GROUNDQUAKE_POSBL_COUNT		(15)				// グラウンドクエイク状態が使用可能になるカウント
+#define JETDASH_SPEED				(30.0f)				// ジェットダッシュ時のスピード
 
 //============================================
 // コンストラクタ
@@ -27,6 +34,7 @@
 CAbility::CAbility()
 {
 	// 全ての値をクリアする
+	m_pElev = nullptr;				// 起伏地面のポインタ
 	m_ability = ABILITY_NONE;		// 能力
 
 	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
@@ -50,6 +58,7 @@ CAbility::~CAbility()
 HRESULT CAbility::Init(void)
 {
 	// 全ての値を初期化する
+	m_pElev = nullptr;				// 起伏地面のポインタ
 	m_ability = ABILITY_NONE;		// 能力
 
 	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
@@ -67,6 +76,9 @@ HRESULT CAbility::Init(void)
 //============================================
 void CAbility::Uninit(void)
 {
+	// 起伏地面のポインタを NULL にする
+	m_pElev = nullptr;
+
 	// 自分のメモリを解放する
 	delete this;
 }
@@ -79,6 +91,9 @@ void CAbility::Update(CPlayer& player)
 	switch (m_ability)
 	{
 	case ABILITY_NONE:			// 無状態
+
+		// 能力操作処理
+		Ability(player);
 
 		break;
 
@@ -100,6 +115,9 @@ void CAbility::Update(CPlayer& player)
 
 		// グラウンドクエイク処理
 		GroundQuake(player);
+
+		// マキナ草との当たり判定
+		collision::MacchinaHit(player);
 
 		break;
 
@@ -254,6 +272,49 @@ CAbility* CAbility::Create(void)
 	return pAbility;
 }
 
+//=======================================
+// 能力操作処理
+//=======================================
+void CAbility::Ability(CPlayer& player)
+{
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_Y) == true &&
+		m_aPossible[TYPE_HOVER] == true &&
+		player.IsJump() == true)
+	{ // 空中でYキーを押した場合
+
+		// ホバージェット状態にする
+		player.GetAbility()->SetAbility(CAbility::ABILITY_HOVER, player);
+
+		// 使用状況を false にする
+		m_aPossible[TYPE_HOVER] = false;
+	}
+	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_U) == true &&
+		m_aPossible[TYPE_JETDASH] == true)
+	{ // Uキーを押した場合
+
+		// ジェットダッシュ状態にする
+		player.GetAbility()->SetAbility(CAbility::ABILITY_JETDASH, player);
+
+		// 使用状況を false にする
+		m_aPossible[TYPE_JETDASH] = false;
+	}
+	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_I) == true &&
+		m_aPossible[TYPE_GROUNDQUAKE] == true &&
+		player.IsJump() == false)
+	{ // 地上でIキーを押した場合
+
+		// グラウンドクエイク状態にする
+		player.GetAbility()->SetAbility(CAbility::ABILITY_GROUNDQUAKE, player);
+	}
+
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_O) == true)
+	{ // Oキーを押した場合
+
+		// 無能力に設定する
+		player.GetAbility()->SetAbility(CAbility::ABILITY_NONE, player);
+	}
+}
+
 //============================================
 // ホバージェット処理
 //============================================
@@ -307,7 +368,29 @@ void CAbility::SkyDash(CPlayer& player)
 //============================================
 void CAbility::GroundQuake(CPlayer& player)
 {
+	if (m_aAblCount[TYPE_GROUNDQUAKE] % GROUNDQUAKE_RIPPLE_COUNT == 0)
+	{ // 一定間隔ごとに
 
+		// 波紋の生成処理
+		CRipple::Create(player.GetPos(), NONE_D3DXVECTOR3);
+	}
+
+	// 能力カウントを加算する
+	m_aAblCount[TYPE_GROUNDQUAKE]++;
+
+	if (CManager::Get()->GetInputKeyboard()->GetRelease(DIK_I) == true ||
+		m_aAblCount[TYPE_GROUNDQUAKE] >= GROUNDQUAKE_COUNT)
+	{ // Iキーを離したまたは、一定カウント数を超えた場合
+
+		// 無能力状態にする
+		SetAbility(CAbility::ABILITY_NONE, player);
+
+		// 使用状況を false にする
+		m_aPossible[TYPE_GROUNDQUAKE] = false;
+
+		// 能力カウントを設定する
+		m_aAblCount[TYPE_GROUNDQUAKE] = GROUNDQUAKE_POSBL_COUNT;
+	}
 }
 
 //============================================
@@ -344,6 +427,24 @@ void CAbility::PossibleProcess(CPlayer& player)
 			m_aPossible[TYPE_JETDASH] = true;
 		}
 	}
+
+	// グラウンドクエイクの使用状況
+	if (m_aPossible[TYPE_GROUNDQUAKE] == false)
+	{ // グラウンドクエイクが使えない場合
+
+		// 能力カウントを減算する
+		m_aAblCount[TYPE_GROUNDQUAKE]--;
+
+		if (m_aAblCount[TYPE_GROUNDQUAKE] <= 0)
+		{ // 能力カウントが一定数以下になった場合
+
+			// 能力カウントを設定する
+			m_aAblCount[TYPE_GROUNDQUAKE] = 0;
+
+			// 使用可能にする
+			m_aPossible[TYPE_GROUNDQUAKE] = true;
+		}
+	}
 }
 
 //============================================
@@ -353,7 +454,7 @@ void CAbility::SearchVertex(const D3DXVECTOR3& pos)
 {
 	// ローカル変数宣言
 	CElevation* pElev = CElevationManager::Get()->GetTop();		// 起伏地面を取得する
-	int nNum;
+	int nVtxIdx;			// 頂点の番号
 
 	while (pElev != nullptr)
 	{ // 起伏地面がある限り続く
@@ -365,10 +466,10 @@ void CAbility::SearchVertex(const D3DXVECTOR3& pos)
 		{ // ポリゴンの中にいた場合
 
 			// 近くの番号を取得する
-			nNum = pElev->NearVertexSearch(pos);
+			nVtxIdx = pElev->NearVertexSearch(pos);
 
-			// 頂点を上げる
-			pElev->AddVertex(nNum, 200.0f);
+			// 起伏の地面を設定する
+			m_pElev = pElev;
 		}
 
 		// 次のポインタを取得する

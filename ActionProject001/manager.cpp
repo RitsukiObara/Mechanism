@@ -24,6 +24,7 @@
 #include "screw_manager.h"
 #include "enemy_manager.h"
 #include "table_manager.h"
+#include "macchina_manager.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -57,6 +58,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CScrewManager::Create();			// ネジマネージャー
 	CEnemyManager::Create();			// 敵マネージャー
 	CTableManager::Create();			// 台マネージャー
+	CMacchinaManager::Create();			// ビブリオ草マネージャー
 
 	if (m_pFile == nullptr)
 	{ // ファイルへのポインタが nullptr の場合
@@ -508,6 +510,7 @@ void CManager::Uninit(void)
 	CScrewManager::Get()->Uninit();			// ネジマネージャー
 	CEnemyManager::Get()->Uninit();			// 敵マネージャー
 	CTableManager::Get()->Uninit();			// 台マネージャー
+	CMacchinaManager::Get()->Uninit();		// ビブリオ草マネージャー
 
 	// マネージャーのメモリを解放する
 	delete m_pManager;

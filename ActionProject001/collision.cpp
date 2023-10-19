@@ -25,6 +25,8 @@
 #include "enemy_manager.h"
 #include "table.h"
 #include "table_manager.h"
+#include "macchina.h"
+#include "macchina_manager.h"
 #include "useful.h"
 
 //===============================
@@ -32,9 +34,10 @@
 //===============================
 #define COLLISION_ADD_DIFF_LENGTH		(0.01f)			// 僅かな誤差を埋めるためのマクロ定義(突っかかり防止)
 #define AIRPLANE_COLL_RADIUS			(55.0f)			// 飛行機の当たり判定時の半径
-#define PLAYER_SIZE						(D3DXVECTOR3(20.0f,70.0f,20.0f))	// プレイヤーのサイズ
-#define PLAYER_HALF_HEIGHT				(PLAYER_SIZE.y / 2)					// プレイヤーの高さの半分
+#define PLAYER_SIZE						(D3DXVECTOR3(20.0f, 70.0f, 20.0f))		// プレイヤーのサイズ
+#define PLAYER_HALF_HEIGHT				(PLAYER_SIZE.y / 2)						// プレイヤーの高さの半分
 #define SCREW_COLL_RADIUS				(20.0f)			// ネジの当たり判定時の半径
+#define MACCHINA_HIT_RANGE				(D3DXVECTOR3(220.0f, 0.0f, 100.0f))		// マキナ草の当たり判定の範囲
 
 //===============================
 // 丸影の起伏地面の当たり判定処理
@@ -334,4 +337,27 @@ bool collision::TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, cons
 
 	// 着地判定を返す
 	return bLand;
+}
+
+//===============================
+// プレイヤーとマキナ草との当たり判定
+//===============================
+void collision::MacchinaHit(CPlayer& player)
+{
+	// ローカル変数宣言
+	CMacchina* pMacchina = CMacchinaManager::Get()->GetTop();		// マキナ草の情報
+
+	while (pMacchina != nullptr)
+	{ // 敵の情報が NULL じゃない場合
+
+		if (useful::RectangleCollisionXZ(player.GetPos(), pMacchina->GetPos(), MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3, -MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3))
+		{ // 当たり判定に当たった場合
+
+			// ヒット処理
+			pMacchina->Hit();
+		}
+
+		// 次のオブジェクトを代入する
+		pMacchina = pMacchina->GetNext();
+	}
 }

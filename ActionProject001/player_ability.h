@@ -11,6 +11,7 @@
 // 前方宣言
 //--------------------------------------------
 class CPlayer;			// プレイヤー
+class CElevation;		// 起伏地面
 
 //--------------------------------------------
 // クラス(プレイヤーの能力クラス)
@@ -60,6 +61,7 @@ public:			// 誰でもアクセスできる
 private:		// 自分だけアクセスできる
 
 	// メンバ関数
+	void Ability(CPlayer& player);		// 能力操作処理
 	void HoverJet(CPlayer& player);		// ホバージェット処理
 	void SkyDash(CPlayer& player);		// ジェットダッシュ処理
 	void GroundQuake(CPlayer& player);	// グラウンドクエイク処理
@@ -69,6 +71,8 @@ private:		// 自分だけアクセスできる
 	void SearchVertex(const D3DXVECTOR3& pos);		// 起伏地面の頂点の探索処理
 
 	// メンバ変数
+	CElevation *m_pElev;				// 起伏地面のポインタ
+
 	ABILITY m_ability;					// 能力
 	int m_aAblCount[TYPE_MAX];			// 能力カウント
 	bool m_aPossible[TYPE_MAX];			// 能力の使用状況

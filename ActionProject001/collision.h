@@ -26,17 +26,20 @@ namespace collision
 	void ShadowElevCollision(const D3DXVECTOR3& pos, int nIdx);		// 丸影と起伏地面の当たり判定
 
 	// 飛行機の当たり判定
-	void AirplaneHit(CPlayer& player);								// プレイヤーと飛行機との当たり判定
+	void AirplaneHit(CPlayer& player);			// プレイヤーと飛行機との当たり判定
 
 	// アイテムの当たり判定
-	void ScrewHit(CPlayer& player);									// プレイヤーとネジとの当たり判定
+	void ScrewHit(CPlayer& player);				// プレイヤーとネジとの当たり判定
 
 	// 敵の当たり判定
-	void EnemyHit(CPlayer& player);									// プレイヤーと敵との当たり判定
-	void EnemyPenetrate(CPlayer& player);							// プレイヤーと敵とのめりこみ判定
+	void EnemyHit(CPlayer& player);				// プレイヤーと敵との当たり判定
+	void EnemyPenetrate(CPlayer& player);		// プレイヤーと敵とのめりこみ判定
 
 	// テーブルの当たり判定
 	bool TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth);				// 台との当たり判定
+
+	// マキナ草の当たり判定
+	void MacchinaHit(CPlayer& player);			// プレイヤーとマキナ草との当たり判定
 }
 
 #endif

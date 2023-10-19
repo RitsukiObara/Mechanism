@@ -218,6 +218,7 @@
     <ClCompile Include="ranking.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
+    <ClCompile Include="ripple.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="screw.cpp" />
@@ -234,6 +235,8 @@
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="useful.cpp" />
+    <ClCompile Include="macchina.cpp" />
+    <ClCompile Include="macchina_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ability_UI.h" />
@@ -297,6 +300,7 @@
     <ClInclude Include="ranking.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
+    <ClInclude Include="ripple.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="screw.h" />
@@ -313,6 +317,8 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="useful.h" />
+    <ClInclude Include="macchina.h" />
+    <ClInclude Include="macchina_manager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
