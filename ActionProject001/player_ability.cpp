@@ -16,9 +16,10 @@
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
-#define HOVER_COUNT		(100)				// ホバー状態のカウント
-#define JETDASH_COUNT	(20)				// ジェットダッシュ状態のカウント
-#define JETDASH_SPEED	(30.0f)				// ジェットダッシュ時のスピード
+#define HOVER_COUNT			(100)				// ホバー状態のカウント
+#define JETDASH_COUNT		(20)				// ジェットダッシュ状態のカウント
+#define JETDASH_POSBL_COUNT	(30)				// ジェットダッシュ状態が使用可能になるカウント
+#define JETDASH_SPEED		(30.0f)				// ジェットダッシュ時のスピード
 
 //============================================
 // コンストラクタ
@@ -27,10 +28,10 @@ CAbility::CAbility()
 {
 	// 全ての値をクリアする
 	m_ability = ABILITY_NONE;		// 能力
-	m_nAblCount = 0;				// カウント
 
 	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
 	{
+		m_aAblCount[nCnt] = 0;				// カウント
 		m_aPossible[nCnt] = true;			// 能力の使用状況
 	}
 }
@@ -50,11 +51,11 @@ HRESULT CAbility::Init(void)
 {
 	// 全ての値を初期化する
 	m_ability = ABILITY_NONE;		// 能力
-	m_nAblCount = 0;				// カウント
 
 	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
 	{
 		m_aPossible[nCnt] = true;			// 能力の使用状況
+		m_aAblCount[nCnt] = 0;				// カウント
 	}
 
 	// 成功を返す
@@ -79,9 +80,6 @@ void CAbility::Update(CPlayer& player)
 	{
 	case ABILITY_NONE:			// 無状態
 
-		// カウントを初期化する
-		m_nAblCount = 0;
-
 		break;
 
 	case ABILITY_HOVER:			// ホバージェット
@@ -105,13 +103,6 @@ void CAbility::Update(CPlayer& player)
 
 		break;
 
-	case ABILITY_STARDROP:		// スタードロップ
-
-		// スタードロップ処理
-		StarDrop(player);
-
-		break;
-
 	default:
 
 		// 停止
@@ -119,6 +110,9 @@ void CAbility::Update(CPlayer& player)
 
 		break;
 	}
+
+	// 使用可能状況の設定処理
+	PossibleProcess(player);
 }
 
 //============================================
@@ -128,7 +122,11 @@ void CAbility::SetData(void)
 {
 	// 全ての値を設定する
 	m_ability = ABILITY_NONE;		// 能力
-	m_nAblCount = 0;				// カウント
+
+	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
+	{
+		m_aAblCount[nCnt] = 0;				// カウント
+	}
 }
 
 //============================================
@@ -138,9 +136,6 @@ void CAbility::SetAbility(const ABILITY ability, CPlayer& player)
 {
 	// 能力を設定する
 	m_ability = ability;
-
-	// カウントを初期化する
-	m_nAblCount = 0;
 
 	switch (m_ability)
 	{
@@ -171,10 +166,6 @@ void CAbility::SetAbility(const ABILITY ability, CPlayer& player)
 
 		// 頂点の探索処理
 		SearchVertex(player.GetPos());
-
-		break;
-
-	case ABILITY_STARDROP:		// スタードロップ状態
 
 		break;
 
@@ -272,13 +263,13 @@ void CAbility::HoverJet(CPlayer& player)
 	player.SetEnableJump(true);
 
 	// カウントを加算する
-	m_nAblCount++;
+	m_aAblCount[TYPE_HOVER]++;
 
-	if (m_nAblCount >= HOVER_COUNT)
+	if (m_aAblCount[TYPE_HOVER] >= HOVER_COUNT)
 	{ // カウントが一定数以上の場合
 
 		// カウントを初期化する
-		m_nAblCount = 0;
+		m_aAblCount[TYPE_HOVER] = 0;
 
 		// 無能力状態にする
 		m_ability = ABILITY_NONE;
@@ -297,14 +288,11 @@ void CAbility::SkyDash(CPlayer& player)
 	// 位置を設定する
 	pos.x += sinf(rot.y) * JETDASH_SPEED;
 
-	// カウントを加算する
-	m_nAblCount++;
+	// 能力カウントを加算する
+	m_aAblCount[TYPE_JETDASH]++;
 
-	if (m_nAblCount >= JETDASH_COUNT)
+	if (m_aAblCount[TYPE_JETDASH] >= JETDASH_COUNT)
 	{ // カウントが一定数以上の場合
-
-		// カウントを初期化する
-		m_nAblCount = 0;
 
 		// 無能力状態にする
 		m_ability = ABILITY_NONE;
@@ -323,11 +311,39 @@ void CAbility::GroundQuake(CPlayer& player)
 }
 
 //============================================
-// スタードロップ処理
+// 可能状況判定処理
 //============================================
-void CAbility::StarDrop(CPlayer& player)
+void CAbility::PossibleProcess(CPlayer& player)
 {
+	// ホバーの使用状況
+	if (player.IsJump() == false)
+	{ // 地上に立っている時
 
+		// 能力カウントを初期化する
+		m_aAblCount[TYPE_HOVER] = 0;
+
+		// 使用状況を true にする
+		m_aPossible[TYPE_HOVER] = true;
+	}
+
+	// ジェットダッシュの使用状況
+	if (m_aPossible[TYPE_JETDASH] == false &&
+		m_ability != ABILITY_JETDASH)
+	{ // ジェットダッシュが使えない場合
+
+		// 能力カウントを加算する
+		m_aAblCount[TYPE_JETDASH]++;
+
+		if (m_aAblCount[TYPE_JETDASH] >= JETDASH_POSBL_COUNT)
+		{ // 能力カウントが一定数以上の場合
+
+			// 能力カウントを初期化する
+			m_aAblCount[TYPE_JETDASH] = 0;
+
+			// 使用可能にする
+			m_aPossible[TYPE_JETDASH] = true;
+		}
+	}
 }
 
 //============================================

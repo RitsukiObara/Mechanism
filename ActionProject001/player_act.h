@@ -17,12 +17,14 @@ public:			// 誰でもアクセスできる
 	//************************************************************
 	//	列挙型定義(行動状態)
 	//************************************************************
-	enum ACT
+	enum STATE
 	{
-		ACT_NONE = 0,		// 通常状態
-		ACT_CANNON,			// 大砲状態
-		ACT_FLY,			// 飛んでいる処理
-		ACT_MAX				// この列挙の総数
+		STATE_NONE = 0,		// 通常状態
+		STATE_DAMAGE,		// ダメージ状態
+		STATE_INVINCIBLE,	// 無敵状態
+		STATE_CANNON,		// 大砲状態
+		STATE_FLY,			// 飛んでいる処理
+		STATE_MAX			// この列挙の総数
 	};
 
 	CPlayerAct();			// コンストラクタ
@@ -36,8 +38,8 @@ public:			// 誰でもアクセスできる
 	void SetData(void);		// 情報の設定処理
 
 	// セット・ゲット関数
-	void SetAct(ACT act);			// 状態の設定処理
-	ACT GetAct(void) const;			// 状態の取得処理
+	void SetState(STATE act);			// 状態の設定処理
+	STATE GetState(void) const;			// 状態の取得処理
 	void SetFront(bool bFront);		// 前後状況の設定処理
 	bool GetFront(void) const;		// 前後状況の取得処理
 
@@ -59,7 +61,7 @@ private:		// 自分だけアクセスできる
 	void FlyMove(CPlayer& player);		// 大砲で飛ぶ処理
 
 	// メンバ変数
-	ACT m_act;				// 行動状態
+	STATE m_state;			// 行動状態
 	int m_nStateCount;		// 状態カウント
 	bool m_bFront;			// 前後状況
 };

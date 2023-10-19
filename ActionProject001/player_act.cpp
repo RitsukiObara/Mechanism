@@ -12,6 +12,7 @@
 #include "player_act.h"
 #include "player_ability.h"
 #include "ability_UI.h"
+#include "collision.h"
 #include "useful.h"
 #include "manager.h"
 #include "input.h"
@@ -24,14 +25,15 @@
 #define JUMP_MOVE				(20.0f)				// ジャンプの移動量
 #define CANNON_Y_MOVE			(30.0f)				// 大砲のY軸の移動量
 #define CANNON_Z_MOVE			(15.0f)				// 大砲のZ軸の移動量
-#define PLAYER_ACROBAT_SPEED	(10.0f)				// アクロバット状態のスピード
-#define PLAYER_MASSIVE_SPEED	(5.0f)				// マッシブ状態のスピード
+#define PLAYER_SPEED			(8.0f)				// アクロバット状態のスピード
+#define DAMAGE_COUNT			(25)				// ダメージ状態のカウント数
+#define INVINCIBLE_ALPHA_CHANGE	(6)					// 無敵状態の透明度が変わるカウント
+#define INVINCIBLE_COUNT		(70)				// 無敵状態のカウント数
 
 // 重力関係
-#define ACROBAT_GRAVITY		(-0.9f)					// アクロバットモードの重力
+#define NONE_GRAVITY		(-0.9f)					// 通常状態の重力
 #define HOVER_GRAVITY		(0.8f)					// ホバー状態の重力
 #define JETDASH_GRAVITY		(-0.5f)					// ジェットダッシュ状態の重力
-#define MASSIVE_GRAVITY		(-1.2f)					// マッシブモードの重力
 #define FLY_GRAVITY			(-0.9f)					// フライ状態の重力
 
 //============================================
@@ -40,7 +42,7 @@
 CPlayerAct::CPlayerAct()
 {
 	// 全ての値をクリアする
-	m_act = ACT_NONE;			// 状態
+	m_state = STATE_NONE;			// 状態
 	m_nStateCount = 0;			// 状態カウント
 	m_bFront = true;			// 前後状況
 }
@@ -59,7 +61,7 @@ CPlayerAct::~CPlayerAct()
 HRESULT CPlayerAct::Init(void)
 {
 	// 全ての値を初期化する
-	m_act = ACT_NONE;			// 状態
+	m_state = STATE_NONE;			// 状態
 	m_nStateCount = 0;			// 状態カウント
 	m_bFront = true;			// 前後状況
 
@@ -81,9 +83,9 @@ void CPlayerAct::Uninit(void)
 //============================================
 void CPlayerAct::Update(CPlayer& player)
 {
-	switch (m_act)
+	switch (m_state)
 	{
-	case ACT_NONE:		// 通常状態
+	case STATE_NONE:		// 通常状態
 
 		// 操作処理
 		Control(player);
@@ -106,9 +108,74 @@ void CPlayerAct::Update(CPlayer& player)
 		// 能力UIの更新処理
 		player.GetAbilityUI()->Update();
 
+		// 透明度の設定処理
+		player.SetAlpha(1.0f);
+
 		break;
 
-	case ACT_CANNON:	// 大砲準備状態
+	case STATE_DAMAGE:			// ダメージ状態
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		if (m_nStateCount >= DAMAGE_COUNT)
+		{ // 状態カウントが一定数以上の場合
+
+			// 状態の設定処理
+			SetState(STATE_INVINCIBLE);
+
+			// 透明度を設定する
+			player.SetAlpha(0.0f);
+		}
+
+		break;
+
+	case STATE_INVINCIBLE:			// 無敵状態
+
+		// 操作処理
+		Control(player);
+
+		// 重力処理
+		Gravity(player);
+
+		// 能力操作処理
+		Ability(player);
+
+		// 向きの移動処理
+		RotMove(player);
+
+		// 移動処理
+		Move(player);
+
+		// 能力の更新処理
+		player.GetAbility()->Update(player);
+
+		// 能力UIの更新処理
+		player.GetAbilityUI()->Update();
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		if (m_nStateCount % INVINCIBLE_ALPHA_CHANGE == 0)
+		{ // 状態カウントが一定数に達するごとに
+
+			// 透明度の入れ替え処理
+			player.SwapAlpha();
+		}
+
+		if (m_nStateCount >= INVINCIBLE_COUNT)
+		{ // 状態カウントが一定数以上だった場合
+
+			// 透明度を設定する
+			player.SetAlpha(1.0f);
+
+			// 状態の設定処理
+			SetState(STATE_NONE);
+		}
+
+		break;
+
+	case STATE_CANNON:	// 大砲準備状態
 
 		// 大砲で向きを変える処理
 		CannonRot(player);
@@ -126,12 +193,12 @@ void CPlayerAct::Update(CPlayer& player)
 			FlyMove(player);
 
 			// 飛んでいる状態にする
-			SetAct(ACT_FLY);
+			SetState(STATE_FLY);
 		}
 
 		break;
 
-	case ACT_FLY:		// 飛んでいる状態
+	case STATE_FLY:		// 飛んでいる状態
 
 		{
 			// ローカル変数宣言
@@ -168,7 +235,7 @@ void CPlayerAct::Update(CPlayer& player)
 void CPlayerAct::SetData(void)
 {
 	// 全ての値を初期化する
-	m_act = ACT_NONE;		// 状態
+	m_state = STATE_NONE;		// 状態
 	m_nStateCount = 0;		// 状態カウント
 	m_bFront = true;		// 前後関係
 }
@@ -176,10 +243,10 @@ void CPlayerAct::SetData(void)
 //============================================
 // 状態の設定処理
 //============================================
-void CPlayerAct::SetAct(const ACT act)
+void CPlayerAct::SetState(const STATE act)
 {
 	// 行動状態を設定する
-	m_act = act;
+	m_state = act;
 
 	// 状態カウントを初期化する
 	m_nStateCount = 0;
@@ -188,10 +255,10 @@ void CPlayerAct::SetAct(const ACT act)
 //============================================
 // 状態の取得処理
 //============================================
-CPlayerAct::ACT CPlayerAct::GetAct(void) const
+CPlayerAct::STATE CPlayerAct::GetState(void) const
 {
 	// 行動状態を返す
-	return m_act;
+	return m_state;
 }
 
 //============================================
@@ -356,37 +423,19 @@ void CPlayerAct::MoveProcess(CPlayer& player)
 //=======================================
 void CPlayerAct::ModeSpeed(CPlayer& player)
 {
-	switch (player.GetMode())
+	switch (player.GetAbility()->GetAbility())
 	{
-	case CPlayer::MODE_ACROBAT:		// アクロバットモード
-
-		switch (player.GetAbility()->GetAbility())
-		{
-		case CAbility::ABILITY_JETDASH:		// ジェットダッシュ
-
-			// 速度を設定する
-			player.SetSpeed(0.0f);
-
-			break;
-
-		default:
-
-			// 速度を設定する
-			player.SetSpeed(PLAYER_ACROBAT_SPEED);
-
-			break;
-		}
-
-		break;
-
-	case CPlayer::MODE_MASSIVE:		// マッシブモード
+	case CAbility::ABILITY_JETDASH:		// ジェットダッシュ
 
 		// 速度を設定する
-		player.SetSpeed(PLAYER_MASSIVE_SPEED);
+		player.SetSpeed(0.0f);
 
 		break;
 
-	case CPlayer::MODE_REBOOT:		// リブートドライブモード
+	default:
+
+		// 速度を設定する
+		player.SetSpeed(PLAYER_SPEED);
 
 		break;
 	}
@@ -397,103 +446,49 @@ void CPlayerAct::ModeSpeed(CPlayer& player)
 //=======================================
 void CPlayerAct::Ability(CPlayer& player)
 {
-	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_U) == true)
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_Y) == true)
 	{ // Uキーを押した場合
 
-		switch (player.GetMode())
-		{
-		case CPlayer::MODE_ACROBAT:		// アクロバットモード
+		if (player.GetAbility()->GetPossible(CAbility::TYPE_HOVER) == true &&
+			player.IsJump() == true)
+		{ // ホバージェットが使えるかつ、ジャンプ中の場合
 
-			if (player.GetAbility()->GetPossible(CAbility::TYPE_HOVER) == true &&
-				player.IsJump() == true)
-			{ // ホバージェットが使えるかつ、ジャンプ中の場合
+			// ホバージェット状態にする
+			player.GetAbility()->SetAbility(CAbility::ABILITY_HOVER, player);
 
-				// ホバージェット状態にする
-				player.GetAbility()->SetAbility(CAbility::ABILITY_HOVER, player);
+			// 使用可能状況を false にする
+			player.GetAbility()->SetPossible(CAbility::TYPE_HOVER, false);
+		}
+	}
+	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_U) == true)
+	{ // Iキーを押した場合
 
-				// 使用可能状況を false にする
-				player.GetAbility()->SetPossible(CAbility::TYPE_HOVER, false);
-			}
+		if (player.GetAbility()->GetPossible(CAbility::TYPE_JETDASH) == true)
+		{ // ジェットダッシュが使える場合
 
-			break;
+			// ジェットダッシュ状態にする
+			player.GetAbility()->SetAbility(CAbility::ABILITY_JETDASH, player);
 
-		case CPlayer::MODE_MASSIVE:		// マッシブモード
-
-			if (player.GetAbility()->GetPossible(CAbility::TYPE_GROUNDQUAKE) == true)
-			{ // グラウンドクエイクが使える場合
-
-				// ホバージェット状態にする
-				player.GetAbility()->SetAbility(CAbility::ABILITY_GROUNDQUAKE, player);
-
-				// 使用可能状況を false にする
-				player.GetAbility()->SetPossible(CAbility::TYPE_GROUNDQUAKE, false);
-			}
-
-			break;
-
-		case CPlayer::MODE_REBOOT:		// リブートドライブ
-
-			break;
-
-		default:
-
-			// 停止
-			assert(false);
-
-			break;
+			// 使用可能状況を false にする
+			player.GetAbility()->SetPossible(CAbility::TYPE_JETDASH, false);
 		}
 	}
 	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_I) == true)
-	{ // Iキーを押した場合
+	{ // Kキーを押した場合
 
-		switch (player.GetMode())
-		{
-		case CPlayer::MODE_ACROBAT:		// アクロバットモード
+		if (player.GetAbility()->GetPossible(CAbility::TYPE_GROUNDQUAKE) == true)
+		{ // グラウンドクエイクが使える場合
 
-			if (player.GetAbility()->GetPossible(CAbility::TYPE_JETDASH) == true)
-			{ // ジェットダッシュが使える場合
+			// ホバージェット状態にする
+			player.GetAbility()->SetAbility(CAbility::ABILITY_GROUNDQUAKE, player);
 
-				// ジェットダッシュ状態にする
-				player.GetAbility()->SetAbility(CAbility::ABILITY_JETDASH, player);
-
-				// 使用可能状況を false にする
-				player.GetAbility()->SetPossible(CAbility::TYPE_JETDASH, false);
-			}
-
-			break;
-
-		case CPlayer::MODE_MASSIVE:		// マッシブモード
-
-			if (player.GetAbility()->GetPossible(CAbility::TYPE_STARDROP) == true)
-			{ // スタードロップが使える場合
-
-				// ジェットダッシュ状態にする
-				player.GetAbility()->SetAbility(CAbility::ABILITY_STARDROP, player);
-
-				// 使用可能状況を false にする
-				player.GetAbility()->SetPossible(CAbility::TYPE_STARDROP, false);
-			}
-
-			break;
-
-		case CPlayer::MODE_REBOOT:		// リブートドライブ
-
-			break;
-
-		default:
-
-			// 停止
-			assert(false);
-
-			break;
+			// 使用可能状況を false にする
+			player.GetAbility()->SetPossible(CAbility::TYPE_GROUNDQUAKE, false);
 		}
 	}
 
 	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_O) == true)
 	{ // Oキーを押した場合
-
-		// モードを設定する
-		player.SetMode((player.GetMode() == CPlayer::MODE_ACROBAT) ? CPlayer::MODE_MASSIVE : CPlayer::MODE_ACROBAT);
 
 		// 無能力に設定する
 		player.GetAbility()->SetAbility(CAbility::ABILITY_NONE, player);
@@ -529,58 +524,26 @@ void CPlayerAct::Gravity(CPlayer& player)
 	// ローカル変数宣言
 	D3DXVECTOR3 move = player.GetMove();		// 移動量を取得する
 
-	switch (player.GetMode())
+	switch (player.GetAbility()->GetAbility())
 	{
-	case CPlayer::MODE_ACROBAT:		// アクロバットモード
-
-		switch (player.GetAbility()->GetAbility())
-		{
-		case CAbility::ABILITY_NONE:		// 無状態
-
-			// 重力を加算する
-			move.y += ACROBAT_GRAVITY;
-
-			break;
-
-		case CAbility::ABILITY_HOVER:		// ホバージェット状態
-
-			// 重力を加算する
-			move.y = HOVER_GRAVITY;
-
-			break;
-
-		case CAbility::ABILITY_JETDASH:		// ジェットダッシュ状態
-
-			// 重力を加算する
-			move.y += JETDASH_GRAVITY;
-
-			break;
-
-		default:
-
-			// 停止
-			assert(false);
-
-			break;
-		}
-
-		break;
-
-	case CPlayer::MODE_MASSIVE:		// マッシブモード
+	case CAbility::ABILITY_HOVER:		// ホバージェット状態
 
 		// 重力を加算する
-		move.y += MASSIVE_GRAVITY;
+		move.y = HOVER_GRAVITY;
 
 		break;
 
-	case CPlayer::MODE_REBOOT:		// リブートドライブモード
+	case CAbility::ABILITY_JETDASH:		// ジェットダッシュ状態
+
+		// 重力を加算する
+		move.y += JETDASH_GRAVITY;
 
 		break;
 
 	default:
 
-		// 停止
-		assert(false);
+		// 重力を加算する
+		move.y += NONE_GRAVITY;
 
 		break;
 	}

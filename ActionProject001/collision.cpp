@@ -90,15 +90,15 @@ void collision::AirplaneHit(CPlayer& player)
 			useful::RectangleCollisionXZ(pAirplane->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true)
 		{ // 矩形の当たり判定が true の場合
 
-			if (player.GetAction()->GetAct() != CPlayerAct::ACT_CANNON &&
-				player.GetAction()->GetAct() != CPlayerAct::ACT_FLY)
+			if (player.GetAction()->GetState() != CPlayerAct::STATE_CANNON &&
+				player.GetAction()->GetState() != CPlayerAct::STATE_FLY)
 			{ // 状態が大砲待機以外の場合
 
 				// プレイヤーの位置を設定する
 				player.SetPos(pAirplane->GetPos());
 
 				// 状態の設定処理
-				player.GetAction()->SetAct(CPlayerAct::ACT_CANNON);
+				player.GetAction()->SetState(CPlayerAct::STATE_CANNON);
 			}
 
 			// この先の処理を抜け出す
@@ -284,8 +284,18 @@ void collision::EnemyPenetrate(CPlayer& player)
 			pEnemy->IsCollision() == true)
 		{ // 敵とプレイヤーが重なっている時
 
-			// プレイヤーのヒット処理
-			player.Hit();
+			if (player.GetAction()->GetState() == CPlayerAct::STATE_FLY)
+			{ // 飛んでいる場合
+
+				// 吹き飛ばし処理
+				pEnemy->SmashHit();
+			}
+			else
+			{ // 上記以外
+
+				// プレイヤーのヒット処理
+				player.Hit();
+			}
 		}
 
 		// 次のオブジェクトを代入する

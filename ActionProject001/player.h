@@ -55,15 +55,6 @@ public:			// 誰でもアクセスできる
 		MOTIONTYPE_MAX				// この列挙の総数
 	};
 
-	// 列挙型定義(モード)
-	enum MODE
-	{
-		MODE_ACROBAT = 0,			// アクロバットモード
-		MODE_MASSIVE,				// マッシブモード
-		MODE_REBOOT,				// リブートドライブモード
-		MODE_MAX					// この列挙型の総数
-	};
-
 	CPlayer();				// コンストラクタ
 	~CPlayer();				// デストラクタ
 
@@ -82,10 +73,11 @@ public:			// 誰でもアクセスできる
 	D3DXVECTOR3 GetMove(void) const;			// 移動量の取得処理
 	void SetRotDest(const D3DXVECTOR3& rot);	// 目標の向きの設定処理
 	D3DXVECTOR3 GetRotDest(void) const;			// 目標の向きの取得処理
-	void SetMode(const MODE type);				// モードの設定処理
-	MODE GetMode(void) const;					// モードの取得処理
 	void SetSpeed(float fSpeed);				// 速度の設定処理
 	float GetSpeed(void) const;					// 速度の取得処理
+	void SetAlpha(const float fAlpha);			// 透明度の設定処理
+	void SwapAlpha(void);						// 透明度の入れ替え処理
+	float GetAlpha(void) const;					// 透明度の取得処理
 	void SetEnableMove(bool bMove);				// 移動状況の設定処理
 	bool IsMove(void) const;					// 移動状況の取得処理
 	void SetEnableRight(bool bRight);			// 右向き状況の設定処理
@@ -122,9 +114,9 @@ private:		// 自分だけアクセスできる
 
 	D3DXVECTOR3 m_move;				// 移動量
 	D3DXVECTOR3 m_rotDest;			// 目的の向き
-	MODE m_mode;					// モード
 	int m_nShadowIdx;				// 影のインデックス
 	float m_fSpeed;					// 速度
+	float m_fAlpha;					// 透明度
 	bool m_bMove;					// 移動状況
 	bool m_bRight;					// 右向き状況
 	bool m_bJump;					// ジャンプ状況

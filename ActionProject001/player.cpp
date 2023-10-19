@@ -35,6 +35,7 @@
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
+#define DAMAGE_COL				(D3DXCOLOR(1.0f, 0.2f, 0.2f, 1.0f))		// ダメージ状態の色
 #define STEPHIT_JUMP			(20.0f)		// 踏みつけたときのジャンプ力
 #define TABLE_COLLISION_WIDTH	(20.0f)		// 台との当たり判定の時の幅
 
@@ -57,9 +58,9 @@ CPlayer::CPlayer() : CCharacter(CObject::TYPE_PLAYER, CObject::PRIORITY_PLAYER)
 	m_pCombo = nullptr;				// コンボの情報
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
-	m_mode = MODE_ACROBAT;			// モード
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
 	m_fSpeed = 0.0f;				// 速度
+	m_fAlpha = 1.0f;				// 透明度
 	m_bMove = false;				// 移動状況
 	m_bRight = true;				// 右向き状況
 	m_bJump = false;				// ジャンプ状況
@@ -152,19 +153,6 @@ HRESULT CPlayer::Init(void)
 		assert(false);
 	}
 
-	if (m_pAbilityUI == nullptr)
-	{ // 能力UIが NULL の場合
-
-		// 能力UIの情報を生成
-		m_pAbilityUI = CAbilityUI::Create(D3DXVECTOR3(1000.0f, 600.0f, 0.0f), D3DXVECTOR3(1140.0f, 600.0f, 0.0f));
-	}
-	else
-	{ // 上記以外
-
-		// 停止
-		assert(false);
-	}
-
 	if (m_pScrewUI == nullptr)
 	{ // ネジUIが NULL の場合
 
@@ -192,11 +180,12 @@ HRESULT CPlayer::Init(void)
 	}
 
 	// 全ての値を初期化する
+	m_pAbilityUI = nullptr;			// 能力UI
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
-	m_mode = MODE_ACROBAT;			// モード
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
 	m_fSpeed = 0.0f;				// 速度
+	m_fAlpha = 1.0f;				// 透明度
 	m_bMove = false;				// 移動状況
 	m_bRight = true;				// 右向き状況
 	m_bJump = false;				// ジャンプ状況
@@ -276,7 +265,7 @@ void CPlayer::Update(void)
 	CollisionMagicWall();
 
 	// プレイヤーの情報を表示
-	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n移動量：%f %f %f\nプレイヤーの状態：%d\nジャンプ状況：%d\n", GetPos().x, GetPos().y, GetPos().z, m_move.x, m_move.y, m_move.z, m_pAction->GetAct(), m_bJump);
+	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n移動量：%f %f %f\nプレイヤーの状態：%d\nジャンプ状況：%d\n", GetPos().x, GetPos().y, GetPos().z, m_move.x, m_move.y, m_move.z, m_pAction->GetState(), m_bJump);
 }
 
 //===========================================
@@ -284,8 +273,22 @@ void CPlayer::Update(void)
 //===========================================
 void CPlayer::Draw(void)
 {
-	// 描画処理
-	CCharacter::Draw();
+	switch (m_pAction->GetState())
+	{
+	case CPlayerAct::STATE_INVINCIBLE:		// 無敵状態
+
+		// 描画処理
+		CCharacter::Draw(m_fAlpha);
+
+		break;
+
+	default:
+
+		// 描画処理
+		CCharacter::Draw();
+
+		break;
+	}
 }
 
 //===========================================
@@ -415,8 +418,17 @@ CPlayer* CPlayer::Create(const D3DXVECTOR3& pos)
 //=======================================
 void CPlayer::Hit(void)
 {
-	// 爆発パーティクルを生成
-	CParticle::Create(GetPos(), CParticle::TYPE_FIRE);
+	if (m_pAction->GetState() != CPlayerAct::STATE_DAMAGE &&
+		m_pAction->GetState() != CPlayerAct::STATE_INVINCIBLE &&
+		m_pAction->GetState() != CPlayerAct::STATE_CANNON)
+	{ // 一定の状態以外の場合
+
+		// 爆発パーティクルを生成
+		CParticle::Create(GetPos(), CParticle::TYPE_FIRE);
+
+		// ダメージ状態にする
+		m_pAction->SetState(CPlayerAct::STATE_DAMAGE);
+	}
 }
 
 //=======================================
@@ -464,6 +476,19 @@ void CPlayer::SetData(const D3DXVECTOR3& pos)
 		// 影のインデックス設定
 		m_nShadowIdx = pShadow->GetNumID();
 	}
+
+		if (m_pAbilityUI == nullptr)
+	{ // 能力UIが NULL の場合
+
+		// 能力UIの情報を生成
+		m_pAbilityUI = CAbilityUI::Create(GetPos());
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+	}
 }
 
 //=======================================
@@ -503,24 +528,6 @@ D3DXVECTOR3 CPlayer::GetRotDest(void) const
 }
 
 //=======================================
-// 種類の設定処理
-//=======================================
-void CPlayer::SetMode(const MODE type)
-{
-	// モードを設定する
-	m_mode = type;
-}
-
-//=======================================
-// 種類の取得処理
-//=======================================
-CPlayer::MODE CPlayer::GetMode(void) const
-{
-	// モードを返す
-	return m_mode;
-}
-
-//=======================================
 // 速度の設定処理
 //=======================================
 void CPlayer::SetSpeed(float fSpeed)
@@ -536,6 +543,33 @@ float CPlayer::GetSpeed(void) const
 {
 	// 速度を返す
 	return m_fSpeed;
+}
+
+//=======================================
+// 透明度の設定処理
+//=======================================
+void CPlayer::SetAlpha(const float fAlpha)
+{
+	// 透明度を設定する
+	m_fAlpha = fAlpha;
+}
+
+//=======================================
+// 透明度の入れ替え処理
+//=======================================
+void CPlayer::SwapAlpha(void)
+{
+	// 透明度を入れ替える
+	m_fAlpha = (m_fAlpha >= 1.0f) ? 0.0f : 1.0f;
+}
+
+//=======================================
+// 透明度の取得処理
+//=======================================
+float CPlayer::GetAlpha(void) const
+{
+	// 透明度を返す
+	return m_fAlpha;
 }
 
 //=======================================
@@ -620,8 +654,8 @@ void CPlayer::ElevationCollision(void)
 			// ジャンプ状況を false にする
 			m_bJump = false;
 
-			if (m_pAction->GetAct() == CPlayerAct::ACT_CANNON ||
-				m_pAction->GetAct() == CPlayerAct::ACT_FLY)
+			if (m_pAction->GetState() == CPlayerAct::STATE_CANNON ||
+				m_pAction->GetState() == CPlayerAct::STATE_FLY)
 			{ // 通常状態以外の場合
 
 				// 通常状態の設定処理
@@ -665,7 +699,7 @@ void CPlayer::SetNone(void)
 	D3DXVECTOR3 rot = GetRot();		// 向きを取得する
 
 	// 通常状態にする
-	m_pAction->SetAct(CPlayerAct::ACT_NONE);
+	m_pAction->SetState(CPlayerAct::STATE_NONE);
 
 	// 移動量を設定する
 	m_move.z = 0.0f;

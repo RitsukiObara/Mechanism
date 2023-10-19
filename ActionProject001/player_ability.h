@@ -26,7 +26,6 @@ public:			// 誰でもアクセスできる
 		ABILITY_HOVER,			// ホバージェット
 		ABILITY_JETDASH,		// ジェットダッシュ
 		ABILITY_GROUNDQUAKE,	// グラウンドクエイク
-		ABILITY_STARDROP,		// スタードロップ
 		ABILITY_MAX				// この列挙型の総数
 	};
 
@@ -36,7 +35,6 @@ public:			// 誰でもアクセスできる
 		TYPE_HOVER = 0,			// ホバージェット
 		TYPE_JETDASH,			// ジェットダッシュ
 		TYPE_GROUNDQUAKE,		// グラウンドクエイク
-		TYPE_STARDROP,			// スタードロップ
 		TYPE_MAX				// この列挙型の総数
 	};
 
@@ -65,13 +63,14 @@ private:		// 自分だけアクセスできる
 	void HoverJet(CPlayer& player);		// ホバージェット処理
 	void SkyDash(CPlayer& player);		// ジェットダッシュ処理
 	void GroundQuake(CPlayer& player);	// グラウンドクエイク処理
-	void StarDrop(CPlayer& player);		// スタードロップ処理
+
+	void PossibleProcess(CPlayer& player);			// 可能状況判定処理
 
 	void SearchVertex(const D3DXVECTOR3& pos);		// 起伏地面の頂点の探索処理
 
 	// メンバ変数
 	ABILITY m_ability;					// 能力
-	int m_nAblCount;					// 能力カウント
+	int m_aAblCount[TYPE_MAX];			// 能力カウント
 	bool m_aPossible[TYPE_MAX];			// 能力の使用状況
 };
 
