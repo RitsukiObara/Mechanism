@@ -14,10 +14,21 @@
 #include "macchina_manager.h"
 #include "useful.h"
 
+#include"screw.h"
+
 // マクロ定義
 #define NONE_SCALE			(D3DXVECTOR3(1.0f, 1.0f, 1.0f))		// 通常状態の拡大率
 #define NONE_SCALE_COUNT	(20)								// 通常状態の動くカウント
 #define NONE_SCALE_REDUCE	(D3DXVECTOR3(0.9f, 1.1f, 0.9f))		// 通常状態の縮んだ際の拡大率
+#define NONE_ADD_CORRECT	(0.008f)							// 通常状態の補正する時の加算数
+#define REDUCE_SCALE_DEST	(D3DXVECTOR3(1.6f, 0.6f, 1.6f))		// 縮小状態の目的のサイズ
+#define REDUCE_ADD_CORRECT	(0.2f)								// 縮小状態の補正するときの加算数
+#define REDUCE_COUNT		(3)									// 縮小状態のカウント
+#define EXPANSE_SCALE_DEST	(D3DXVECTOR3(0.6f, 1.5f, 0.6f))		// 伸び状態の目的のサイズ
+#define EXPANSE_ADD_CORRECT	(0.07f)								// 伸び状態の補正するときの加算数
+#define EXPANSE_COUNT		(10)								// 伸び状態のカウント
+#define EJECT_SCALE_DEST	(D3DXVECTOR3(1.6f, 0.3f, 1.6f))		// 排出状態の目的のサイズ
+#define EJECT_ADD_CORRECT	(0.01f)								// 排出状態の補正するときの加算数
 
 //==============================
 // コンストラクタ
@@ -28,6 +39,7 @@ CMacchina::CMacchina() : CModel(CObject::TYPE_VIVLIO, CObject::PRIORITY_ENTITY)
 	m_scaleDest = NONE_SCALE;		// 目的のサイズ
 	m_state = STATE_NONE;			// 状態
 	m_nStateCount = 0;				// 状態カウント
+	m_bCollision = true;			// 当たり判定の有無
 
 	m_pPrev = nullptr;		// 前へのポインタ
 	m_pNext = nullptr;		// 次へのポインタ
@@ -100,6 +112,7 @@ HRESULT CMacchina::Init(void)
 	m_scaleDest = NONE_SCALE;		// 目的のサイズ
 	m_state = STATE_NONE;			// 状態
 	m_nStateCount = 0;				// 状態カウント
+	m_bCollision = true;			// 当たり判定の有無
 
 	// 値を返す
 	return S_OK;
@@ -144,12 +157,57 @@ void CMacchina::Update(void)
 
 	case STATE_REDUCE:		// 縮小状態
 
+		// 状態カウントを加算する
+		m_nStateCount++;
 
+		// 縮小状態の拡大率変化処理
+		ReduceScale();
+
+		if (m_nStateCount >= REDUCE_COUNT)
+		{ // 状態カウントが一定以上になった場合
+
+			// 状態カウントを初期化する
+			m_nStateCount = 0;
+
+			// 伸び状態にする
+			m_state = STATE_EXPANSE;
+
+			// 目的の拡大率を設定する
+			m_scaleDest = EXPANSE_SCALE_DEST;
+		}
+
+		break;
+
+	case STATE_EXPANSE:		// 伸び状態
+
+		// 状態カウントを初期化する
+		m_nStateCount++;
+
+		// 伸び状態の拡大率変化処理
+		ExpanseScale();
+
+		if (m_nStateCount >= EXPANSE_COUNT)
+		{ // 状態カウントが一定以上になった場合
+
+			// 状態カウントを初期化する
+			m_nStateCount = 0;
+
+			// 排出状態にする
+			m_state = STATE_EJECT;
+
+			// 目的の拡大率を設定する
+			m_scaleDest = EJECT_SCALE_DEST;
+
+			// ネジの生成処理
+			CScrew::Create(D3DXVECTOR3(GetPos().x, GetPos().y + 200.0f, GetPos().z - 100.0f));
+		}
 
 		break;
 
 	case STATE_EJECT:		// 排出状態
 
+		// 排出状態の拡大率変化処理
+		EjectScale();
 
 		break;
 
@@ -181,6 +239,12 @@ void CMacchina::Hit(void)
 
 	// 状態カウントを初期化する
 	m_nStateCount = 0;
+
+	// 目的の拡大率を設定する
+	m_scaleDest = REDUCE_SCALE_DEST;
+
+	// 当たり判定を false にする
+	m_bCollision = false;
 }
 
 //=====================================
@@ -199,6 +263,16 @@ void CMacchina::SetData(const D3DXVECTOR3& pos)
 	m_scaleDest = NONE_SCALE;		// 目的のサイズ
 	m_state = STATE_NONE;			// 状態
 	m_nStateCount = 0;				// 状態カウント
+	m_bCollision = true;			// 当たり判定の有無
+}
+
+//=====================================
+// 当たり判定の取得処理
+//=====================================
+bool CMacchina::GetCollision(void)
+{
+	// 当たり判定の有無を返す
+	return m_bCollision;
 }
 
 //=======================================
@@ -272,9 +346,60 @@ void CMacchina::NoneRescale(void)
 	}
 
 	// サイズの補正処理
-	useful::FrameCorrect(m_scaleDest.x, &scale.x, 0.008f);
-	useful::FrameCorrect(m_scaleDest.y, &scale.y, 0.008f);
-	useful::FrameCorrect(m_scaleDest.z, &scale.z, 0.008f);
+	useful::FrameCorrect(m_scaleDest.x, &scale.x, NONE_ADD_CORRECT);
+	useful::FrameCorrect(m_scaleDest.y, &scale.y, NONE_ADD_CORRECT);
+	useful::FrameCorrect(m_scaleDest.z, &scale.z, NONE_ADD_CORRECT);
+
+	// 拡大率を適用する
+	SetScale(scale);
+}
+
+//=======================================
+// 縮小状態の拡大率の変化処理
+//=======================================
+void CMacchina::ReduceScale(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 scale = GetScale();		// 拡大率を取得する
+
+	// サイズの補正処理
+	useful::FrameCorrect(m_scaleDest.x, &scale.x, REDUCE_ADD_CORRECT);
+	useful::FrameCorrect(m_scaleDest.y, &scale.y, REDUCE_ADD_CORRECT);
+	useful::FrameCorrect(m_scaleDest.z, &scale.z, REDUCE_ADD_CORRECT);
+
+	// 拡大率を適用する
+	SetScale(scale);
+}
+
+//=======================================
+// 伸び状態の拡大率の変化処理
+//=======================================
+void CMacchina::ExpanseScale(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 scale = GetScale();		// 拡大率を取得する
+
+	// サイズの補正処理
+	useful::FrameCorrect(m_scaleDest.x, &scale.x, EXPANSE_ADD_CORRECT);
+	useful::FrameCorrect(m_scaleDest.y, &scale.y, EXPANSE_ADD_CORRECT);
+	useful::FrameCorrect(m_scaleDest.z, &scale.z, EXPANSE_ADD_CORRECT);
+
+	// 拡大率を適用する
+	SetScale(scale);
+}
+
+//=======================================
+// 排出状態の拡大率の変化処理
+//=======================================
+void CMacchina::EjectScale(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 scale = GetScale();		// 拡大率を取得する
+
+	// サイズの補正処理
+	useful::FrameCorrect(m_scaleDest.x, &scale.x, EJECT_ADD_CORRECT);
+	useful::FrameCorrect(m_scaleDest.y, &scale.y, EJECT_ADD_CORRECT);
+	useful::FrameCorrect(m_scaleDest.z, &scale.z, EJECT_ADD_CORRECT);
 
 	// 拡大率を適用する
 	SetScale(scale);

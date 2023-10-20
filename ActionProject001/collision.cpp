@@ -7,6 +7,7 @@
 //*******************************************
 // インクルードファイル
 //*******************************************
+#include "game.h"
 #include "collision.h"
 #include "shadowCircle.h"
 #include "objectElevation.h"
@@ -27,6 +28,7 @@
 #include "table_manager.h"
 #include "macchina.h"
 #include "macchina_manager.h"
+#include "goal.h"
 #include "useful.h"
 
 //===============================
@@ -350,7 +352,8 @@ void collision::MacchinaHit(CPlayer& player)
 	while (pMacchina != nullptr)
 	{ // 敵の情報が NULL じゃない場合
 
-		if (useful::RectangleCollisionXZ(player.GetPos(), pMacchina->GetPos(), MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3, -MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3))
+		if (useful::RectangleCollisionXZ(player.GetPos(), pMacchina->GetPos(), MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3, -MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3) &&
+			pMacchina->GetCollision() == true)
 		{ // 当たり判定に当たった場合
 
 			// ヒット処理
@@ -359,5 +362,32 @@ void collision::MacchinaHit(CPlayer& player)
 
 		// 次のオブジェクトを代入する
 		pMacchina = pMacchina->GetNext();
+	}
+}
+
+//===============================
+// プレイヤーとゴールとの当たり判定
+//===============================
+void collision::GoalHit(CPlayer& player)
+{
+	// ローカルポインタ宣言
+	CModel* pGoal = nullptr;		// ゴールのポインタ
+	D3DXVECTOR3 PosPlayer = D3DXVECTOR3(player.GetPos().x, player.GetPos().y + PLAYER_HALF_HEIGHT, player.GetPos().z);		// プレイヤーの位置
+	D3DXVECTOR3 VtxMax = D3DXVECTOR3(PLAYER_SIZE.x, PLAYER_HALF_HEIGHT, PLAYER_SIZE.z);										// 最大値
+	D3DXVECTOR3 VtxMin = D3DXVECTOR3(-PLAYER_SIZE.x, -PLAYER_HALF_HEIGHT, -PLAYER_SIZE.z);									// 最小値
+
+	if (CGame::GetGoal() != nullptr)
+	{ // ゴールが NULL じゃない場合
+
+		// ゴールの情報を取得する
+		pGoal = CGame::GetGoal()->GetModel(CGoal::MODEL_BODY);
+
+		if (useful::RectangleCollisionXY(pGoal->GetPos(), PosPlayer, pGoal->GetFileData().vtxMax, VtxMax, pGoal->GetFileData().vtxMin, VtxMin) == true &&
+			useful::RectangleCollisionXZ(pGoal->GetPos(), PosPlayer, pGoal->GetFileData().vtxMax, VtxMax, pGoal->GetFileData().vtxMin, VtxMin) == true)
+		{ // 矩形の当たり判定が true の場合
+
+			// ヒット処理
+			CGame::GetGoal()->Hit();
+		}
 	}
 }

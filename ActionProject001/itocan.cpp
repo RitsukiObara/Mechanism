@@ -337,13 +337,17 @@ void CItocan::CheckPlayer(void)
 void CItocan::CheckState(void)
 {
 	// ローカルポインタ宣言
-	CPlayer* pPlayer = CPlayer::Get();		// プレイヤーの情報を取得する
-	D3DXVECTOR3 pos = GetPos();				// 位置
+	CPlayer* pPlayer = CPlayer::Get();				// プレイヤーの情報を取得する
+	D3DXVECTOR3 pos = GetPos();						// 位置
+	D3DXVECTOR3 vtxMax = GetFileData().vtxMax;		// 最大値
+	D3DXVECTOR3 vtxMin = GetFileData().vtxMin;		// 最小値
 
 	if (pPlayer != nullptr)
 	{ // プレイヤーの情報がある場合
 
-		if (fabsf(pos.x - pPlayer->GetPos().x) <= MOVE_DISTANCE)
+		if (pPlayer->GetPos().z <= pos.z + vtxMax.z &&
+			pPlayer->GetPos().z >= pos.z + vtxMin.z &&
+			fabsf(pos.x - pPlayer->GetPos().x) <= MOVE_DISTANCE)
 		{ // 一定距離内の場合
 
 			// 移動状態にする

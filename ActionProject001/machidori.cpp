@@ -1,6 +1,6 @@
 //===========================================
 //
-// イトキャンのメイン処理[itocan.cpp]
+// マシンドリーのメイン処理[machidori.cpp]
 // Author 小原立暉
 //
 //===========================================
@@ -379,43 +379,67 @@ void CMachidori::SetData(const D3DXVECTOR3& pos)
 //=====================================
 void CMachidori::CheckPlayer(void)
 {
-	if (CPlayer::Get() != nullptr)
+	// ローカルポインタ宣言
+	CPlayer* pPlayer = CPlayer::Get();				// プレイヤーの情報を取得する
+	D3DXVECTOR3 pos = GetPos();						// 位置
+	D3DXVECTOR3 move = GetMove();					// 移動量
+	D3DXVECTOR3 vtxMax = GetFileData().vtxMax;		// 最大値
+	D3DXVECTOR3 vtxMin = GetFileData().vtxMin;		// 最小値
+
+	if (pPlayer != nullptr)
 	{ // プレイヤーの情報がある場合
 
-		// ローカル変数宣言
-		D3DXVECTOR3 posPlayer = CPlayer::Get()->GetPos();	// プレイヤーの位置
-		D3DXVECTOR3 pos = GetPos();		// 位置を取得する
-		D3DXVECTOR3 move = GetMove();	// 移動量を取得する
+		if (pPlayer->GetPos().z <= pos.z + vtxMax.z &&
+			pPlayer->GetPos().z >= pos.z + vtxMin.z &&
+			fabsf(pos.x - pPlayer->GetPos().x) <= MOVE_DISTANCE)
+		{ // 一定距離内の場合
 
-		if (posPlayer.x >= pos.x)
-		{ // プレイヤーの位置が自身よりも右にいる場合
+			if (CPlayer::Get() != nullptr)
+			{ // プレイヤーの情報がある場合
 
-			// 向きを設定する
-			move.x = MOVE_WIDTH;
+				if (pPlayer->GetPos().x >= pos.x)
+				{ // プレイヤーの位置が自身よりも右にいる場合
 
-			if (m_bRight == false)
-			{ // 前回が左向きの場合
+					// 向きを設定する
+					move.x = MOVE_WIDTH;
 
-				// スタンバイ状態にする
-				m_state = STATE_STANDBY;
+					if (m_bRight == false)
+					{ // 前回が左向きの場合
+
+						// スタンバイ状態にする
+						m_state = STATE_STANDBY;
+					}
+				}
+				else
+				{ // 上記以外
+
+					// 向きを設定する
+					move.x = -MOVE_WIDTH;
+
+					if (m_bRight == true)
+					{ // 前回が右向きの場合
+
+						// スタンバイ状態にする
+						m_state = STATE_STANDBY;
+					}
+				}
+
+				// 移動量を適用する
+				SetMove(move);
 			}
 		}
 		else
 		{ // 上記以外
 
-			// 向きを設定する
-			move.x = -MOVE_WIDTH;
-
-			if (m_bRight == true)
-			{ // 前回が右向きの場合
-
-				// スタンバイ状態にする
-				m_state = STATE_STANDBY;
-			}
+			// 移動量を無くす
+			move.x = 0.0f;
 		}
+	}
+	else
+	{ // 上記以外
 
-		// 移動量を適用する
-		SetMove(move);
+		// 移動量を無くす
+		move.x = 0.0f;
 	}
 }
 

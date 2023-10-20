@@ -40,6 +40,9 @@ namespace collision
 
 	// マキナ草の当たり判定
 	void MacchinaHit(CPlayer& player);			// プレイヤーとマキナ草との当たり判定
+
+	// ゴールの当たり判定
+	void GoalHit(CPlayer& player);				// プレイヤーとゴールとの当たり判定
 }
 
 #endif

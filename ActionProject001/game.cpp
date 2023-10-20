@@ -26,12 +26,14 @@
 #include "enemy.h"
 #include "table.h"
 #include "macchina.h"
+#include "goal.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
 CPause* CGame::m_pPause = nullptr;							// ポーズの情報
-CScore* CGame::m_pGameScore = nullptr;					// スコアの情報
+CScore* CGame::m_pGameScore = nullptr;						// スコアの情報
+CGoal* CGame::m_pGoal = nullptr;							// ゴールの情報
 CGame::STATE CGame::m_GameState = CGame::STATE_FINISH;		// ゲームの進行状態
 int CGame::m_nFinishCount = 0;								// 終了カウント
 
@@ -77,25 +79,49 @@ HRESULT CGame::Init(void)
 	CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 飛行機の生成
-	CAirplane::Create(D3DXVECTOR3(2000.0f, 100.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
-	CAirplane::Create(D3DXVECTOR3(1800.0f, 100.0f, 1000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CAirplane::Create(D3DXVECTOR3(2000.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
 
 	// ネジの生成処理
 	CScrew::Create(D3DXVECTOR3(300.0f, 300.0f, 0.0f));
 	CScrew::Create(D3DXVECTOR3(700.0f, 300.0f, 0.0f));
 	CScrew::Create(D3DXVECTOR3(1100.0f, 300.0f, 0.0f));
+	CScrew::Create(D3DXVECTOR3(2000.0f, 400.0f, 200.0f));
+	CScrew::Create(D3DXVECTOR3(2000.0f, 500.0f, 300.0f));
+	CScrew::Create(D3DXVECTOR3(2000.0f, 600.0f, 400.0f));
+	CScrew::Create(D3DXVECTOR3(2000.0f, 650.0f, 500.0f));
+	CScrew::Create(D3DXVECTOR3(2000.0f, 600.0f, 600.0f));
+	CScrew::Create(D3DXVECTOR3(2000.0f, 500.0f, 700.0f));
+	CScrew::Create(D3DXVECTOR3(2000.0f, 400.0f, 800.0f));
+	CScrew::Create(D3DXVECTOR3(2000.0f, 300.0f, 900.0f));
 
 	// 敵の生成処理
 	CEnemy::Create(D3DXVECTOR3(3000.0f, 0.0f, 0.0f), CEnemy::TYPE_ITOCAN);
+	CEnemy::Create(D3DXVECTOR3(-1000.0f, 0.0f, 1000.0f), CEnemy::TYPE_ITOCAN);
+	CEnemy::Create(D3DXVECTOR3(2000.0f, 0.0f, 1000.0f), CEnemy::TYPE_ITOCAN);
 	CEnemy::Create(D3DXVECTOR3(-1000.0f, 0.0f, 0.0f), CEnemy::TYPE_MACHIDORI);
+	CEnemy::Create(D3DXVECTOR3(-1500.0f, 0.0f, 0.0f), CEnemy::TYPE_MACHIDORI);
+	CEnemy::Create(D3DXVECTOR3(-2000.0f, 0.0f, 1000.0f), CEnemy::TYPE_MACHIDORI);
+	CEnemy::Create(D3DXVECTOR3(3000.0f, 0.0f, 1000.0f), CEnemy::TYPE_MACHIDORI);
 
 	CTable::Create(D3DXVECTOR3(400.0f, 400.0f, 0.0f));
+	CTable::Create(D3DXVECTOR3(1500.0f, 200.0f, 0.0f));
+	CTable::Create(D3DXVECTOR3(-1000.0f, 300.0f, 1000.0f));
+	CTable::Create(D3DXVECTOR3(-1200.0f, 350.0f, 1000.0f));
+	CTable::Create(D3DXVECTOR3(2000.0f, 300.0f, 1000.0f));
+	CTable::Create(D3DXVECTOR3(2200.0f, 350.0f, 1000.0f));
 
 	// スコアを生成する
 	m_pGameScore = CScore::Create(D3DXVECTOR3(70.0f,500.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f),CScore::TYPE_GAME);
 
 	// マキナ草の生成
 	CMacchina::Create(D3DXVECTOR3(-3000.0f, 0.0f, 100.0f));
+	CMacchina::Create(D3DXVECTOR3(3000.0f, 0.0f, 100.0f));
+	CMacchina::Create(D3DXVECTOR3(3200.0f, 0.0f, 100.0f));
+	CMacchina::Create(D3DXVECTOR3(2000.0f, 0.0f, 1100.0f));
+	CMacchina::Create(D3DXVECTOR3(-3000.0f, 0.0f, 1100.0f));
+
+	// ゴールの生成
+	m_pGoal = CGoal::Create(D3DXVECTOR3(4000.0f, 300.0f, 1000.0f));
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント
@@ -111,6 +137,8 @@ void CGame::Uninit(void)
 {
 	// ポインタを NULL にする
 	m_pPause = nullptr;			// ポーズ
+	m_pGameScore = nullptr;		// ゲームスコア
+	m_pGoal = nullptr;			// ゴール
 
 	// 情報を初期化する
 	m_GameState = STATE_FINISH;	// ゲームの進行状態
@@ -243,6 +271,15 @@ CScore* CGame::GetScore(void)
 }
 
 //======================================
+// ゴールの取得処理
+//======================================
+CGoal* CGame::GetGoal(void)
+{
+	// ゴールの情報を返す
+	return m_pGoal;
+}
+
+//======================================
 // ゲームの進行状態の設定処理
 //======================================
 void CGame::SetState(const STATE state)
@@ -267,4 +304,13 @@ void CGame::DeletePause(void)
 {
 	// ポーズのポインタを NULL にする
 	m_pPause = nullptr;
+}
+
+//======================================
+// ゴールのNULL化処理
+//======================================
+void CGame::DeleteGoal(void)
+{
+	// ゴールのポインタを NULL にする
+	m_pGoal = nullptr;
 }

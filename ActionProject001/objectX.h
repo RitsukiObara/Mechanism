@@ -36,6 +36,7 @@ public:			// 誰でもアクセスできる
 		TYPE_TABLE,				// 台
 		TYPE_MACCHINA,			// マキナ草
 		TYPE_GOAL,				// ゴール
+		TYPE_GOALPOINT,			// ゴールの中心
 		TYPE_RIPPLE,			// 波紋
 
 		// 敵モデル

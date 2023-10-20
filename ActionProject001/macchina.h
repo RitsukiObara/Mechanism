@@ -24,6 +24,7 @@ public:			// 誰でもアクセスできる
 	{
 		STATE_NONE = 0,		// 通常状態
 		STATE_REDUCE,		// 縮小状態
+		STATE_EXPANSE,		// 伸び状態
 		STATE_EJECT,		// 排出状態
 		STATE_MAX			// この列挙型の総数
 	};
@@ -47,18 +48,25 @@ public:			// 誰でもアクセスできる
 
 	void SetData(const D3DXVECTOR3& pos);		// 情報の設定処理
 
+	// セット・ゲット関係
+	bool GetCollision(void);					// 当たり判定の取得処理
+
 	// 静的メンバ関数
 	static CMacchina* Create(const D3DXVECTOR3& pos);		// 生成処理
 
 private:		// 自分だけアクセスできる
 
 	// メンバ関数
-	void NoneRescale(void);		// 通常状態のサイズの変化処理
+	void NoneRescale(void);		// 通常状態の拡大率の変化処理
+	void ReduceScale(void);		// 縮小状態の拡大率の変化処理
+	void ExpanseScale(void);	// 伸び状態の拡大率の変化処理
+	void EjectScale(void);		// 排出状態の拡大率の変化処理
 
 	// メンバ変数
 	D3DXVECTOR3 m_scaleDest;	// 目的の拡大率
 	STATE m_state;				// 状態
 	int m_nStateCount;			// 状態カウント
+	bool m_bCollision;			// 当たり判定の有無
 
 	// リスト構造関係
 	CMacchina* m_pPrev;	// 前へのポインタ

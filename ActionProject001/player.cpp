@@ -35,7 +35,6 @@
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
-#define DAMAGE_COL				(D3DXCOLOR(1.0f, 0.2f, 0.2f, 1.0f))		// ダメージ状態の色
 #define STEPHIT_JUMP			(20.0f)		// 踏みつけたときのジャンプ力
 #define TABLE_COLLISION_WIDTH	(20.0f)		// 台との当たり判定の時の幅
 
@@ -257,6 +256,9 @@ void CPlayer::Update(void)
 
 	// 台との当たり判定
 	TableCollision();
+
+	// ゴールとの当たり判定
+	collision::GoalHit(*this);
 
 	// 影の位置向き設定処理
 	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
@@ -768,6 +770,33 @@ void CPlayer::TableCollision(void)
 
 		// ジャンプ状況を false にする
 		m_bJump = false;
+
+		if (m_pAction->GetState() == CPlayerAct::STATE_CANNON ||
+			m_pAction->GetState() == CPlayerAct::STATE_FLY)
+		{ // 通常状態以外の場合
+
+			// 通常状態の設定処理
+			SetNone();
+
+			if (m_pAction->GetFront() == true)
+			{ // 前後状況を設定する
+
+				// 後ろにする
+				pos.z = 1000.0f;
+
+				// 前後状況を設定する
+				m_pAction->SetFront(false);
+			}
+			else
+			{ // 上記以外
+
+				// 後ろにする
+				pos.z = 0.0f;
+
+				// 前後状況を設定する
+				m_pAction->SetFront(true);
+			}
+		}
 	}
 
 	// 位置を適用させる
