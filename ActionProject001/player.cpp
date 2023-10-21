@@ -31,12 +31,15 @@
 #include "Particle.h"
 #include "motion.h"
 #include "shadowCircle.h"
+#include "game_score.h"
+#include "goal.h"
 
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
 #define STEPHIT_JUMP			(20.0f)		// 踏みつけたときのジャンプ力
 #define TABLE_COLLISION_WIDTH	(20.0f)		// 台との当たり判定の時の幅
+#define TABLE_COLLISION_DEPTH	(20.0f)		// 台との当たり判定の時の奥行
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -58,6 +61,7 @@ CPlayer::CPlayer() : CCharacter(CObject::TYPE_PLAYER, CObject::PRIORITY_PLAYER)
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
+	m_nGoalCount = 0;				// ゴール時のカウント
 	m_fSpeed = 0.0f;				// 速度
 	m_fAlpha = 1.0f;				// 透明度
 	m_bMove = false;				// 移動状況
@@ -183,6 +187,7 @@ HRESULT CPlayer::Init(void)
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
+	m_nGoalCount = 0;				// ゴール時のカウント
 	m_fSpeed = 0.0f;				// 速度
 	m_fAlpha = 1.0f;				// 透明度
 	m_bMove = false;				// 移動状況
@@ -233,32 +238,58 @@ void CPlayer::Update(void)
 	// 前回の位置の設定処理
 	SetPosOld(GetPos());
 
-	// 行動の更新処理
-	m_pAction->Update(*this);
+	switch (CGame::GetState())
+	{
+	case CGame::STATE_START:
+
+		break;
+
+	case CGame::STATE_PLAY:
+
+		// 行動の更新処理
+		m_pAction->Update(*this);
+
+		// 飛行機との当たり判定
+		collision::AirplaneHit(*this);
+
+		// ネジとの当たり判定
+		collision::ScrewHit(*this);
+
+		// 敵との当たり判定
+		collision::EnemyHit(*this);
+
+		// 敵とのめり込み判定処理
+		collision::EnemyPenetrate(*this);
+
+		// ゴールとの当たり判定
+		collision::GoalHit(*this);
+
+		break;
+
+	case CGame::STATE_GOAL:
+
+		break;
+
+	case CGame::STATE_FINISH:
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
+	}
 
 	// モーションの更新処理
 	m_pMotion->Update();
-
-	// 飛行機との当たり判定
-	collision::AirplaneHit(*this);
-
-	// ネジとの当たり判定
-	collision::ScrewHit(*this);
-
-	// 敵との当たり判定
-	collision::EnemyHit(*this);
-
-	// 敵とのめり込み判定処理
-	collision::EnemyPenetrate(*this);
 
 	// 起伏地面との当たり判定処理
 	ElevationCollision();
 
 	// 台との当たり判定
 	TableCollision();
-
-	// ゴールとの当たり判定
-	collision::GoalHit(*this);
 
 	// 影の位置向き設定処理
 	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
@@ -479,7 +510,7 @@ void CPlayer::SetData(const D3DXVECTOR3& pos)
 		m_nShadowIdx = pShadow->GetNumID();
 	}
 
-		if (m_pAbilityUI == nullptr)
+	if (m_pAbilityUI == nullptr)
 	{ // 能力UIが NULL の場合
 
 		// 能力UIの情報を生成
@@ -762,7 +793,7 @@ void CPlayer::TableCollision(void)
 	D3DXVECTOR3 pos = GetPos();			// 位置
 	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
 
-	if (collision::TableCollision(&pos, posOld, TABLE_COLLISION_WIDTH) == true)
+	if (collision::TableCollision(&pos, posOld, TABLE_COLLISION_WIDTH, TABLE_COLLISION_DEPTH) == true)
 	{ // 台との当たり判定が true だった場合
 
 		// 縦の移動量を無くす
@@ -801,4 +832,41 @@ void CPlayer::TableCollision(void)
 
 	// 位置を適用させる
 	SetPos(pos);
+}
+
+//=======================================
+// ゴール状態の処理
+//=======================================
+void CPlayer::GoalProcess(void)
+{
+	// ゴール時のカウントを加算する
+	m_nGoalCount++;
+
+	if (CGoal::Get()->GetType() == CGoal::TYPE_PUNCH)
+	{ // パンチ状態の場合
+
+		if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
+		{ // SPACEキーを押した場合
+
+			// 100スコア追加する
+			CGameScore::Get()->AddScore(100);
+		}
+
+		if (m_nGoalCount >= 100)
+		{ // 一定カウント以上になった場合
+
+			// 終了状態にする
+			CGame::SetState(CGame::STATE_FINISH);
+		}
+	}
+	else
+	{ // 上記以外
+
+		if (m_nGoalCount >= 300)
+		{ // 一定カウント以上になった場合
+
+			// 終了状態にする
+			CGame::SetState(CGame::STATE_FINISH);
+		}
+	}
 }

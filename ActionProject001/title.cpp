@@ -89,7 +89,7 @@ void CTitle::Update(void)
 	{ // ENTERキーを押した場合
 
 		// チュートリアルに遷移する
-		CManager::Get()->GetFade()->SetFade(CScene::MODE_TUTORIAL);
+		CManager::Get()->GetFade()->SetFade(CScene::MODE_GAME);
 
 		// この先の処理を行わない
 		return;

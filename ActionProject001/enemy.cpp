@@ -452,7 +452,7 @@ bool CEnemy::TableCollision(void)
 	bool bLand = false;					// 着地判定
 
 	// 着地判定を取得する
-	bLand = collision::TableCollision(&pos, posOld, m_sizeColl.x);
+	bLand = collision::TableCollision(&pos, posOld, m_sizeColl.x, m_sizeColl.z);
 
 	// 位置を適用させる
 	SetPos(pos);

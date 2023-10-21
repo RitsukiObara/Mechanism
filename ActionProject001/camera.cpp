@@ -9,7 +9,6 @@
 //*******************************************
 #include "main.h"
 #include "manager.h"
-#include "tutorial.h"
 #include "player.h"
 #include "game.h"
 #include "useful.h"
@@ -113,95 +112,14 @@ void CCamera::Update(void)
 {
 	switch (CManager::Get()->GetMode())
 	{
-	case CScene::MODE_TUTORIAL:	// チュートリアル
-
-#if 0
-		// 追跡処理
-		Chase();
-#else
-		// 操作処理
-		Control();
-#endif
-		break;
-
 	case CScene::MODE_GAME:		// ゲームモード
 
 		if (CGame::GetPause() != nullptr &&
 			CGame::GetPause()->GetPause() == false)
 		{ // ポーズ中以外の場合
 
-			switch (CGame::GetState())
-			{
-			case CGame::STATE_START:		// スタート時
-
-				// 追跡処理
-				Chase();
-
-				break;
-
-			case CGame::STATE_PLAY:			// プレイ状態
-
-// デバッグモード
-#ifdef _DEBUG
-
-// ポーズ以外のカメラ
-#if 1
-				if (CGame::GetPause() != nullptr)
-				{ // ゲーム画面かつ、ポーズが NULL じゃない場合
-
-					if (CGame::GetPause()->GetPause() == false)
-					{ // プレイモードの場合
-
-						// 追跡処理
-						Chase();
-					}
-				}
-#endif
-
-				// エディット状態のカメラ
-#if 0
-				// 操作処理
-				Control();
-
-#endif
-
-				// リリースモード
-#else
-
-				if (CGame::GetPause() != nullptr)
-				{ // ゲーム画面かつ、ポーズが NULL じゃない場合
-
-					if (CGame::GetPause()->GetPause() == false)
-					{ // プレイモードの場合
-
-						// 追跡処理
-						Chase();
-					}
-				}
-
-#endif
-				break;
-
-			case CGame::STATE_FINISH:		// 終了状態
-
-#if 1
-				// 操作処理
-				Chase();
-#else
-
-				// 操作処理
-				Control();
-#endif
-
-				break;
-
-			default:
-
-				// 停止
-				assert(false);
-
-				break;
-			}
+			// ゲーム画面のカメラ処理
+			GameCamera();
 		}
 		else
 		{ // 上記以外
@@ -224,7 +142,7 @@ void CCamera::Update(void)
 
 		break;
 
-	case CScene::MODE_RANKING:	// リザルト
+	case CScene::MODE_RANKING:	// ランキング
 
 		if (m_posV.x <= RANKING_STOP ||
 			m_posV.x <= RANKING_STOP)
@@ -238,9 +156,6 @@ void CCamera::Update(void)
 		break;
 
 	default:					// 上記以外
-
-		// 停止
-		assert(false);
 
 		// 情報のリセット処理
 		Reset();
@@ -731,6 +646,142 @@ void CCamera::PosSet(void)
 	// カメラの注視点を更新する
 	m_posR.x = m_posV.x + sinf(m_rot.y) * m_Dis;
 	m_posR.z = m_posV.z + cosf(m_rot.y) * m_Dis;
+}
+
+//=======================
+// ゲーム画面のカメラ処理
+//=======================
+void CCamera::GameCamera(void)
+{
+	switch (CGame::GetState())
+	{
+	case CGame::STATE_START:		// スタート時
+
+		// 追跡処理
+		Chase();
+
+		break;
+
+	case CGame::STATE_PLAY:			// プレイ状態
+
+		// プレイ時のカメラ処理
+		PlayCamera();
+
+		break;
+
+	case CGame::STATE_GOAL:			// ゴール状態
+
+		// ゴール時のカメラ処理
+		GoalCamera();
+
+		break;
+
+	case CGame::STATE_FINISH:		// 終了状態
+
+#if 1
+		// 操作処理
+		Chase();
+#else
+
+		// 操作処理
+		Control();
+#endif
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
+	}
+}
+
+//=======================
+// プレイ時のカメラ処理
+//=======================
+void CCamera::PlayCamera(void)
+{
+// デバッグモード
+#ifdef _DEBUG
+
+// ポーズ以外のカメラ
+#if 1
+
+	if (CGame::GetPause() != nullptr &&
+		CGame::GetPause()->GetPause() == false)
+	{ // ポーズが NULL じゃない場合
+
+		// 追跡処理
+		Chase();
+	}
+
+#endif
+
+// エディット状態のカメラ
+#if 0
+
+	// 操作処理
+	Control();
+
+#endif
+
+// リリースモード
+#else
+
+	if (CGame::GetPause() != nullptr &&
+		CGame::GetPause()->GetPause() == false)
+	{ // ポーズが NULL じゃない場合
+
+		// 追跡処理
+		Chase();
+	}
+
+#endif
+}
+
+//=======================
+// ゴール時のカメラ処理
+//=======================
+void CCamera::GoalCamera(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos;					// 位置
+	D3DXVECTOR3 rot;					// 向き
+	CPlayer* pPlayer = CPlayer::Get();	// プレイヤーのポインタ
+	m_DisDest = 400.0f;					// 目的の距離
+
+	// 距離の補正処理
+	useful::Correct(m_DisDest, &m_Dis, CORRECT_POSR);
+
+	if (pPlayer != nullptr)
+	{ // プレイヤーが NULL じゃない場合
+
+		// プレイヤーの情報を取得する
+		pos = pPlayer->GetPos();		// 位置
+		rot = pPlayer->GetRot();		// 向き
+
+		// 目的の注視点を設定する
+		m_posRDest.x = pos.x + sinf(rot.y) * 100.0f;
+		m_posRDest.y = pos.y + 100.0f;
+		m_posRDest.z = pos.z;
+
+		// 目的の視点を設定する
+		m_posVDest.x = m_posRDest.x + sinf(rot.y) * 50.0f;
+		m_posVDest.y = pos.y + 130.0f;
+		m_posVDest.z = m_posRDest.z - m_Dis;
+
+		// 注視点を補正
+		m_posR.x += (m_posRDest.x - m_posR.x) * 0.08f;
+		m_posR.y += (m_posRDest.y - m_posR.y) * 0.08f;
+		m_posR.z += (m_posRDest.z - m_posR.z) * 0.08f;
+
+		// 視点を補正
+		m_posV.x += (m_posVDest.x - m_posV.x) * 0.08f;
+		m_posV.y += (m_posVDest.y - m_posV.y) * 0.08f;
+		m_posV.z += (m_posVDest.z - m_posV.z) * 0.08f;
+	}
 }
 
 //=======================

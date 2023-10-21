@@ -11,7 +11,6 @@
 
 #include "logo.h"
 #include "title.h"
-#include "tutorial.h"
 #include "game.h"
 #include "result.h"
 #include "ranking.h"
@@ -194,13 +193,6 @@ CScene* CScene::Create(const MODE mode)
 
 			// メモリを確保する
 			pScene = new CTitle;
-
-			break;
-
-		case MODE_TUTORIAL:		// チュートリアル画面
-
-			// メモリを確保する
-			pScene = new CTutorial;
 
 			break;
 

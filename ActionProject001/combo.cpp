@@ -14,7 +14,7 @@
 #include "combo_score.h"
 #include "combo_magni.h"
 #include "game.h"
-#include "score.h"
+#include "game_score.h"
 #include "texture.h"
 #include "useful.h"
 
@@ -129,7 +129,7 @@ void CCombo::Update(void)
 	{ // 終了状況にする
 
 		// スコアを加算する
-		CGame::GetScore()->AddScore(m_pMagni->GetMagni() * m_pScore->GetScore());
+		CGameScore::Get()->AddScore(m_pMagni->GetMagni() * m_pScore->GetScore());
 
 		// スコアを初期化する
 		m_pScore->SetScore(0);

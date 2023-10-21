@@ -311,7 +311,7 @@ void collision::EnemyPenetrate(CPlayer& player)
 //===============================
 // 台との当たり判定
 //===============================
-bool collision::TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth)
+bool collision::TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth, const float fDepth)
 {
 	// ローカル変数宣言
 	CTable* pTable = CTableManager::Get()->GetTop();		// 敵の情報
@@ -323,7 +323,9 @@ bool collision::TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, cons
 		if (posOld.y >= pTable->GetPosOld().y + pTable->GetFileData().vtxMax.y &&
 			pos->y <= pTable->GetPosOld().y + pTable->GetFileData().vtxMax.y &&
 			pos->x + fWidth >= pTable->GetPos().x + pTable->GetFileData().vtxMin.x &&
-			pos->x - fWidth <= pTable->GetPos().x + pTable->GetFileData().vtxMax.x)
+			pos->x - fWidth <= pTable->GetPos().x + pTable->GetFileData().vtxMax.x &&
+			pos->z + fDepth >= pTable->GetPos().z + pTable->GetFileData().vtxMin.z &&
+			pos->z - fDepth <= pTable->GetPos().z + pTable->GetFileData().vtxMax.z)
 		{ // 上からの当たり判定
 
 			// 位置を補正
@@ -376,18 +378,18 @@ void collision::GoalHit(CPlayer& player)
 	D3DXVECTOR3 VtxMax = D3DXVECTOR3(PLAYER_SIZE.x, PLAYER_HALF_HEIGHT, PLAYER_SIZE.z);										// 最大値
 	D3DXVECTOR3 VtxMin = D3DXVECTOR3(-PLAYER_SIZE.x, -PLAYER_HALF_HEIGHT, -PLAYER_SIZE.z);									// 最小値
 
-	if (CGame::GetGoal() != nullptr)
+	if (CGoal::Get() != nullptr)
 	{ // ゴールが NULL じゃない場合
 
 		// ゴールの情報を取得する
-		pGoal = CGame::GetGoal()->GetModel(CGoal::MODEL_BODY);
+		pGoal = CGoal::Get()->GetModel(CGoal::MODEL_BODY);
 
 		if (useful::RectangleCollisionXY(pGoal->GetPos(), PosPlayer, pGoal->GetFileData().vtxMax, VtxMax, pGoal->GetFileData().vtxMin, VtxMin) == true &&
 			useful::RectangleCollisionXZ(pGoal->GetPos(), PosPlayer, pGoal->GetFileData().vtxMax, VtxMax, pGoal->GetFileData().vtxMin, VtxMin) == true)
 		{ // 矩形の当たり判定が true の場合
 
 			// ヒット処理
-			CGame::GetGoal()->Hit();
+			CGoal::Get()->Hit();
 		}
 	}
 }

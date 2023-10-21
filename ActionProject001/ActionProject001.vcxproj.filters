@@ -37,9 +37,6 @@
     <Filter Include="Scene\Title">
       <UniqueIdentifier>{1875a119-fc60-437c-8ee6-234dff0c8b41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene\Tutorial">
-      <UniqueIdentifier>{68a1aa0d-d53a-4529-9b61-d84a8d1dec4b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene\Game">
       <UniqueIdentifier>{4de2caa3-4a91-4f3c-bf2c-b429c69edc28}</UniqueIdentifier>
     </Filter>
@@ -206,9 +203,6 @@
     </ClCompile>
     <ClCompile Include="result.cpp">
       <Filter>Scene\Result</Filter>
-    </ClCompile>
-    <ClCompile Include="tutorial.cpp">
-      <Filter>Scene\Tutorial</Filter>
     </ClCompile>
     <ClCompile Include="logo.cpp">
       <Filter>Scene\Logo</Filter>
@@ -451,9 +445,6 @@
     </ClInclude>
     <ClInclude Include="result.h">
       <Filter>Scene\Result</Filter>
-    </ClInclude>
-    <ClInclude Include="tutorial.h">
-      <Filter>Scene\Tutorial</Filter>
     </ClInclude>
     <ClInclude Include="logo.h">
       <Filter>Scene\Logo</Filter>

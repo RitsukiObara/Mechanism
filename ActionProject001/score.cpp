@@ -14,8 +14,6 @@
 #include "texture.h"
 #include "useful.h"
 
-#include "game_score.h"
-
 // マクロ定義
 #define SCORE_TEXTURE		"data\\TEXTURE\\Number.png"		// スコアのテクスチャ
 #define DISP_ADD_SCORE		(10)							// 描画用スコアの加算数
@@ -268,22 +266,8 @@ CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 	if (pScore == nullptr)
 	{ // オブジェクトが NULL の場合
 
-		switch (type)
-		{
-		case TYPE_GAME:		// ゲーム
-
-			// オブジェクトを生成
-			pScore = new CGameScore;
-
-			break;
-
-		default:			// 上記以外
-
-			// 停止
-			assert(false);
-
-			break;
-		}
+		// 停止
+		assert(false);
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合

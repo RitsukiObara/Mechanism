@@ -17,7 +17,6 @@
 //--------------------------------------------
 class CPause;			// ポーズ
 class CScore;			// スコア
-class CGoal;			// ゴール
 
 //--------------------------------------------
 // クラス(ゲームクラス)
@@ -31,6 +30,7 @@ public:						// 誰でもアクセスできる
 	{
 		STATE_START = 0,	// 開始状態
 		STATE_PLAY,			// プレイ状態
+		STATE_GOAL,			// ゴール状態
 		STATE_FINISH,		// 終了状態
 		STATE_MAX			// この列挙型の総数
 	};
@@ -48,15 +48,12 @@ public:						// 誰でもアクセスできる
 
 	// 静的メンバ関数(セット・ゲット)
 	static CPause* GetPause(void);					// ポーズの取得処理
-	static CScore* GetScore(void);					// スコアの取得処理
-	static CGoal* GetGoal(void);					// ゴールの取得処理
 
 	static void SetState(const STATE state);		// ゲームの進行状態の設定処理
 	static STATE GetState(void);					// ゲームの進行状態の取得処理
 
 	// NULL化処理
 	static void DeletePause(void);					// ポーズのNULL化処理
-	static void DeleteGoal(void);					// ゴールのNULL化処理
 
 private:					// 自分だけアクセスできる
 
@@ -66,8 +63,6 @@ private:					// 自分だけアクセスできる
 
 	// 静的メンバ変数(最初から必要な物を配置しておく)
 	static CPause* m_pPause;			// ポーズの情報
-	static CScore* m_pGameScore;		// スコアの情報
-	static CGoal* m_pGoal;				// ゴールの情報
 	static STATE m_GameState;			// ゲームの進行状態
 	static int m_nFinishCount;			// 終了カウント
 };

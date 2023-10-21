@@ -13,6 +13,11 @@
 #include "texture.h"
 #include "useful.h"
 
+//--------------------------------------------
+// 静的メンバ変数宣言
+//--------------------------------------------
+CGameScore* CGameScore::m_pGameScore = nullptr;						// スコアの情報
+
 //========================
 // コンストラクタ
 //========================
@@ -52,6 +57,9 @@ void CGameScore::Uninit(void)
 {
 	// 終了処理
 	CScore::Uninit();
+
+	// ゲームのスコアを NULL にする
+	m_pGameScore = nullptr;
 }
 
 //========================
@@ -79,4 +87,78 @@ void CGameScore::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D
 {
 	// 情報を設定処理
 	CScore::SetData(pos, rot, size);
+}
+
+//========================
+// スコアの取得処理
+//========================
+CGameScore* CGameScore::Get(void)
+{
+	if (m_pGameScore != nullptr)
+	{ // ゲームのスコアの情報がある場合
+
+		// ゲームのスコアのポインタを返す
+		return m_pGameScore;
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+
+		// ゲームのスコアのポインタを返す
+		return m_pGameScore;
+	}
+}
+
+//========================
+// 生成処理
+//========================
+CGameScore* CGameScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size)
+{
+	if (m_pGameScore == nullptr)
+	{ // オブジェクトが NULL の場合
+
+		// メモリを確保する
+		m_pGameScore = new CGameScore;
+	}
+	else
+	{ // オブジェクトが NULL じゃない場合
+
+		// 停止
+		assert(false);
+
+		// NULL を返す
+		return nullptr;
+	}
+
+	if (m_pGameScore != nullptr)
+	{ // オブジェクトが NULL じゃない場合
+
+		// 初期化処理
+		if (FAILED(m_pGameScore->Init()))
+		{ // 初期化に失敗した場合
+
+			// 停止
+			assert(false);
+
+			// NULL を返す
+			return nullptr;
+		}
+
+		// 情報の設定処理
+		m_pGameScore->SetData(pos, rot, size);
+	}
+	else
+	{ // オブジェクトが NULL の場合
+
+		// 停止
+		assert(false);
+
+		// NULL を返す
+		return nullptr;
+	}
+
+	// オブジェクト2Dのポインタを返す
+	return m_pGameScore;
 }

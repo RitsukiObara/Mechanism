@@ -14,7 +14,6 @@
 #include "file.h"
 #include "renderer.h"
 
-#include "score.h"
 #include "pause.h"
 #include "debugproc.h"
 #include "sound.h"
@@ -26,15 +25,14 @@
 #include "enemy.h"
 #include "table.h"
 #include "macchina.h"
+#include "game_score.h"
 #include "goal.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
 CPause* CGame::m_pPause = nullptr;							// ポーズの情報
-CScore* CGame::m_pGameScore = nullptr;						// スコアの情報
-CGoal* CGame::m_pGoal = nullptr;							// ゴールの情報
-CGame::STATE CGame::m_GameState = CGame::STATE_FINISH;		// ゲームの進行状態
+CGame::STATE CGame::m_GameState = CGame::STATE_START;		// ゲームの進行状態
 int CGame::m_nFinishCount = 0;								// 終了カウント
 
 //=========================================
@@ -44,9 +42,8 @@ CGame::CGame() : CScene(TYPE_NONE, PRIORITY_BG)
 {
 	// 全ての値をクリアする
 	m_pPause = nullptr;			// ポーズスコア
-	m_pGameScore = nullptr;		// ゲームスコア
 	m_nFinishCount = 0;			// 終了カウント
-	m_GameState = STATE_FINISH;	// 状態
+	m_GameState = STATE_START;	// 状態
 }
 
 //=========================================
@@ -111,7 +108,7 @@ HRESULT CGame::Init(void)
 	CTable::Create(D3DXVECTOR3(2200.0f, 350.0f, 1000.0f));
 
 	// スコアを生成する
-	m_pGameScore = CScore::Create(D3DXVECTOR3(70.0f,500.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f),CScore::TYPE_GAME);
+	CGameScore::Create(D3DXVECTOR3(70.0f,500.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f));
 
 	// マキナ草の生成
 	CMacchina::Create(D3DXVECTOR3(-3000.0f, 0.0f, 100.0f));
@@ -121,10 +118,11 @@ HRESULT CGame::Init(void)
 	CMacchina::Create(D3DXVECTOR3(-3000.0f, 0.0f, 1100.0f));
 
 	// ゴールの生成
-	m_pGoal = CGoal::Create(D3DXVECTOR3(4000.0f, 300.0f, 1000.0f));
+	CGoal::Create(D3DXVECTOR3(4000.0f, 300.0f, 1000.0f));
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント
+	m_GameState = STATE_START;		// 状態
 
 	// 成功を返す
 	return S_OK;
@@ -137,11 +135,9 @@ void CGame::Uninit(void)
 {
 	// ポインタを NULL にする
 	m_pPause = nullptr;			// ポーズ
-	m_pGameScore = nullptr;		// ゲームスコア
-	m_pGoal = nullptr;			// ゴール
 
 	// 情報を初期化する
-	m_GameState = STATE_FINISH;	// ゲームの進行状態
+	m_GameState = STATE_START;	// ゲームの進行状態
 
 	// 終了カウントを初期化する
 	m_nFinishCount = 0;
@@ -155,8 +151,42 @@ void CGame::Uninit(void)
 //======================================
 void CGame::Update(void)
 {
-	// ポーズ処理
-	Pause();
+	switch (m_GameState)
+	{
+	case CGame::STATE_START:
+
+		// ポーズ処理
+		Pause();
+
+		break;
+
+	case CGame::STATE_PLAY:
+
+		// ポーズ処理
+		Pause();
+
+		break;
+
+	case CGame::STATE_GOAL:
+
+
+
+		break;
+
+	case CGame::STATE_FINISH:
+
+		// 遷移処理
+		Transition();
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
+	}
 
 	if (CManager::Get()->GetRenderer() != nullptr)
 	{ // レンダラーが NULL じゃない場合
@@ -164,9 +194,6 @@ void CGame::Update(void)
 		// レンダラーの更新
 		CManager::Get()->GetRenderer()->Update();
 	}
-
-	// 遷移処理
-	//Transition();
 
 	CManager::Get()->GetDebugProc()->Print("状態：%d", m_GameState);
 }
@@ -195,7 +222,7 @@ void CGame::SetData(const MODE mode)
 	}
 
 	// スタート状態にする
-	m_GameState = STATE_FINISH;
+	m_GameState = STATE_PLAY;
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント
@@ -237,18 +264,14 @@ void CGame::Pause(void)
 //======================================
 void CGame::Transition(void)
 {
-	if (m_GameState == STATE_FINISH)
-	{ // ゲームが終了状態の場合
+	// 終了カウントを加算する
+	m_nFinishCount++;
 
-		// 終了カウントを加算する
-		m_nFinishCount++;
+	if (m_nFinishCount % 80 == 0)
+	{ // 終了カウントが一定数を超えた場合
 
-		if (m_nFinishCount % 80 == 0)
-		{ // 終了カウントが一定数を超えた場合
-
-			// リザルトに遷移する
-			CManager::Get()->GetFade()->SetFade(CScene::MODE_RESULT);
-		}
+		// リザルトに遷移する
+		CManager::Get()->GetFade()->SetFade(CScene::MODE_RESULT);
 	}
 }
 
@@ -259,24 +282,6 @@ CPause* CGame::GetPause(void)
 {
 	// ポーズの情報を返す
 	return m_pPause;
-}
-
-//======================================
-// スコアの取得処理
-//======================================
-CScore* CGame::GetScore(void)
-{
-	// スコアの情報を返す
-	return m_pGameScore;
-}
-
-//======================================
-// ゴールの取得処理
-//======================================
-CGoal* CGame::GetGoal(void)
-{
-	// ゴールの情報を返す
-	return m_pGoal;
 }
 
 //======================================
@@ -304,13 +309,4 @@ void CGame::DeletePause(void)
 {
 	// ポーズのポインタを NULL にする
 	m_pPause = nullptr;
-}
-
-//======================================
-// ゴールのNULL化処理
-//======================================
-void CGame::DeleteGoal(void)
-{
-	// ゴールのポインタを NULL にする
-	m_pGoal = nullptr;
 }

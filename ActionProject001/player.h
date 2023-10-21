@@ -104,6 +104,8 @@ private:		// 自分だけアクセスできる
 	void CollisionMagicWall(void);	// 移動制限判定
 	void TableCollision(void);		// 台との当たり判定
 
+	void GoalProcess(void);			// ゴール状態の処理
+
 	// メンバ変数
 	CMotion* m_pMotion;				// モーションの情報
 	CPlayerAct* m_pAction;			// プレイヤーの行動の情報
@@ -115,6 +117,7 @@ private:		// 自分だけアクセスできる
 	D3DXVECTOR3 m_move;				// 移動量
 	D3DXVECTOR3 m_rotDest;			// 目的の向き
 	int m_nShadowIdx;				// 影のインデックス
+	int m_nGoalCount;				// ゴール時のカウント
 	float m_fSpeed;					// 速度
 	float m_fAlpha;					// 透明度
 	bool m_bMove;					// 移動状況

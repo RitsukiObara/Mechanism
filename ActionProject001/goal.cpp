@@ -13,12 +13,18 @@
 #include "renderer.h"
 #include "model.h"
 #include "goal.h"
+#include "player.h"
 #include "useful.h"
 
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
 #define CYCLE_COUNT		(40)			// 向きが変わるカウント
+
+//-------------------------------------------
+// 静的メンバ変数宣言
+//-------------------------------------------
+CGoal* CGoal::m_pGoal = nullptr;		// ゴールの情報
 
 //==============================
 // コンストラクタ
@@ -109,16 +115,20 @@ void CGoal::Uninit(void)
 {
 	for (int nCnt = 0; nCnt < MODEL_MAX; nCnt++)
 	{
-		// 終了処理
-		m_aGoal[nCnt]->Uninit();
-		m_aGoal[nCnt] = nullptr;
+		if (m_aGoal[nCnt] != nullptr)
+		{ // モデルが NULL じゃない場合
+
+			// 終了処理
+			m_aGoal[nCnt]->Uninit();
+			m_aGoal[nCnt] = nullptr;
+		}
 	}
 
 	// 本体の終了処理
 	Release();
 
-	// ゴールの消去処理
-	CGame::DeleteGoal();
+	// ゴールの情報を NULL にする
+	m_pGoal = nullptr;
 }
 
 //========================================
@@ -179,20 +189,26 @@ void CGoal::Draw(void)
 //=====================================
 void CGoal::Hit(void)
 {
-	// ローカル変数宣言
-	D3DXVECTOR3 rot = m_aGoal[MODEL_POINT]->GetRot();		// 向きを取得する
-
-	// 向きの決定処理
-	RotDecide(&rot.y);
-
-	// 向きを適用する
-	m_aGoal[MODEL_POINT]->SetRot(rot);
+	// ヒット時の向きの決定処理
+	HitRotDecide();
 
 	// 停止状態にする
 	m_state = STATE_STOP;
 
 	// 状態カウントを初期化する
 	m_nStateCount = 0;
+
+	// ゴール状態に設定する
+	CGame::SetState(CGame::STATE_GOAL);
+
+	// 敵を全て消す
+	CObject::AnyAllClear(TYPE_ENEMY);
+
+	// プレイヤーの位置の設定処理
+	PlayerPosDecide();
+
+	// 終了処理
+	Uninit();
 }
 
 //=====================================
@@ -234,10 +250,50 @@ void CGoal::SetData(const D3DXVECTOR3& pos)
 //=======================================
 // モデルの設定処理
 //=======================================
-CModel* CGoal::GetModel(const MODEL model)
+CModel* CGoal::GetModel(const MODEL model) const
 {
 	// モデルの情報を返す
 	return m_aGoal[model];
+}
+
+//=======================================
+// 種類の取得処理
+//=======================================
+CGoal::TYPE CGoal::GetType(void) const
+{
+	// 種類を返す
+	return m_type;
+}
+
+//=======================================
+// 状態の取得処理
+//=======================================
+CGoal::STATE CGoal::GetState(void) const
+{
+	// 状態を返す
+	return m_state;
+}
+
+//=======================================
+// 取得処理
+//=======================================
+CGoal* CGoal::Get(void)
+{
+	if (m_pGoal != nullptr)
+	{ // ゴールの情報がある場合
+
+		// ゴールのポインタを返す
+		return m_pGoal;
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+
+		// ゴールのポインタを返す
+		return m_pGoal;
+	}
 }
 
 //=======================================
@@ -245,14 +301,11 @@ CModel* CGoal::GetModel(const MODEL model)
 //=======================================
 CGoal* CGoal::Create(const D3DXVECTOR3& pos)
 {
-	// ローカルオブジェクトを生成
-	CGoal* pGoal = nullptr;		// インスタンスを生成
-
-	if (pGoal == nullptr)
+	if (m_pGoal == nullptr)
 	{ // オブジェクトが NULL の場合
 
 		// インスタンスを生成
-		pGoal = new CGoal;
+		m_pGoal = new CGoal;
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
@@ -264,11 +317,11 @@ CGoal* CGoal::Create(const D3DXVECTOR3& pos)
 		return nullptr;
 	}
 
-	if (pGoal != nullptr)
+	if (m_pGoal != nullptr)
 	{ // オブジェクトが NULL じゃない場合
 
 		// 初期化処理
-		if (FAILED(pGoal->Init()))
+		if (FAILED(m_pGoal->Init()))
 		{ // 初期化に失敗した場合
 
 			// 停止
@@ -279,7 +332,7 @@ CGoal* CGoal::Create(const D3DXVECTOR3& pos)
 		}
 
 		// 情報の設定処理
-		pGoal->SetData(pos);
+		m_pGoal->SetData(pos);
 	}
 	else
 	{ // オブジェクトが NULL の場合
@@ -292,7 +345,7 @@ CGoal* CGoal::Create(const D3DXVECTOR3& pos)
 	}
 
 	// ゴールのポインタを返す
-	return pGoal;
+	return m_pGoal;
 }
 
 //=======================================
@@ -348,4 +401,41 @@ void CGoal::RotCorrect(void)
 
 	// 向きを適用する
 	m_aGoal[MODEL_POINT]->SetRot(rot);
+}
+
+//=======================================
+// ヒット時の向きの決定処理
+//=======================================
+void CGoal::HitRotDecide(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 rot = m_aGoal[MODEL_POINT]->GetRot();		// 向きを取得する
+
+	// 向きの決定処理
+	RotDecide(&rot.y);
+
+	// 向きを適用する
+	m_aGoal[MODEL_POINT]->SetRot(rot);
+}
+
+//=======================================
+// プレイヤーの位置の設定処理
+//=======================================
+void CGoal::PlayerPosDecide(void)
+{
+	// ローカル変数宣言
+	CPlayer* pPlayer = CPlayer::Get();		// プレイヤーの情報
+
+	if (pPlayer->GetPos().x >= m_aGoal[MODEL_POINT]->GetPos().x)
+	{ // ゴールの左側にいた場合
+
+		// 位置を設定する
+		pPlayer->SetPos(m_aGoal[MODEL_POINT]->GetPos());
+	}
+	else
+	{ // 上記以外
+
+		// 位置を設定する
+		pPlayer->SetPos(m_aGoal[MODEL_POINT]->GetPos());
+	}
 }

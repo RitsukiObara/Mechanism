@@ -56,6 +56,11 @@ private:		// 自分だけアクセス出来る
 	void Control(void);				// 操作処理
 	void PosSet(void);				// 位置の設定処理
 
+	// ゲーム関係
+	void GameCamera(void);			// ゲーム画面のカメラ処理
+	void PlayCamera(void);			// プレイ時のカメラ処理
+	void GoalCamera(void);			// ゴール時のカメラ処理
+
 	// メンバ変数
 	D3DXMATRIX m_mtxView;			// ビューマトリックス
 	D3DXMATRIX m_mtxProjection;		// プロジェクションマトリックス

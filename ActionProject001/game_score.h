@@ -29,8 +29,14 @@ public:				// 誰でもアクセスできる
 
 	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size);		// 情報の設定処理
 
+	// 静的メンバ関数
+	static CGameScore* Get(void);		// スコアの取得処理
+	static CGameScore* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size);		// 生成処理
+
 private:			// 自分だけアクセスできる
 
+	// 静的メンバ変数
+	static CGameScore* m_pGameScore;	// スコアの情報
 };
 
 #endif

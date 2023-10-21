@@ -23,13 +23,6 @@ class CScore : public CObject
 {
 public:				// 誰でもアクセスできる
 
-	// 列挙型定義(種類)
-	enum TYPE
-	{
-		TYPE_GAME = 0,		// ゲーム
-		TYPE_MAX			// この列挙型の総数
-	};
-
 	CScore();						// コンストラクタ
 	CScore(CObject::TYPE type, CObject::PRIORITY priority = PRIORITY_UI);		// オーバーロードコンストラクタ
 	virtual ~CScore();				// デストラクタ
