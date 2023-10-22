@@ -173,6 +173,10 @@ void CGame::Update(void)
 
 		break;
 
+	case CGame::STATE_LEAVE:
+
+		break;
+
 	case CGame::STATE_FINISH:
 
 		// ‘JˆÚˆ—

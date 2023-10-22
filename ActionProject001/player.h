@@ -84,6 +84,8 @@ public:			// 誰でもアクセスできる
 	bool IsRight(void) const;					// 右向き状況の取得処理
 	void SetEnableJump(bool bJump);				// ジャンプ状況の設定処理
 	bool IsJump(void) const;					// ジャンプ状況の取得処理
+	void SetEnablePunch(bool bPunch);			// パンチ状況の設定処理
+	bool IsPunch(void) const;					// パンチ状況の取得処理
 
 	CMotion* GetMotion(void) const;				// モーションの情報の取得処理
 	CPlayerAct* GetAction(void) const;			// アクションの情報の取得処理
@@ -105,6 +107,8 @@ private:		// 自分だけアクセスできる
 	void TableCollision(void);		// 台との当たり判定
 
 	void GoalProcess(void);			// ゴール状態の処理
+	void LeaveProcess(void);		// 退場状態の処理
+	void FinishProcess(void);		// 終了状態の処理
 
 	// メンバ変数
 	CMotion* m_pMotion;				// モーションの情報
@@ -123,6 +127,7 @@ private:		// 自分だけアクセスできる
 	bool m_bMove;					// 移動状況
 	bool m_bRight;					// 右向き状況
 	bool m_bJump;					// ジャンプ状況
+	bool m_bPunch;					// パンチ状況
 
 	// 静的メンバ変数
 	static CPlayer* m_pPlayer;		// プレイヤーのポインタ

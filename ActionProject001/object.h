@@ -49,6 +49,7 @@ public:			// 誰でもアクセスできる
 		TYPE_VIVLIO,			// ビブリオ草
 		TYPE_RIPPLE,			// 波紋
 		TYPE_GOAL,				// ゴール
+		TYPE_BONUSCOMBO,		// ボーナスコンボ
 		TYPE_MAX				// この列挙型の総数
 	};
 

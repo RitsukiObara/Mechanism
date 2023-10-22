@@ -33,6 +33,7 @@
 #include "shadowCircle.h"
 #include "game_score.h"
 #include "goal.h"
+#include "bonus.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -40,6 +41,10 @@
 #define STEPHIT_JUMP			(20.0f)		// 踏みつけたときのジャンプ力
 #define TABLE_COLLISION_WIDTH	(20.0f)		// 台との当たり判定の時の幅
 #define TABLE_COLLISION_DEPTH	(20.0f)		// 台との当たり判定の時の奥行
+#define PUNCH_COUNT				(150)		// パンチ状態のカウント数
+#define GOAL_COUNT				(80)		// ゴール状態のカウント数
+#define LEAVE_GRAVITY			(0.4f)		// 退場状態の重力
+#define FINISH_GRAVITY			(-0.6f)		// 終了状態の重力
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -67,6 +72,7 @@ CPlayer::CPlayer() : CCharacter(CObject::TYPE_PLAYER, CObject::PRIORITY_PLAYER)
 	m_bMove = false;				// 移動状況
 	m_bRight = true;				// 右向き状況
 	m_bJump = false;				// ジャンプ状況
+	m_bPunch = false;				// パンチ状況
 }
 
 //=========================================
@@ -193,6 +199,7 @@ HRESULT CPlayer::Init(void)
 	m_bMove = false;				// 移動状況
 	m_bRight = true;				// 右向き状況
 	m_bJump = false;				// ジャンプ状況
+	m_bPunch = false;				// パンチ状況
 
 	// 値を返す
 	return S_OK;
@@ -268,9 +275,22 @@ void CPlayer::Update(void)
 
 	case CGame::STATE_GOAL:
 
+		// ゴール状態の処理
+		GoalProcess();
+
+		break;
+
+	case CGame::STATE_LEAVE:
+
+		// 退場状態の処理
+		LeaveProcess();
+
 		break;
 
 	case CGame::STATE_FINISH:
+
+		// 終了状態の処理
+		FinishProcess();
 
 		break;
 
@@ -660,6 +680,24 @@ bool CPlayer::IsJump(void) const
 }
 
 //=======================================
+// パンチ状況の設定処理
+//=======================================
+void CPlayer::SetEnablePunch(bool bPunch)
+{
+	// パンチ状況を設定する
+	m_bPunch = bPunch;
+}
+
+//=======================================
+// パンチ状況の取得処理
+//=======================================
+bool CPlayer::IsPunch(void) const
+{
+	// パンチ状況を返す
+	return m_bPunch;
+}
+
+//=======================================
 // 起伏地面の当たり判定処理
 //=======================================
 void CPlayer::ElevationCollision(void)
@@ -712,6 +750,16 @@ void CPlayer::ElevationCollision(void)
 					// 前後状況を設定する
 					m_pAction->SetFront(true);
 				}
+			}
+
+			if (CGame::GetState() == CGame::STATE_LEAVE)
+			{ // 退場状態の場合
+
+				// 移動量を設定する
+				m_move.x = 0.0f;
+
+				// 終了状態にする
+				CGame::SetState(CGame::STATE_FINISH);
 			}
 		}
 
@@ -842,31 +890,73 @@ void CPlayer::GoalProcess(void)
 	// ゴール時のカウントを加算する
 	m_nGoalCount++;
 
-	if (CGoal::Get()->GetType() == CGoal::TYPE_PUNCH)
+	if (m_bPunch == true)
 	{ // パンチ状態の場合
 
 		if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
 		{ // SPACEキーを押した場合
 
-			// 100スコア追加する
-			CGameScore::Get()->AddScore(100);
+			// ボーナスの加算処理
+			CBonus::Get()->AddBonus();
 		}
 
-		if (m_nGoalCount >= 100)
+		if (m_nGoalCount >= PUNCH_COUNT)
 		{ // 一定カウント以上になった場合
 
-			// 終了状態にする
-			CGame::SetState(CGame::STATE_FINISH);
+			// 退場状態にする
+			CGame::SetState(CGame::STATE_LEAVE);
+
+			// ゴールカウントを初期化する
+			m_nGoalCount = 0;
+
+			// ゲームスコアの加算処理
+			CGameScore::Get()->AddScore(CBonus::Get()->GetBonus() * 100);
 		}
 	}
 	else
 	{ // 上記以外
 
-		if (m_nGoalCount >= 300)
+		if (m_nGoalCount >= GOAL_COUNT)
 		{ // 一定カウント以上になった場合
 
-			// 終了状態にする
-			CGame::SetState(CGame::STATE_FINISH);
+			// 退場状態にする
+			CGame::SetState(CGame::STATE_LEAVE);
+
+			// ゴールカウントを初期化する
+			m_nGoalCount = 0;
 		}
 	}
+}
+
+//=======================================
+// 退場状態の処理
+//=======================================
+void CPlayer::LeaveProcess(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置
+
+	// 重力処理
+	useful::Gravity(&m_move.y, pos, LEAVE_GRAVITY);
+
+	// 位置を更新する
+	pos.x += m_move.x;
+
+	// 位置を適用する
+	SetPos(pos);
+}
+
+//=======================================
+// 終了状態の処理
+//=======================================
+void CPlayer::FinishProcess(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置を設定する
+
+	// 重力処理
+	useful::Gravity(&m_move.y, pos, FINISH_GRAVITY);
+
+	// 位置を適用する
+	SetPos(pos);
 }

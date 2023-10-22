@@ -676,16 +676,14 @@ void CCamera::GameCamera(void)
 
 		break;
 
+	case CGame::STATE_LEAVE:		// 退場状態
+
+		// 退場時のカメラ処理
+		LeaveCamera();
+
+		break;
+
 	case CGame::STATE_FINISH:		// 終了状態
-
-#if 1
-		// 操作処理
-		Chase();
-#else
-
-		// 操作処理
-		Control();
-#endif
 
 		break;
 
@@ -781,6 +779,46 @@ void CCamera::GoalCamera(void)
 		m_posV.x += (m_posVDest.x - m_posV.x) * 0.08f;
 		m_posV.y += (m_posVDest.y - m_posV.y) * 0.08f;
 		m_posV.z += (m_posVDest.z - m_posV.z) * 0.08f;
+	}
+}
+
+//=======================
+// 退場時のカメラ処理
+//=======================
+void CCamera::LeaveCamera(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos;					// 位置
+	D3DXVECTOR3 rot;					// 向き
+	CPlayer* pPlayer = CPlayer::Get();	// プレイヤーのポインタ
+	m_DisDest = CAMERA_DISTANCE;		// 目的の距離
+
+	// 距離の補正処理
+	useful::Correct(m_DisDest, &m_Dis, CORRECT_POSR);
+	useful::Correct(m_rotDest, &m_rot.y, CORRECT_POSR);
+
+	if (pPlayer != nullptr)
+	{ // プレイヤーが NULL じゃない場合
+
+		// プレイヤーの情報を取得する
+		pos = pPlayer->GetPos();		// 位置
+		rot = pPlayer->GetRot();		// 向き
+
+		// 目的の注視点を設定する
+		m_posRDest.x = pos.x + CHASE_SHIFT_X;
+		m_posRDest.z = pos.z;
+
+		// 目的の視点を設定する
+		m_posVDest.x = m_posRDest.x + sinf(m_rot.y) * -m_Dis;
+		m_posVDest.z = m_posRDest.z + cosf(m_rot.y) * -m_Dis;
+
+		// 注視点を補正
+		m_posR.x += (m_posRDest.x - m_posR.x) * CORRECT_POSR;
+		m_posR.z += (m_posRDest.z - m_posR.z) * CORRECT_POSR;
+
+		// 視点を補正
+		m_posV.x += (m_posVDest.x - m_posV.x) * CORRECT_POSV;
+		m_posV.z += (m_posVDest.z - m_posV.z) * CORRECT_POSV;
 	}
 }
 

@@ -13,13 +13,16 @@
 #include "renderer.h"
 #include "model.h"
 #include "goal.h"
-#include "player.h"
 #include "useful.h"
+
+#include "bonus.h"
+#include "player.h"
 
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
-#define CYCLE_COUNT		(40)			// 向きが変わるカウント
+#define CYCLE_COUNT			(40)			// 向きが変わるカウント
+#define GOAL_PLAYER_SPEED	(7.0f)			// ゴール時のプレイヤーの速度
 
 //-------------------------------------------
 // 静的メンバ変数宣言
@@ -206,6 +209,9 @@ void CGoal::Hit(void)
 
 	// プレイヤーの位置の設定処理
 	PlayerPosDecide();
+
+	// プレイヤーの情報の設定処理
+	PlayerSetting();
 
 	// 終了処理
 	Uninit();
@@ -438,4 +444,37 @@ void CGoal::PlayerPosDecide(void)
 		// 位置を設定する
 		pPlayer->SetPos(m_aGoal[MODEL_POINT]->GetPos());
 	}
+}
+
+//=======================================
+// プレイヤーの情報の設定処理
+//=======================================
+void CGoal::PlayerSetting(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 move;
+
+	if (m_type == TYPE_PUNCH)
+	{ // パンチ状態の場合
+
+		// パンチ状況を true にする
+		CPlayer::Get()->SetEnablePunch(true);
+
+		// ボーナスの生成
+		CBonus::Create(m_aGoal[MODEL_POINT]->GetPos());
+	}
+	else
+	{ // 上記以外
+
+		// パンチ状況を false にする
+		CPlayer::Get()->SetEnablePunch(false);
+	}
+
+	// 移動量を設定する
+	move.x = sinf(CPlayer::Get()->GetRot().y) * GOAL_PLAYER_SPEED;
+	move.y = 0.0f;
+	move.z = 0.0f;
+
+	// 移動量の設定処理
+	CPlayer::Get()->SetMove(move);
 }

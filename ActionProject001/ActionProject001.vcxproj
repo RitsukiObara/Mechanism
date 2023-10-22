@@ -157,6 +157,7 @@
     <ClCompile Include="ability_UI.cpp" />
     <ClCompile Include="airplane.cpp" />
     <ClCompile Include="airplane_manager.cpp" />
+    <ClCompile Include="bonus.cpp" />
     <ClCompile Include="collpolygon.cpp" />
     <ClCompile Include="combo.cpp" />
     <ClCompile Include="combo_circle.cpp" />
@@ -242,6 +243,7 @@
     <ClInclude Include="ability_UI.h" />
     <ClInclude Include="airplane.h" />
     <ClInclude Include="airplane_manager.h" />
+    <ClInclude Include="bonus.h" />
     <ClInclude Include="collpolygon.h" />
     <ClInclude Include="combo.h" />
     <ClInclude Include="combo_circle.h" />

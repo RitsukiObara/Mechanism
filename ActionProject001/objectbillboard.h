@@ -28,6 +28,7 @@ public:			// 誰でもアクセスできる
 	virtual void Draw(void);			// 描画処理
 
 	void DrawLightOff(void);			// 描画処理(ライティング無し)
+	void DrawShift(const D3DXVECTOR3 shift);				// 描画処理(位置ずらし)
 
 	void BindTexture(int nIdx);			// テクスチャの割り当て処理
 

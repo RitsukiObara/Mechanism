@@ -306,6 +306,9 @@
     <ClCompile Include="goal.cpp">
       <Filter>Gimmick</Filter>
     </ClCompile>
+    <ClCompile Include="bonus.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -547,6 +550,9 @@
     </ClInclude>
     <ClInclude Include="goal.h">
       <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="bonus.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

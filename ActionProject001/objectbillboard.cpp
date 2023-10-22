@@ -296,6 +296,80 @@ void CBillboard::DrawLightOff(void)
 }
 
 //===========================================
+// 描画処理(位置ずらし)
+//===========================================
+void CBillboard::DrawShift(const D3DXVECTOR3 shift)
+{
+		// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();
+
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
+
+	D3DXMATRIX mtxTrans;			//計算用マトリックス
+	D3DXMATRIX mtxView;				//ビューマトリックス取得用
+
+	// ライティングをOFFにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	// Zテストを無効にする
+	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);					//Zテストの設定
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);						//Zテストの有効/無効設定
+
+	// アルファテストを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);					//アルファテストの有効/無効設定
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);				//アルファテストの設定
+	pDevice->SetRenderState(D3DRS_ALPHAREF, ALPHA_TEST_NUMBER);				//アルファテストの参照値設定
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// ビューマトリックスを取得
+	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+	// ポリゴンをカメラに向けて正面に向ける
+	D3DXMatrixInverse(&m_mtxWorld, NULL, &mtxView);
+
+	// 逆行列を求める
+	m_mtxWorld._41 = 0.0f;
+	m_mtxWorld._42 = 0.0f;
+	m_mtxWorld._43 = 0.0f;
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_pos.x + shift.x, m_pos.y + shift.y, m_pos.z + shift.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0,
+		m_pVtxBuff,									// 頂点バッファへのポインタ
+		0,
+		sizeof(VERTEX_3D));							// 頂点情報構造体のサイズ
+
+	// テクスチャの設定
+	pDevice->SetTexture(0, CManager::Get()->GetTexture()->GetAddress(m_nTexIdx));
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,		// プリミティブの種類
+		0,											// 描画する最初の頂点インデックス
+		2);											// 描画するプリミティブ数
+
+	// アルファテストを無効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);			// アルファテストの有効/無効設定
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);		// アルファテストの設定
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);						// アルファテストの参照値設定
+
+	// Zテストを有効にする
+	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);			// Zテストの設定
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);				// Zテストの有効/無効設定
+
+	// ライティングをONにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+}
+
+//===========================================
 // 頂点情報の設定
 //===========================================
 void CBillboard::SetVertex(void)

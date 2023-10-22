@@ -77,16 +77,17 @@ private:			// 自分だけアクセスできる
 	void RotCorrect(void);			// 向きの補正処理
 	void HitRotDecide(void);		// ヒット時の向きの決定処理
 	void PlayerPosDecide(void);		// プレイヤーの位置の設定処理
+	void PlayerSetting(void);		// プレイヤーの情報の設定処理
 
 	// メンバ変数
-	CModel* m_aGoal[MODEL_MAX];			// ゴールの変数
-	TYPE m_type;						// 種類
-	STATE m_state;						// 状態
-	int m_nStateCount;					// 状態カウント
-	float m_fRotDest;					// 目標の向き
+	CModel* m_aGoal[MODEL_MAX];		// ゴールの変数
+	TYPE m_type;					// 種類
+	STATE m_state;					// 状態
+	int m_nStateCount;				// 状態カウント
+	float m_fRotDest;				// 目標の向き
 
 	// 静的メンバ変数
-	static CGoal* m_pGoal;				// ゴールの情報
+	static CGoal* m_pGoal;			// ゴールの情報
 };
 
 #endif

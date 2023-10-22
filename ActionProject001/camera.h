@@ -60,6 +60,7 @@ private:		// 自分だけアクセス出来る
 	void GameCamera(void);			// ゲーム画面のカメラ処理
 	void PlayCamera(void);			// プレイ時のカメラ処理
 	void GoalCamera(void);			// ゴール時のカメラ処理
+	void LeaveCamera(void);			// 退場時のカメラ処理
 
 	// メンバ変数
 	D3DXMATRIX m_mtxView;			// ビューマトリックス
