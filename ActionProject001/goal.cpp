@@ -16,6 +16,7 @@
 #include "useful.h"
 
 #include "bonus.h"
+#include "game_score.h"
 #include "player.h"
 
 //-------------------------------------------
@@ -23,6 +24,8 @@
 //-------------------------------------------
 #define CYCLE_COUNT			(40)			// 向きが変わるカウント
 #define GOAL_PLAYER_SPEED	(7.0f)			// ゴール時のプレイヤーの速度
+#define SMALL_ADD_SCORE		(1000)			// 小スコア
+#define BIG_ADD_SCORE		(2000)			// 大スコア
 
 //-------------------------------------------
 // 静的メンバ変数宣言
@@ -143,7 +146,7 @@ void CGoal::Update(void)
 	{
 	case CGoal::STATE_CYCLE:		// 回転状態
 
-			// 向きの決定処理
+		// 向きの決定処理
 		RotDecide(&m_fRotDest);
 
 		// 向きの補正処理
@@ -457,17 +460,62 @@ void CGoal::PlayerSetting(void)
 	if (m_type == TYPE_PUNCH)
 	{ // パンチ状態の場合
 
+
+	}
+	else
+	{ // 上記以外
+
+
+	}
+
+	switch (m_type)
+	{
+	case CGoal::TYPE_PUNCH:
+
 		// パンチ状況を true にする
 		CPlayer::Get()->SetEnablePunch(true);
 
 		// ボーナスの生成
 		CBonus::Create(m_aGoal[MODEL_POINT]->GetPos());
-	}
-	else
-	{ // 上記以外
+
+		break;
+
+	case CGoal::TYPE_SMALL_R:
 
 		// パンチ状況を false にする
 		CPlayer::Get()->SetEnablePunch(false);
+
+		// 小スコアを加算する
+		CGameScore::Get()->AddScore(SMALL_ADD_SCORE);
+
+		break;
+
+	case CGoal::TYPE_BIG:
+
+		// パンチ状況を false にする
+		CPlayer::Get()->SetEnablePunch(false);
+
+		// 大スコアを加算する
+		CGameScore::Get()->AddScore(BIG_ADD_SCORE);
+
+		break;
+
+	case CGoal::TYPE_SMALL_L:
+
+		// パンチ状況を false にする
+		CPlayer::Get()->SetEnablePunch(false);
+
+		// 小スコアを加算する
+		CGameScore::Get()->AddScore(SMALL_ADD_SCORE);
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
 	}
 
 	// 移動量を設定する

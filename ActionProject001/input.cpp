@@ -351,48 +351,6 @@ void CInputGamePad::Update(void)
 			//ゲームパッドのリリース情報を保存
 			m_aPadStateRelease[nCntGP].Gamepad.wButtons = (m_aPadState[nCntGP].Gamepad.wButtons ^ aGamePadState[nCntGP].Gamepad.wButtons) & ~aGamePadState[nCntGP].Gamepad.wButtons;
 
-			if (aGamePadState[nCntGP].Gamepad.sThumbLX >= SHRT_MAX - 10000 &&
-				m_aPadState[nCntGP].Gamepad.sThumbLX >= SHRT_MAX - 10000)
-			{ // 左スティックを右に倒した場合
-
-				// 左スティックのトリガー情報を保存
-				m_aPadStateTrigger[nCntGP].Gamepad.sThumbLX = SHRT_MAX;
-			}
-			else if (aGamePadState[nCntGP].Gamepad.sThumbLX <= SHRT_MIN + 10000 &&
-				m_aPadState[nCntGP].Gamepad.sThumbLX <= SHRT_MIN + 10000)
-			{ // 左スティックを左に倒した場合
-
-				// 左スティックのトリガー情報を保存
-				m_aPadStateTrigger[nCntGP].Gamepad.sThumbLX = SHRT_MIN;
-			}
-			else
-			{ // 上記以外
-
-				// 左スティックのトリガー情報を保存
-				m_aPadStateTrigger[nCntGP].Gamepad.sThumbLX = 0;
-			}
-
-			if (aGamePadState[nCntGP].Gamepad.sThumbLY >= SHRT_MAX - 10000 &&
-				m_aPadState[nCntGP].Gamepad.sThumbLY >= SHRT_MAX - 10000)
-			{ // 左スティックを上に倒した場合
-
-				// 左スティックのトリガー情報を保存
-				m_aPadStateTrigger[nCntGP].Gamepad.sThumbLY = SHRT_MAX;
-			}
-			else if (aGamePadState[nCntGP].Gamepad.sThumbLY <= SHRT_MIN + 10000 &&
-				m_aPadState[nCntGP].Gamepad.sThumbLY <= SHRT_MIN + 10000)
-			{ // 左スティックを下に倒した場合
-
-				// 左スティックのトリガー情報を保存
-				m_aPadStateTrigger[nCntGP].Gamepad.sThumbLY = SHRT_MIN;
-			}
-			else
-			{ // 上記以外
-
-				// 左スティックのトリガー情報を保存
-				m_aPadStateTrigger[nCntGP].Gamepad.sThumbLY = 0;
-			}
-
 			//ゲームパッドのプレス情報を保存
 			m_aPadState[nCntGP] = aGamePadState[nCntGP];
 
@@ -403,8 +361,6 @@ void CInputGamePad::Update(void)
 
 	// 接続判定を代入する
 	m_bConnect = bConnect;
-
-	CManager::Get()->GetDebugProc()->Print("左スティックの調子：%d\n", m_aPadStateTrigger[0].Gamepad.sThumbLY);
 }
 
 //======================================
@@ -501,44 +457,6 @@ SHORT CInputGamePad::GetGameStickLYPress(int nPlayer)
 }
 
 //======================================
-//Lスティック(X軸)入力のトリガー情報処理
-//======================================
-bool CInputGamePad::GetGameStickLXTrigger(int nPlayer)
-{
-	if (m_aPadStateTrigger[nPlayer].Gamepad.sThumbLX >= SHRT_MAX)
-	{ // トリガー情報が上に向けられた場合
-
-		// true を返す
-		return true;
-	}
-	else
-	{ // 上記以外
-		
-		// false を返す
-		return false;
-	}
-}
-
-//======================================
-//Lスティック(Y軸)入力のトリガー情報処理
-//======================================
-bool CInputGamePad::GetGameStickLYTrigger(int nPlayer)
-{
-	if (m_aPadStateTrigger[nPlayer].Gamepad.sThumbLY >= SHRT_MAX)
-	{ // トリガー情報が上に向けられた場合
-
-		// true を返す
-		return true;
-	}
-	else
-	{ // 上記以外
-		
-		// false を返す
-		return false;
-	}
-}
-
-//======================================
 //Rスティック(X軸)入力のプレス情報処理
 //======================================
 SHORT CInputGamePad::GetGameStickRXPress(int nPlayer)
@@ -552,22 +470,6 @@ SHORT CInputGamePad::GetGameStickRXPress(int nPlayer)
 SHORT CInputGamePad::GetGameStickRYPress(int nPlayer)
 {
 	return m_aPadState[nPlayer].Gamepad.sThumbRY;
-}
-
-//======================================
-//Rスティック(X軸)入力のトリガー情報処理
-//======================================
-SHORT CInputGamePad::GetGameStickRXTrigger(int nPlayer)
-{
-	return m_aPadStateTrigger[nPlayer].Gamepad.sThumbRX;
-}
-
-//======================================
-//Rスティック(Y軸)入力のトリガー情報処理
-//======================================
-SHORT CInputGamePad::GetGameStickRYTrigger(int nPlayer)
-{
-	return m_aPadStateTrigger[nPlayer].Gamepad.sThumbRY;
 }
 
 //======================================================ここからCInputMouseの処理======================================================

@@ -278,8 +278,7 @@ void CPause::PauseSelect(void)
 {
 	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_W) == true ||
 		CManager::Get()->GetInputKeyboard()->GetRepeat(DIK_W, SELECT_REPEAT_COUNT) == true ||
-		CManager::Get()->GetInputGamePad()->GetTrigger(CInputGamePad::JOYKEY_UP, 0) == true ||
-		CManager::Get()->GetInputGamePad()->GetGameStickLYTrigger(0) == true)
+		CManager::Get()->GetInputGamePad()->GetTrigger(CInputGamePad::JOYKEY_UP, 0) == true)
 	{ // Wキーを押した場合
 
 		// ポーズの設定

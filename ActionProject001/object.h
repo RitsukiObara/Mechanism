@@ -50,6 +50,8 @@ public:			// 誰でもアクセスできる
 		TYPE_RIPPLE,			// 波紋
 		TYPE_GOAL,				// ゴール
 		TYPE_BONUSCOMBO,		// ボーナスコンボ
+		TYPE_TITLELOGO,			// タイトルロゴ
+		TYPE_EDIT,				// エディット
 		TYPE_MAX				// この列挙型の総数
 	};
 

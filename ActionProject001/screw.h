@@ -36,15 +36,22 @@ public:			// 誰でもアクセスできる
 
 	void Hit(const D3DXVECTOR3& pos);					// ヒット処理
 
-	void SetData(const D3DXVECTOR3& pos);				// 情報の設定処理
+	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const bool bGravity);				// 情報の設定処理
 
 	// 静的メンバ関数
-	static CScrew* Create(const D3DXVECTOR3& pos);		// 生成処理
+	static CScrew* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const bool bGravity);	// 生成処理
 
 private:		// 自分だけアクセスできる
 
 	// メンバ関数
+	void Gravity(void);		// 重力処理
 	void Cycle(void);		// 回転処理
+	void Elevation(void);	// 起伏の当たり判定処理
+	void Table(void);		// 台との当たり判定処理
+
+	// メンバ変数
+	D3DXVECTOR3 m_move;		// 移動量
+	bool m_bGravity;		// 重力状況
 
 	// リスト構造関係
 	CScrew* m_pPrev;	// 前へのポインタ

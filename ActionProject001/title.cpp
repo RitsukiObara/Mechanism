@@ -15,6 +15,8 @@
 #include "fade.h"
 #include "Objectmesh.h"
 
+#include "title_logo.h"
+
 // マクロ定義
 #define SET_RANKING_TIMER		(600)		// ランキング画面に遷移するカウント数
 
@@ -45,6 +47,9 @@ HRESULT CTitle::Init(void)
 
 	// テキスト読み込み処理
 	CMesh::TxtSet();
+
+	// タイトルロゴの生成
+	CTitleLogo::Create();
 
 	// 全ての値を初期化する
 	m_nTransCount = 0;

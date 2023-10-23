@@ -114,14 +114,10 @@ public:			// 誰でもアクセスできる
 	// 左スティック関係
 	SHORT GetGameStickLXPress(int nPlayer);			// Lスティック(X軸)入力のプレス情報処理
 	SHORT GetGameStickLYPress(int nPlayer);			// Lスティック(Y軸)入力のプレス情報処理
-	bool GetGameStickLXTrigger(int nPlayer);		// Lスティック(X軸)入力のトリガー情報処理
-	bool GetGameStickLYTrigger(int nPlayer);		// Lスティック(Y軸)入力のトリガー情報処理
 
 	// 右スティック関係
 	SHORT GetGameStickRXPress(int nPlayer);			// Rスティック(X軸)入力のプレス情報処理
 	SHORT GetGameStickRYPress(int nPlayer);			// Rスティック(Y軸)入力のプレス情報処理
-	SHORT GetGameStickRXTrigger(int nPlayer);		// Rスティック(X軸)入力のトリガー情報処理
-	SHORT GetGameStickRYTrigger(int nPlayer);		// Rスティック(Y軸)入力のトリガー情報処理
 
 private:		// 誰でもアクセスできる
 

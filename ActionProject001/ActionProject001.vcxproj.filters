@@ -309,6 +309,9 @@
     <ClCompile Include="bonus.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="title_logo.cpp">
+      <Filter>Scene\Title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -553,6 +556,9 @@
     </ClInclude>
     <ClInclude Include="bonus.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="title_logo.h">
+      <Filter>Scene\Title</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

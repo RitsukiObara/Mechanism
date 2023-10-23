@@ -707,21 +707,23 @@ void CCamera::PlayCamera(void)
 // ポーズ以外のカメラ
 #if 1
 
-	if (CGame::GetPause() != nullptr &&
-		CGame::GetPause()->GetPause() == false)
-	{ // ポーズが NULL じゃない場合
+	if (CGame::IsEdit() == true)
+	{ // エディット状態の場合
 
-		// 追跡処理
-		Chase();
+		// 操作処理
+		Control();
 	}
+	else
+	{ // 上記以外
 
-#endif
+		if (CGame::GetPause() != nullptr &&
+			CGame::GetPause()->GetPause() == false)
+		{ // ポーズが NULL じゃない場合
 
-// エディット状態のカメラ
-#if 0
-
-	// 操作処理
-	Control();
+			// 追跡処理
+			Chase();
+		}
+	}
 
 #endif
 

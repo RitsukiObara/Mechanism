@@ -45,6 +45,8 @@
 #define GOAL_COUNT				(80)		// ゴール状態のカウント数
 #define LEAVE_GRAVITY			(0.4f)		// 退場状態の重力
 #define FINISH_GRAVITY			(-0.6f)		// 終了状態の重力
+#define NEAR_POS				(0.0f)		// 手前の位置
+#define FAR_POS					(1000.0f)	// 奥行の位置
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -704,8 +706,9 @@ void CPlayer::ElevationCollision(void)
 {
 	// ローカル変数宣言
 	CElevation* pMesh = CElevationManager::Get()->GetTop();		// 起伏の先頭のオブジェクトを取得する
-	D3DXVECTOR3 pos = GetPos();				// 位置を取得する
-	float fHeight = 0.0f;					// 高さ
+	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
+	float fHeight = 0.0f;			// 高さ
+	bool bJump = true;				// ジャンプ状況
 
 	while (pMesh != nullptr)
 	{ // 地面の情報がある限り回す
@@ -720,10 +723,10 @@ void CPlayer::ElevationCollision(void)
 			pos.y = fHeight;
 
 			// 重力を設定する
-			m_move.y = 0.0f;
+			m_move.y = -50.0f;
 
 			// ジャンプ状況を false にする
-			m_bJump = false;
+			bJump = false;
 
 			if (m_pAction->GetState() == CPlayerAct::STATE_CANNON ||
 				m_pAction->GetState() == CPlayerAct::STATE_FLY)
@@ -736,7 +739,7 @@ void CPlayer::ElevationCollision(void)
 				{ // 前後状況を設定する
 
 					// 後ろにする
-					pos.z = 1000.0f;
+					pos.z = FAR_POS;
 
 					// 前後状況を設定する
 					m_pAction->SetFront(false);
@@ -744,12 +747,15 @@ void CPlayer::ElevationCollision(void)
 				else
 				{ // 上記以外
 
-					// 後ろにする
-					pos.z = 0.0f;
+					// 手前にする
+					pos.z = NEAR_POS;
 
 					// 前後状況を設定する
 					m_pAction->SetFront(true);
 				}
+
+				// リセット処理
+				m_pAbility->ResetAbility();
 			}
 
 			if (CGame::GetState() == CGame::STATE_LEAVE)
@@ -757,6 +763,7 @@ void CPlayer::ElevationCollision(void)
 
 				// 移動量を設定する
 				m_move.x = 0.0f;
+				m_move.y = 0.0f;
 
 				// 終了状態にする
 				CGame::SetState(CGame::STATE_FINISH);
@@ -766,6 +773,9 @@ void CPlayer::ElevationCollision(void)
 		// 次のポインタを取得する
 		pMesh = pMesh->GetNext();
 	}
+
+	// ジャンプ状況を代入する
+	m_bJump = bJump;
 
 	// 位置を更新する
 	SetPos(pos);
@@ -814,18 +824,18 @@ void CPlayer::CollisionMagicWall(void)
 	// ローカル変数宣言
 	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
 
-	if (pos.z >= 1000.0f)
+	if (pos.z >= FAR_POS)
 	{ // 位置が一定以上になった場合
 
 		// 位置を補正する
-		pos.z = 1000.0f;
+		pos.z = FAR_POS;
 	}
 
-	if (pos.z <= 0.0f)
+	if (pos.z <= NEAR_POS)
 	{ // 位置を一定以下になった場合
 
 		// 位置を補正する
-		pos.z = 0.0f;
+		pos.z = NEAR_POS;
 	}
 
 	// 位置を適用する
@@ -861,7 +871,7 @@ void CPlayer::TableCollision(void)
 			{ // 前後状況を設定する
 
 				// 後ろにする
-				pos.z = 1000.0f;
+				pos.z = FAR_POS;
 
 				// 前後状況を設定する
 				m_pAction->SetFront(false);
@@ -870,11 +880,14 @@ void CPlayer::TableCollision(void)
 			{ // 上記以外
 
 				// 後ろにする
-				pos.z = 0.0f;
+				pos.z = NEAR_POS;
 
 				// 前後状況を設定する
 				m_pAction->SetFront(true);
 			}
+
+			// リセット処理
+			m_pAbility->ResetAbility();
 		}
 	}
 

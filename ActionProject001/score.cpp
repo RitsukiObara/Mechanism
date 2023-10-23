@@ -16,7 +16,7 @@
 
 // マクロ定義
 #define SCORE_TEXTURE		"data\\TEXTURE\\Number.png"		// スコアのテクスチャ
-#define DISP_ADD_SCORE		(10)							// 描画用スコアの加算数
+#define DISP_ADD_SCORE		(50)							// 描画用スコアの加算数
 #define NUMBER_SHIFT		(50.0f)							// 数字のずらす幅
 
 //========================

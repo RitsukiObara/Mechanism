@@ -26,6 +26,7 @@ public:			// 誰でもアクセスできる
 		ABILITY_NONE = 0,		// 無状態
 		ABILITY_HOVER,			// ホバージェット
 		ABILITY_JETDASH,		// ジェットダッシュ
+		ABILITY_DASHJUMP,		// ダッシュジャンプ
 		ABILITY_GROUNDQUAKE,	// グラウンドクエイク
 		ABILITY_MAX				// この列挙型の総数
 	};
@@ -52,6 +53,7 @@ public:			// 誰でもアクセスできる
 	// セット・ゲット関数
 	void SetAbility(const ABILITY ability, CPlayer& player);		// 能力の設定処理
 	ABILITY GetAbility(void) const;				// 能力の取得処理
+	void ResetAbility(void);					// 能力のリセット処理
 	void SetPossible(const TYPE type, const bool bPossible);		// 可能状況の設定処理
 	bool GetPossible(const TYPE type);								// 可能状況の取得処理
 

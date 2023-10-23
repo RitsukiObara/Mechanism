@@ -15,6 +15,7 @@
 #include "renderer.h"
 
 #include "pause.h"
+#include "edit.h"
 #include "debugproc.h"
 #include "sound.h"
 
@@ -35,15 +36,31 @@ CPause* CGame::m_pPause = nullptr;							// ポーズの情報
 CGame::STATE CGame::m_GameState = CGame::STATE_START;		// ゲームの進行状態
 int CGame::m_nFinishCount = 0;								// 終了カウント
 
+// デバッグ版
+#ifdef _DEBUG
+
+CEdit* CGame::m_pEdit = nullptr;			// エディットの情報
+bool CGame::m_bEdit = false;				// エディット状態かどうか
+
+#endif
+
 //=========================================
 // コンストラクタ
 //=========================================
 CGame::CGame() : CScene(TYPE_NONE, PRIORITY_BG)
 {
 	// 全ての値をクリアする
-	m_pPause = nullptr;			// ポーズスコア
+	m_pPause = nullptr;			// ポーズ
 	m_nFinishCount = 0;			// 終了カウント
 	m_GameState = STATE_START;	// 状態
+
+// デバッグ版
+#ifdef _DEBUG
+
+	m_pEdit = nullptr;			// エディット
+	m_bEdit = false;			// エディット状況
+#endif
+
 }
 
 //=========================================
@@ -79,17 +96,17 @@ HRESULT CGame::Init(void)
 	CAirplane::Create(D3DXVECTOR3(2000.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
 
 	// ネジの生成処理
-	CScrew::Create(D3DXVECTOR3(300.0f, 300.0f, 0.0f));
-	CScrew::Create(D3DXVECTOR3(700.0f, 300.0f, 0.0f));
-	CScrew::Create(D3DXVECTOR3(1100.0f, 300.0f, 0.0f));
-	CScrew::Create(D3DXVECTOR3(2000.0f, 400.0f, 200.0f));
-	CScrew::Create(D3DXVECTOR3(2000.0f, 500.0f, 300.0f));
-	CScrew::Create(D3DXVECTOR3(2000.0f, 600.0f, 400.0f));
-	CScrew::Create(D3DXVECTOR3(2000.0f, 650.0f, 500.0f));
-	CScrew::Create(D3DXVECTOR3(2000.0f, 600.0f, 600.0f));
-	CScrew::Create(D3DXVECTOR3(2000.0f, 500.0f, 700.0f));
-	CScrew::Create(D3DXVECTOR3(2000.0f, 400.0f, 800.0f));
-	CScrew::Create(D3DXVECTOR3(2000.0f, 300.0f, 900.0f));
+	CScrew::Create(D3DXVECTOR3(300.0f, 300.0f, 0.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(700.0f, 300.0f, 0.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(1100.0f, 300.0f, 0.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(2000.0f, 400.0f, 200.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(2000.0f, 500.0f, 300.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(2000.0f, 600.0f, 400.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(2000.0f, 650.0f, 500.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(2000.0f, 600.0f, 600.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(2000.0f, 500.0f, 700.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(2000.0f, 400.0f, 800.0f), NONE_D3DXVECTOR3, false);
+	CScrew::Create(D3DXVECTOR3(2000.0f, 300.0f, 900.0f), NONE_D3DXVECTOR3, false);
 
 	// 敵の生成処理
 	CEnemy::Create(D3DXVECTOR3(3000.0f, 0.0f, 0.0f), CEnemy::TYPE_ITOCAN);
@@ -135,6 +152,7 @@ void CGame::Uninit(void)
 {
 	// ポインタを NULL にする
 	m_pPause = nullptr;			// ポーズ
+	m_pEdit = nullptr;			// エディット
 
 	// 情報を初期化する
 	m_GameState = STATE_START;	// ゲームの進行状態
@@ -151,6 +169,53 @@ void CGame::Uninit(void)
 //======================================
 void CGame::Update(void)
 {
+
+// デバッグ版
+#ifdef _DEBUG
+
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_F7) == true)
+	{ // F7キーを押した場合
+
+		// エディット状況を入れ替える
+		m_bEdit = m_bEdit ? false : true;
+
+		if (m_bEdit == true)
+		{ // エディット状況が true の場合
+
+			if (m_pEdit == nullptr)
+			{ // エディットが NULL じゃない場合
+
+				// エディットを生成する
+				m_pEdit = CEdit::Create(NONE_D3DXVECTOR3);
+			}
+			else
+			{ // 上記以外
+
+				// 停止
+				assert(false);
+			}
+		}
+		else
+		{ // 上記以外
+
+			if (m_pEdit != nullptr)
+			{ // エディット状況が NULL じゃない場合
+
+				// 終了処理
+				m_pEdit->Uninit();
+				m_pEdit = nullptr;
+			}
+			else
+			{ // 上記以外
+
+				// 停止
+				assert(false);
+			}
+		}
+	}
+
+#endif
+
 	switch (m_GameState)
 	{
 	case CGame::STATE_START:
@@ -192,12 +257,39 @@ void CGame::Update(void)
 		break;
 	}
 
+#ifdef _DEBUG
+
+	if (m_bEdit == true)
+	{ // エディット状況が true の場合
+
+		if (m_pEdit != nullptr)
+		{ // エディットが NULL じゃない場合
+
+			// エディットの更新処理
+			m_pEdit->Update();
+		}
+	}
+	else
+	{ // 上記以外
+
+		if (CManager::Get()->GetRenderer() != nullptr)
+		{ // レンダラーが NULL じゃない場合
+
+			// レンダラーの更新
+			CManager::Get()->GetRenderer()->Update();
+		}
+	}
+
+#else
+
 	if (CManager::Get()->GetRenderer() != nullptr)
 	{ // レンダラーが NULL じゃない場合
 
 		// レンダラーの更新
 		CManager::Get()->GetRenderer()->Update();
 	}
+
+#endif
 
 	CManager::Get()->GetDebugProc()->Print("状態：%d", m_GameState);
 }
@@ -314,3 +406,25 @@ void CGame::DeletePause(void)
 	// ポーズのポインタを NULL にする
 	m_pPause = nullptr;
 }
+
+// デバッグ版
+#ifdef _DEBUG
+//======================================
+// エディットの取得処理
+//======================================
+CEdit* CGame::GetEdit(void)
+{
+	// エディットの情報を返す
+	return m_pEdit;
+}
+
+//======================================
+// エディット状況の取得処理
+//======================================
+bool CGame::IsEdit(void)
+{
+	// エディット状況を返す
+	return m_bEdit;
+}
+
+#endif

@@ -111,6 +111,26 @@ void CAbility::Update(CPlayer& player)
 
 		break;
 
+	case ABILITY_DASHJUMP:		// ダッシュジャンプ
+
+	{
+		float f = player.GetSpeed();
+
+		useful::FrameCorrect(8.0f, &f, 0.5f);
+
+		// 速度を適用する
+		player.SetSpeed(f);
+
+		if (f <= 8.0f)
+		{ // 速度が一定数以下になった場合
+
+			// 無能力状態にする
+			m_ability = ABILITY_NONE;
+		}
+	}
+
+		break;
+
 	case ABILITY_GROUNDQUAKE:	// グラウンドクエイク
 
 		// グラウンドクエイク処理
@@ -180,6 +200,13 @@ void CAbility::SetAbility(const ABILITY ability, CPlayer& player)
 
 		break;
 
+	case ABILITY_DASHJUMP:		// ダッシュジャンプ
+
+		// 速度を設定する
+		player.SetSpeed(JETDASH_SPEED);
+
+		break;
+
 	case ABILITY_GROUNDQUAKE:	// グラウンドクエイク状態
 
 		// 頂点の探索処理
@@ -203,6 +230,20 @@ CAbility::ABILITY CAbility::GetAbility(void) const
 {
 	// 能力を返す
 	return m_ability;
+}
+
+//============================================
+// 能力のリセット処理
+//============================================
+void CAbility::ResetAbility(void)
+{
+	// 能力を設定する
+	m_ability = ABILITY_NONE;
+
+	// 可能状況を true にする
+	m_aPossible[TYPE_HOVER] = true;
+	m_aPossible[TYPE_JETDASH] = true;
+	m_aPossible[TYPE_GROUNDQUAKE] = true;
 }
 
 //========================
@@ -355,8 +396,21 @@ void CAbility::SkyDash(CPlayer& player)
 	if (m_aAblCount[TYPE_JETDASH] >= JETDASH_COUNT)
 	{ // カウントが一定数以上の場合
 
-		// 無能力状態にする
-		m_ability = ABILITY_NONE;
+		if (player.IsJump() == true)
+		{ // ジャンプ状況が true の場合
+
+			// 能力カウントを初期化する
+			m_aAblCount[TYPE_JETDASH] = 0;
+
+			// ダッシュジャンプ状態にする
+			SetAbility(ABILITY_DASHJUMP, player);
+		}
+		else
+		{ // 上記以外
+
+			// 無能力状態にする
+			m_ability = ABILITY_NONE;
+		}
 	}
 
 	// 位置を適用する

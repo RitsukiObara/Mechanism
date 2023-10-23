@@ -29,6 +29,8 @@
 #define EXPANSE_COUNT		(10)								// 伸び状態のカウント
 #define EJECT_SCALE_DEST	(D3DXVECTOR3(1.6f, 0.3f, 1.6f))		// 排出状態の目的のサイズ
 #define EJECT_ADD_CORRECT	(0.01f)								// 排出状態の補正するときの加算数
+#define SCREW_SHIFT_Z		(100.0f)							// ネジのずらす幅(Z軸)
+#define SCREW_MOVE_Y		(20.0f)								// ネジの移動量(Y軸)
 
 //==============================
 // コンストラクタ
@@ -199,7 +201,7 @@ void CMacchina::Update(void)
 			m_scaleDest = EJECT_SCALE_DEST;
 
 			// ネジの生成処理
-			CScrew::Create(D3DXVECTOR3(GetPos().x, GetPos().y + 200.0f, GetPos().z - 100.0f));
+			CScrew::Create(D3DXVECTOR3(GetPos().x, GetPos().y, GetPos().z - SCREW_SHIFT_Z), D3DXVECTOR3(0.0f, SCREW_MOVE_Y, 0.0f), true);
 		}
 
 		break;

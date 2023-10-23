@@ -16,6 +16,9 @@
 
 #include "Particle.h"
 #include "destruction.h"
+#include "collision.h"
+#include "objectElevation.h"
+#include "elevation_manager.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -32,8 +35,10 @@
 CScrew::CScrew() : CModel(CObject::TYPE_SCREW, CObject::PRIORITY_ENTITY)
 {
 	// 全ての値をクリアする
-	m_pPrev = nullptr;		// 前のポインタ
-	m_pNext = nullptr;		// 次のポインタ
+	m_pPrev = nullptr;			// 前のポインタ
+	m_pNext = nullptr;			// 次のポインタ
+	m_move = NONE_D3DXVECTOR3;	// 移動量
+	m_bGravity = false;			// 重力状況
 
 	if (CScrewManager::Get() != nullptr)
 	{ // マネージャーが存在していた場合
@@ -99,6 +104,10 @@ HRESULT CScrew::Init(void)
 		return E_FAIL;
 	}
 
+	// 全ての値を初期化する
+	m_move = NONE_D3DXVECTOR3;	// 移動量
+	m_bGravity = false;			// 重力状況
+
 	// 値を返す
 	return S_OK;
 }
@@ -128,8 +137,21 @@ void CScrew::Uninit(void)
 //========================================
 void CScrew::Update(void)
 {
+	if(m_bGravity == true)
+	{ // 重力状況が true の場合
+
+		// 重力処理
+		Gravity();
+	}
+
 	// 回転処理
 	Cycle();
+
+	// 起伏地面の当たり判定
+	Elevation();
+
+	// 台との当たり判定
+	Table();
 }
 
 //=====================================
@@ -159,7 +181,7 @@ void CScrew::Hit(const D3DXVECTOR3& pos)
 //=====================================
 // 情報の設定処理
 //=====================================
-void CScrew::SetData(const D3DXVECTOR3& pos)
+void CScrew::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const bool bGravity)
 {
 	// 情報の設定処理
 	SetPos(pos);								// 位置
@@ -167,12 +189,16 @@ void CScrew::SetData(const D3DXVECTOR3& pos)
 	SetRot(INIT_ROT);							// 向き
 	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
 	SetFileData(CXFile::TYPE_SCREW);			// モデルの情報
+
+	// 全ての値を初期化する
+	m_move = move;				// 移動量
+	m_bGravity = bGravity;		// 重力状況
 }
 
 //=======================================
 // 生成処理
 //=======================================
-CScrew* CScrew::Create(const D3DXVECTOR3& pos)
+CScrew* CScrew::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const bool bGravity)
 {
 	// ローカルオブジェクトを生成
 	CScrew* pScrew = nullptr;	// インスタンスを生成
@@ -208,7 +234,7 @@ CScrew* CScrew::Create(const D3DXVECTOR3& pos)
 		}
 
 		// 情報の設定処理
-		pScrew->SetData(pos);
+		pScrew->SetData(pos, move, bGravity);
 	}
 	else
 	{ // オブジェクトが NULL の場合
@@ -225,6 +251,21 @@ CScrew* CScrew::Create(const D3DXVECTOR3& pos)
 }
 
 //=======================================
+// 重力処理
+//=======================================
+void CScrew::Gravity(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
+
+	// 重力処理
+	useful::Gravity(&m_move.y, pos, 0.6f);
+
+	// 位置を適用する
+	SetPos(pos);
+}
+
+//=======================================
 // 回転処理
 //=======================================
 void CScrew::Cycle(void)
@@ -237,4 +278,58 @@ void CScrew::Cycle(void)
 
 	// 向きを適用する
 	SetRot(rot);
+}
+
+//=======================================
+// 起伏の当たり判定処理
+//=======================================
+void CScrew::Elevation(void)
+{
+	// ローカル変数宣言
+	CElevation* pMesh = CElevationManager::Get()->GetTop();		// 起伏の先頭のオブジェクトを取得する
+	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
+	float fHeight = 0.0f;			// 高さ
+
+	while (pMesh != nullptr)
+	{ // 地面の情報がある限り回す
+
+		// 当たり判定を取る
+		fHeight = pMesh->ElevationCollision(pos);
+		
+		if (pos.y < fHeight)
+		{ // 当たり判定の位置が高かった場合
+
+			// 高さを設定する
+			pos.y = fHeight;
+
+			// 重力を設定する
+			m_move.y = 0.0f;
+		}
+
+		// 次のポインタを取得する
+		pMesh = pMesh->GetNext();
+	}
+
+	// 位置を更新する
+	SetPos(pos);
+}
+
+//=======================================
+// 台との当たり判定処理
+//=======================================
+void CScrew::Table(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();			// 位置
+	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
+
+	if (collision::TableCollision(&pos, posOld, GetFileData().collsize.x, GetFileData().collsize.z) == true)
+	{ // 台との当たり判定が true だった場合
+
+		// 縦の移動量を無くす
+		m_move.y = 0.0f;
+	}
+
+	// 位置を適用させる
+	SetPos(pos);
 }

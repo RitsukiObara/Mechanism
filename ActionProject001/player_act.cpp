@@ -25,7 +25,7 @@
 #define JUMP_MOVE				(20.0f)				// ジャンプの移動量
 #define CANNON_Y_MOVE			(30.0f)				// 大砲のY軸の移動量
 #define CANNON_Z_MOVE			(15.0f)				// 大砲のZ軸の移動量
-#define PLAYER_SPEED			(8.0f)				// アクロバット状態のスピード
+#define PLAYER_SPEED			(8.0f)				// プレイヤーのスピード
 #define DAMAGE_COUNT			(25)				// ダメージ状態のカウント数
 #define INVINCIBLE_ALPHA_CHANGE	(6)					// 無敵状態の透明度が変わるカウント
 #define INVINCIBLE_COUNT		(70)				// 無敵状態のカウント数
@@ -33,8 +33,6 @@
 // 重力関係
 #define NONE_GRAVITY		(-0.9f)					// 通常状態の重力
 #define HOVER_GRAVITY		(0.8f)					// ホバー状態の重力
-#define JETDASH_GRAVITY		(-0.3f)					// ジェットダッシュ状態の重力
-#define FLY_GRAVITY			(-0.9f)					// フライ状態の重力
 
 //============================================
 // コンストラクタ
@@ -170,7 +168,7 @@ void CPlayerAct::Update(CPlayer& player)
 			D3DXVECTOR3 move = player.GetMove();		// 移動量を取得する
 
 			// 重力を加算する
-			move.y += FLY_GRAVITY;
+			move.y += NONE_GRAVITY;
 
 			// 移動量を設定する
 			pos += move;
@@ -347,11 +345,16 @@ void CPlayerAct::Control(CPlayer& player)
 		// 移動の基本処理
 		MoveProcess(player);
 
-		// 右向き状況を true にする
-		player.SetEnableRight(true);
+		if (player.GetAbility()->GetAbility() != CAbility::ABILITY_JETDASH &&
+			player.GetAbility()->GetAbility() != CAbility::ABILITY_DASHJUMP)
+		{ // 一定の状態以外の場合
 
-		// 目標の向きを設定する
-		rotDest.y = D3DX_PI * 0.5f;
+			// 右向き状況を true にする
+			player.SetEnableRight(true);
+
+			// 目標の向きを設定する
+			rotDest.y = D3DX_PI * 0.5f;
+		}
 	}
 	else if (CManager::Get()->GetInputKeyboard()->GetPress(DIK_A) == true)
 	{ // Aキーを押した場合
@@ -362,11 +365,16 @@ void CPlayerAct::Control(CPlayer& player)
 		// 移動の基本処理
 		MoveProcess(player);
 
-		// 右向き状況を false にする
-		player.SetEnableRight(false);
+		if (player.GetAbility()->GetAbility() != CAbility::ABILITY_JETDASH &&
+			player.GetAbility()->GetAbility() != CAbility::ABILITY_DASHJUMP)
+		{ // 一定の状態以外の場合
 
-		// 目標の向きを設定する
-		rotDest.y = -D3DX_PI * 0.5f;
+			// 右向き状況を false にする
+			player.SetEnableRight(false);
+
+			// 目標の向きを設定する
+			rotDest.y = -D3DX_PI * 0.5f;
+		}
 	}
 	else
 	{ // 上記以外
@@ -433,6 +441,12 @@ void CPlayerAct::ModeSpeed(CPlayer& player)
 
 		break;
 
+	case CAbility::ABILITY_DASHJUMP:	// ダッシュジャンプ
+
+		// 別のところで速度に関する処理を行っているので無し
+
+		break;
+
 	default:
 
 		// 速度を設定する
@@ -477,13 +491,6 @@ void CPlayerAct::Gravity(CPlayer& player)
 
 		// 重力を加算する
 		move.y = HOVER_GRAVITY;
-
-		break;
-
-	case CAbility::ABILITY_JETDASH:		// ジェットダッシュ状態
-
-		// 重力を加算する
-		move.y += JETDASH_GRAVITY;
 
 		break;
 
