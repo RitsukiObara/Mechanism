@@ -18,6 +18,7 @@
 #include "fraction.h"
 #include "destruction.h"
 #include "Particle.h"
+#include "collision.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -267,6 +268,22 @@ void CMachidori::Update(void)
 
 		break;
 
+	case STATE_STUN:
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		// 重力処理
+		Gravity();
+
+		// 起伏地面の当たり判定
+		ElevationCollision();
+
+		// 台との当たり判定
+		TableCollision();
+
+		break;
+
 	default:
 
 		// 停止
@@ -274,6 +291,9 @@ void CMachidori::Update(void)
 
 		break;
 	}
+
+	// 敵同士の当たり判定
+	collision::EnemyToEnemy(this);
 }
 
 //=====================================
@@ -350,6 +370,18 @@ void CMachidori::SmashHit(void)
 		// 破片の生成処理
 		CFraction::Create(GetPos(), type);
 	}
+}
+
+//=====================================
+// 気絶のヒット処理
+//=====================================
+void CMachidori::StunHit(void)
+{
+	// 気絶状態にする
+	m_state = STATE_STUN;
+
+	// 状態カウントを初期化する
+	m_nStateCount = 0;
 }
 
 //=====================================

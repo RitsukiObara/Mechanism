@@ -44,9 +44,10 @@ public:			// 誰でもアクセスできる
 	virtual void Update(void) = 0;	// 更新処理
 	virtual void Draw(void);		// 描画処理
 
-	virtual void Hit(void);			// ヒット処理
+	virtual void Hit(void) = 0;		// ヒット処理
 	virtual void SmashHit(void);	// 吹き飛びヒット処理
 	virtual void SetData(const D3DXVECTOR3& pos);				// 情報の設定処理
+	virtual void StunHit(void) = 0;	// 気絶のヒット処理
 
 	// セット・ゲット関係
 	D3DXVECTOR3 GetInitPos(void) const;			// 初期位置の取得処理

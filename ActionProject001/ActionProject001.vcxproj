@@ -231,6 +231,7 @@
     <ClCompile Include="shadowModel.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="stun.cpp" />
     <ClCompile Include="table.cpp" />
     <ClCompile Include="table_manager.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -316,6 +317,7 @@
     <ClInclude Include="shadowModel.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="stun.h" />
     <ClInclude Include="table.h" />
     <ClInclude Include="table_manager.h" />
     <ClInclude Include="texture.h" />

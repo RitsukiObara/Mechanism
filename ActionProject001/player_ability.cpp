@@ -139,6 +139,9 @@ void CAbility::Update(CPlayer& player)
 		// マキナ草との当たり判定
 		collision::MacchinaHit(player);
 
+		// 敵の気絶処理
+		collision::EnemyStun(player);
+
 		break;
 
 	default:

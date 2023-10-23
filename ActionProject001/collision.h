@@ -16,6 +16,7 @@
 // 前方宣言
 //-----------------------------------
 class CPlayer;		// プレイヤー
+class CEnemy;		// 敵
 
 //-----------------------------------
 // 名前空間(当たり判定)
@@ -34,6 +35,8 @@ namespace collision
 	// 敵の当たり判定
 	void EnemyHit(CPlayer& player);				// プレイヤーと敵との当たり判定
 	void EnemyPenetrate(CPlayer& player);		// プレイヤーと敵とのめりこみ判定
+	void EnemyToEnemy(CEnemy* pTarget);			// 敵同士の当たり判定処理
+	void EnemyStun(CPlayer& player);			// 敵の気絶処理
 
 	// テーブルの当たり判定
 	bool TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth, const float fDepth);		// 台との当たり判定

@@ -328,6 +328,77 @@ void collision::EnemyPenetrate(CPlayer& player)
 }
 
 //===============================
+// 敵同士の当たり判定処理
+//===============================
+void collision::EnemyToEnemy(CEnemy* pTarget)
+{
+	// ローカル変数宣言
+	CEnemy* pEnemy = CEnemyManager::Get()->GetTop();		// 敵の情報
+	D3DXVECTOR3 pos = pTarget->GetPos();					// 位置
+	D3DXVECTOR3 posOld = pTarget->GetPosOld();				// 前回の位置
+	D3DXVECTOR3 EnemyVtxMin = NONE_D3DXVECTOR3;				// 敵の最小値
+	float fRot = 0.0f;										// 向き
+
+	while (pEnemy != nullptr)
+	{ // 敵の情報が NULL じゃない場合
+
+		if (pEnemy != pTarget)
+		{ // 敵が自分じゃない場合
+
+			// 敵の最小値を設定する
+			EnemyVtxMin = D3DXVECTOR3(-pEnemy->GetCollSize().x, 0.0f, -pEnemy->GetCollSize().z);
+
+			if (pEnemy->GetPos().z + pEnemy->GetFileData().collsize.z >= pos.z &&
+				pEnemy->GetPos().z - pEnemy->GetFileData().collsize.z <= pos.z &&
+				pEnemy->IsCollision() == true)
+			{ // 敵とZ軸が合っているかつ、当たり判定状況が true の場合
+
+				// 円の当たり判定(XY平面)
+				if (useful::CircleCollisionXY(pos, pEnemy->GetPos(), pTarget->GetCollSize().x, pEnemy->GetCollSize().x) == true)
+				{ // 当たり判定が true の場合
+
+					// 向きを設定する
+					fRot = atan2f(pEnemy->GetPos().x - pos.x, pEnemy->GetPos().y - pos.y);
+
+					// 位置を設定する
+					pos.x = pEnemy->GetPos().x + sinf(fRot) * pEnemy->GetCollSize().x;
+					pos.y = pEnemy->GetPos().y + cosf(fRot) * pEnemy->GetCollSize().y;
+				}
+			}
+		}
+
+		// 次のオブジェクトを代入する
+		pEnemy = pEnemy->GetNext();
+	}
+
+	// 位置を適用する
+	pTarget->SetPos(pos);
+}
+
+//===============================
+// 敵の気絶処理
+//===============================
+void collision::EnemyStun(CPlayer& player)
+{
+	// ローカル変数宣言
+	CEnemy* pEnemy = CEnemyManager::Get()->GetTop();		// マキナ草の情報
+
+	while (pEnemy != nullptr)
+	{ // 敵の情報が NULL じゃない場合
+
+		if (useful::RectangleCollisionXZ(player.GetPos(), pEnemy->GetPos(), MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3, -MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3))
+		{ // 当たり判定に当たった場合
+
+			// ヒット処理
+			pEnemy->StunHit();
+		}
+
+		// 次のオブジェクトを代入する
+		pEnemy = pEnemy->GetNext();
+	}
+}
+
+//===============================
 // 台との当たり判定
 //===============================
 bool collision::TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth, const float fDepth)

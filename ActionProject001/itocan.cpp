@@ -16,6 +16,7 @@
 #include "destruction.h"
 #include "Particle.h"
 #include "fraction.h"
+#include "collision.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -187,6 +188,13 @@ void CItocan::Update(void)
 
 		break;
 
+	case STATE_STUN:
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		break;
+
 	default:
 
 		// 停止
@@ -208,6 +216,9 @@ void CItocan::Update(void)
 		// 台の着地判定処理
 		TableLand();
 	}
+
+	// 敵同士の当たり判定
+	collision::EnemyToEnemy(this);
 
 	// 状態カウントを加算する
 	m_nStateCount++;
@@ -280,6 +291,18 @@ void CItocan::SmashHit(void)
 		// 破片の生成処理
 		CFraction::Create(GetPos(), type);
 	}
+}
+
+//=====================================
+// 気絶のヒット処理
+//=====================================
+void CItocan::StunHit(void)
+{
+	// 気絶状態にする
+	m_state = STATE_STUN;
+
+	// 状態カウントを0にする
+	m_nStateCount = 0;
 }
 
 //=====================================

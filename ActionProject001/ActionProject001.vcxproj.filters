@@ -315,6 +315,9 @@
     <ClCompile Include="skybox.cpp">
       <Filter>Staging</Filter>
     </ClCompile>
+    <ClCompile Include="stun.cpp">
+      <Filter>Staging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -564,6 +567,9 @@
       <Filter>Scene\Title</Filter>
     </ClInclude>
     <ClInclude Include="skybox.h">
+      <Filter>Staging</Filter>
+    </ClInclude>
+    <ClInclude Include="stun.h">
       <Filter>Staging</Filter>
     </ClInclude>
   </ItemGroup>

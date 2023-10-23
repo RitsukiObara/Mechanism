@@ -156,7 +156,13 @@ void CGame::Uninit(void)
 {
 	// ポインタを NULL にする
 	m_pPause = nullptr;			// ポーズ
+
+// デバッグ版
+#ifdef _DEBUG
+
 	m_pEdit = nullptr;			// エディット
+
+#endif
 
 	// 情報を初期化する
 	m_GameState = STATE_START;	// ゲームの進行状態
