@@ -136,7 +136,8 @@ void collision::ScrewHit(CPlayer& player)
 		pScrewNext = pScrew->GetNext();
 
 		if (useful::RectangleCollisionXY(pScrew->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true &&
-			useful::RectangleCollisionXZ(pScrew->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true)
+			useful::RectangleCollisionXZ(pScrew->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true &&
+			pScrew->IsHit() == true)
 		{ // ‹éŒ`‚Ì“–‚½‚è”»’è‚ª true ‚Ìê‡
 
 			// ƒqƒbƒgˆ—

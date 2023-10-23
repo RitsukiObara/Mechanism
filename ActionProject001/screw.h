@@ -38,6 +38,9 @@ public:			// 誰でもアクセスできる
 
 	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const bool bGravity);				// 情報の設定処理
 
+	// セット・ゲット関係
+	bool IsHit(void) const;			// 当たり判定の取得処理
+
 	// 静的メンバ関数
 	static CScrew* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const bool bGravity);	// 生成処理
 
@@ -52,6 +55,7 @@ private:		// 自分だけアクセスできる
 	// メンバ変数
 	D3DXVECTOR3 m_move;		// 移動量
 	bool m_bGravity;		// 重力状況
+	bool m_bHit;			// 当たり判定状況
 
 	// リスト構造関係
 	CScrew* m_pPrev;	// 前へのポインタ

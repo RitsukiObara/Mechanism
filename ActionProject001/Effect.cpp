@@ -83,20 +83,18 @@ void CEffect::Uninit(void)
 //=========================
 void CEffect::Update(void)
 {
-	// 移動処理
-	Move();
-
-	// 透明度の減算処理
-	SubAlpha();
-
-	// サイジング処理
-	Sizing();
-
 	switch (m_type)
 	{
 	case TYPE_NONE:			// 無し
 
-		// 特になし
+		// 移動処理
+		Move();
+
+		// 透明度の減算処理
+		SubAlpha();
+
+		// サイジング処理
+		Sizing();
 
 		break;
 
@@ -105,6 +103,15 @@ void CEffect::Update(void)
 		// 炎の更新処理
 		FireProcess();
 
+		// 移動処理
+		Move();
+
+		// 透明度の減算処理
+		SubAlpha();
+
+		// サイジング処理
+		Sizing();
+
 		break;
 
 	case TYPE_DUST:			// 埃
@@ -112,12 +119,40 @@ void CEffect::Update(void)
 		// 重力を足す
 		m_move.y -= DUST_GRAVITY;
 
+		// 移動処理
+		Move();
+
+		// 透明度の減算処理
+		SubAlpha();
+
+		// サイジング処理
+		Sizing();
+
 		break;
 
 	case TYPE_RUPTURE:		// 破裂
 
 		// 破裂の更新処理
 		RuptureProcess();
+
+		// 移動処理
+		Move();
+
+		// 透明度の減算処理
+		SubAlpha();
+
+		// サイジング処理
+		Sizing();
+
+		break;
+
+	case TYPE_SMOKE:		// 煙
+
+		// 移動処理
+		Move();
+
+		// 透明度の減算処理
+		SubAlpha();
 
 		break;
 
@@ -207,19 +242,20 @@ void CEffect::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const int
 	// 色の設定処理
 	SetVtxColor(m_col);
 
-	if (m_type == TYPE::TYPE_DUST)
-	{ // 埃の場合
+	if (m_type == TYPE_DUST ||
+		m_type == TYPE_SMOKE)
+	{ // 埃系の場合
 
 		// テクスチャの読み込み処理
 		BindTexture(CManager::Get()->GetTexture()->Regist(DUST_TEXTURE));
 	}
-	else if (m_type == TYPE::TYPE_FIRE)
+	else if (m_type == TYPE_FIRE)
 	{ // 炎の場合
 
 		// テクスチャの読み込み処理
 		BindTexture(CManager::Get()->GetTexture()->Regist(FIRE_TEXTURE));
 	}
-	else if (m_type == TYPE::TYPE_RUPTURE)
+	else if (m_type == TYPE_RUPTURE)
 	{ // 破裂の場合
 
 		// テクスチャの読み込み処理

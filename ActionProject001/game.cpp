@@ -28,6 +28,7 @@
 #include "macchina.h"
 #include "game_score.h"
 #include "goal.h"
+#include "skybox.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -85,6 +86,9 @@ HRESULT CGame::Init(void)
 	//	// フィールドの設定処理
 	//	m_pField = CField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1000.0f, 0.0f, 1000.0f));
 	//}
+
+	// スカイボックスの生成処理
+	CSkyBox::Create();
 
 	// シーンの初期化
 	CScene::Init();

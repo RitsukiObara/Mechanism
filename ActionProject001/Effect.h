@@ -26,6 +26,7 @@ public:
 		TYPE_FIRE,				// ‰ŠŒn
 		TYPE_DUST,				// ‰Œ
 		TYPE_RUPTURE,			// ”j—ô
+		TYPE_SMOKE,				// ‰Œ
 		TYPE_MAX				// ‚±‚Ì—ñ‹“Œ^‚Ì‘”
 	};
 

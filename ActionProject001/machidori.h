@@ -56,6 +56,7 @@ private:		// 自分だけアクセスできる
 	void AttackRot(void);	// 攻撃状態での向きの設定処理
 	void UpAscent(void);	// 上昇状態の上昇処理
 	void DeathVib(void);	// 死亡時の振動処理
+	void Smoke(void);		// 煙の生成処理
 	void Smash(void);		// 吹き飛び状態の処理
 
 	// メンバ変数

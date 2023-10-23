@@ -229,6 +229,7 @@
     <ClCompile Include="objectScroll.cpp" />
     <ClCompile Include="shadowCircle.cpp" />
     <ClCompile Include="shadowModel.cpp" />
+    <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="table.cpp" />
     <ClCompile Include="table_manager.cpp" />
@@ -313,6 +314,7 @@
     <ClInclude Include="objectScroll.h" />
     <ClInclude Include="shadowCircle.h" />
     <ClInclude Include="shadowModel.h" />
+    <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="table.h" />
     <ClInclude Include="table_manager.h" />

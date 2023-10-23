@@ -312,6 +312,9 @@
     <ClCompile Include="title_logo.cpp">
       <Filter>Scene\Title</Filter>
     </ClCompile>
+    <ClCompile Include="skybox.cpp">
+      <Filter>Staging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -559,6 +562,9 @@
     </ClInclude>
     <ClInclude Include="title_logo.h">
       <Filter>Scene\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="skybox.h">
+      <Filter>Staging</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

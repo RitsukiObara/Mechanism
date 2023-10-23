@@ -52,6 +52,7 @@ public:			// 誰でもアクセスできる
 		TYPE_BONUSCOMBO,		// ボーナスコンボ
 		TYPE_TITLELOGO,			// タイトルロゴ
 		TYPE_EDIT,				// エディット
+		TYPE_SKYBOX,			// スカイボックス
 		TYPE_MAX				// この列挙型の総数
 	};
 

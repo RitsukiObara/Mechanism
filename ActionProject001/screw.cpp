@@ -39,6 +39,7 @@ CScrew::CScrew() : CModel(CObject::TYPE_SCREW, CObject::PRIORITY_ENTITY)
 	m_pNext = nullptr;			// 次のポインタ
 	m_move = NONE_D3DXVECTOR3;	// 移動量
 	m_bGravity = false;			// 重力状況
+	m_bHit = true;				// 当たり判定状況
 
 	if (CScrewManager::Get() != nullptr)
 	{ // マネージャーが存在していた場合
@@ -107,6 +108,7 @@ HRESULT CScrew::Init(void)
 	// 全ての値を初期化する
 	m_move = NONE_D3DXVECTOR3;	// 移動量
 	m_bGravity = false;			// 重力状況
+	m_bHit = true;				// 当たり判定状況
 
 	// 値を返す
 	return S_OK;
@@ -193,6 +195,28 @@ void CScrew::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const bool
 	// 全ての値を初期化する
 	m_move = move;				// 移動量
 	m_bGravity = bGravity;		// 重力状況
+
+	if (m_bGravity == true)
+	{ // 重力状況が true の場合
+
+		// 当たり判定状況を設定する
+		m_bHit = false;				// 当たり判定状況
+	}
+	else
+	{ // 上記以外
+
+		// 当たり判定状況を設定する
+		m_bHit = true;				// 当たり判定状況
+	}
+}
+
+//=======================================
+// 当たり判定の取得処理
+//=======================================
+bool CScrew::IsHit(void) const
+{
+	// 当たり判定状況を返す
+	return m_bHit;
 }
 
 //=======================================
@@ -259,7 +283,14 @@ void CScrew::Gravity(void)
 	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
 
 	// 重力処理
-	useful::Gravity(&m_move.y, pos, 0.6f);
+	useful::Gravity(&m_move.y, pos, 0.8f);
+
+	if (m_move.y <= 0.0f)
+	{ // 移動量が 0.0f 以下の場合
+
+		// ヒット状況を true にする
+		m_bHit = true;
+	}
 
 	// 位置を適用する
 	SetPos(pos);

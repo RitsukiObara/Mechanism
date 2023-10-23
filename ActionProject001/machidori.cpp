@@ -211,6 +211,9 @@ void CMachidori::Update(void)
 		// 起伏地面との当たり判定
 		ElevationCollision();
 
+		// 煙の生成処理
+		Smoke();
+
 		if (m_nStateCount >= DEATH_COUNT)
 		{ // 状態カウントが一定数になった場合
 
@@ -603,6 +606,27 @@ void CMachidori::DeathVib(void)
 		// 向きを適用する
 		SetRot(rot);
 	}
+}
+
+//=====================================
+// 煙の生成処理
+//=====================================
+void CMachidori::Smoke(void)
+{
+	// ローカル変数宣言
+	float fShift;		// ずらす幅
+	D3DXVECTOR3 move;	// 移動量
+
+	// ずらす幅を設定する
+	fShift = (float)(rand() % 30);
+
+	// 移動量を設定する
+	move.x = (float)((rand() % 21 - 10) * 0.01f);
+	move.y = (float)(rand() % 5 + 3);
+	move.z = (float)((rand() % 21 - 10) * 0.01f);
+
+	// 煙の生成
+	CEffect::Create(D3DXVECTOR3(GetPos().x + fShift, GetPos().y, GetPos().z), move, 80, 50.0f, CEffect::TYPE_SMOKE, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), false);
 }
 
 //=====================================
