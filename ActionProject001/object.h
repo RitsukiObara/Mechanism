@@ -54,6 +54,7 @@ public:			// 誰でもアクセスできる
 		TYPE_EDIT,				// エディット
 		TYPE_SKYBOX,			// スカイボックス
 		TYPE_STUN,				// 気絶演出
+		TYPE_ORBIT,				// 軌跡
 		TYPE_MAX				// この列挙型の総数
 	};
 

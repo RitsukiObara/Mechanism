@@ -51,6 +51,8 @@ private:			// 自分だけアクセスできる
 	// メンバ関数
 	void ItemProcess(void);		// アイテムエディットの処理
 	void MacchinaProcess(void);	// マキナ草エディットの処理
+	void EnemyProcess(void);	// 敵エディットの処理
+	void AirplaneProcess(void);	// 飛行機エディットの処理
 
 	void SetMaccina(void);		// マキナ草の設定処理
 
@@ -74,6 +76,7 @@ private:			// 自分だけアクセスできる
 	TYPE m_type;				// 種類
 	CEnemy::TYPE m_enemyType;	// 敵の種類
 	bool m_bFront;				// 奥行状況
+	bool m_bAirplaneFront;		// 飛行機の向きの状況
 };
 
 #endif

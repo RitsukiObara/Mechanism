@@ -50,6 +50,7 @@ private:		// 自分だけアクセスできる
 
 	// メンバ関数
 	void CheckPlayer(void);	// プレイヤーの判断処理
+	void CheckMove(void);	// 状態の判定処理
 	void Move(void);		// 移動処理
 	void Height(void);		// 高さ設定処理
 	void Elevation(void);	// 起伏地面の当たり判定

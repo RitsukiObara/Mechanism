@@ -496,9 +496,6 @@ void CMachidori::CheckPlayer(void)
 						m_state = STATE_STANDBY;
 					}
 				}
-
-				// 移動量を適用する
-				SetMove(move);
 			}
 		}
 		else
@@ -514,6 +511,9 @@ void CMachidori::CheckPlayer(void)
 		// 移動量を無くす
 		move.x = 0.0f;
 	}
+
+	// 移動量を適用する
+	SetMove(move);
 }
 
 //=====================================

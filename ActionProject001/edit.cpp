@@ -20,7 +20,6 @@
 #include "screw_manager.h"
 #include "macchina.h"
 #include "macchina_manager.h"
-#include "enemy.h"
 #include "enemy_manager.h"
 #include "table.h"
 #include "table_manager.h"
@@ -46,6 +45,7 @@ CEdit::CEdit() : CModel(CObject::TYPE_EDIT, CObject::PRIORITY_ENTITY)
 	m_type = TYPE_ITEM;					// 種類
 	m_enemyType = CEnemy::TYPE_ITOCAN;	// 敵の種類
 	m_bFront = true;					// 奥行状況
+	m_bAirplaneFront = true;			// 飛行機の向きの状況
 }
 
 //==============================
@@ -73,6 +73,7 @@ HRESULT CEdit::Init(void)
 	m_type = TYPE_ITEM;					// 種類
 	m_enemyType = CEnemy::TYPE_ITOCAN;	// 敵の種類
 	m_bFront = true;					// 奥行状況
+	m_bAirplaneFront = true;			// 飛行機の向きの状況
 
 	// 値を返す
 	return S_OK;
@@ -113,6 +114,8 @@ void CEdit::Update(void)
 
 	case CEdit::TYPE_ENEMY:
 
+		// 敵のエディット処理
+		EnemyProcess();
 
 		break;
 
@@ -123,6 +126,8 @@ void CEdit::Update(void)
 
 	case CEdit::TYPE_AIRPLANE:
 
+		// 飛行機のエディット処理
+		AirplaneProcess();
 
 		break;
 
@@ -153,7 +158,7 @@ void CEdit::Update(void)
 	Set();
 
 	// デバッグ表示
-	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n種類：%d\n手前状況：%d(0：奥/1：手前)\nW/A/S/Dキー：移動\nSPACEキー：種類変更\nENTERキー：手前状況設定\n", GetPos().x, GetPos().y, GetPos().z, m_type, m_bFront);
+	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n種類：%d\n手前状況：%d(0：奥/1：手前)\nW/A/S/Dキー：移動\nSPACEキー：種類変更\nENTERキー：手前状況設定\n0キー：設置\n9キー：消去\n", GetPos().x, GetPos().y, GetPos().z, m_type, m_bFront);
 }
 
 //=====================================
@@ -182,6 +187,7 @@ void CEdit::SetData(const D3DXVECTOR3& pos)
 	m_type = TYPE_ITEM;					// 種類
 	m_enemyType = CEnemy::TYPE_ITOCAN;	// 敵の種類
 	m_bFront = true;					// 奥行状況
+	m_bAirplaneFront = true;			// 飛行機の向きの状況
 }
 
 //=======================================
@@ -238,7 +244,44 @@ CEdit* CEdit::Create(const D3DXVECTOR3& pos)
 //=======================================
 void CEdit::ItemProcess(void)
 {
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
 
+	if (CManager::Get()->GetInputKeyboard()->GetPress(DIK_LCONTROL) == true)
+	{ // 左CTRLキーを押している場合
+
+		if (CManager::Get()->GetInputKeyboard()->GetPress(DIK_1) == true)
+		{ // 1キーを押している場合
+
+			// 位置を設定する
+			pos.z += NORMAL_SPEED;
+		}
+		else if (CManager::Get()->GetInputKeyboard()->GetPress(DIK_2) == true)
+		{ // 2キーを押している場合
+
+			// 位置を設定する
+			pos.z -= NORMAL_SPEED;
+		}
+	}
+	else
+	{ // 上記以外
+
+		if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_1) == true)
+		{ // 1キーを押した場合
+
+			// 位置を設定する
+			pos.z += ADJUST_SPEED;
+		}
+		else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_2) == true)
+		{ // 2キーを押した場合
+
+			// 位置を設定する
+			pos.z -= ADJUST_SPEED;
+		}
+	}
+
+	// 位置を適用する
+	SetPos(pos);
 }
 
 //=======================================
@@ -264,6 +307,51 @@ void CEdit::MacchinaProcess(void)
 
 	// 位置を適用する
 	SetPos(pos);
+}
+
+//=======================================
+// 敵エディットの処理
+//=======================================
+void CEdit::EnemyProcess(void)
+{
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_1) == true)
+	{ // 1キーを押した場合
+
+		// 敵の種類を切り替える
+		m_enemyType = (CEnemy::TYPE)((m_enemyType + 1) % CEnemy::TYPE_MAX);
+	}
+}
+
+//=======================================
+// 飛行機エディットの処理
+//=======================================
+void CEdit::AirplaneProcess(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 rot = GetRot();		// 向きを取得する
+
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_1) == true)
+	{ // 1キーを押した場合
+
+		// 向き状況の設定処理
+		m_bAirplaneFront = m_bAirplaneFront ? false : true;
+
+		if (m_bAirplaneFront != true)
+		{ // 前向き状況場合
+
+			// 向きを設定する
+			rot.y = D3DX_PI;
+		}
+		else
+		{ // 上記以外
+
+			// 向きを設定する
+			rot.y = 0.0f;
+		}
+	}
+
+	// 向きを適用する
+	SetRot(rot);
 }
 
 //=======================================

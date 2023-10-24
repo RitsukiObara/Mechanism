@@ -24,19 +24,53 @@ class CFile
 {
 public:			// 誰でもアクセスできる
 
+	// 列挙型定義(種類)
+	enum TYPE
+	{
+		TYPE_ITEM = 0,		// アイテム
+		TYPE_MACCHINA,		// マキナ草
+		TYPE_ENEMY,			// 敵
+		TYPE_TABLE,			// 台
+		TYPE_AIRPLANE,		// 飛行機
+		TYPE_MAX			// この列挙型の総数
+	};
+
+	// 構造体定義(アイテムの情報)
+	struct SItemInfo
+	{
+		D3DXVECTOR3 pos[MAX_FILE_DATA];		// 位置
+		int nNum;							// 総数
+		bool bSuccess;						// 成功状況
+	};
+
 	CFile();					// コンストラクタ
 	~CFile();					// デストラクタ
 
 	// メンバ関数
 	HRESULT Init(void);			// 初期化処理
 	void Uninit(void);			// 終了処理
-	void Update(void);			// 更新処理
-	void Draw(void);			// 描画処理
 
-	HRESULT Save(void);			// セーブ処理
-	HRESULT Load(void);			// ロード処理
+	HRESULT Save(const TYPE type);	// セーブ処理
+	HRESULT Load(const TYPE type);	// ロード処理
 
-private:
+private:		// 自分のみアクセスできる
+
+	// メンバ関数(セーブ関係)
+	HRESULT SaveItem(void);			// アイテムのセーブ処理
+	HRESULT SaveMacchina(void);		// マキナ草のセーブ処理
+	HRESULT SaveEnemy(void);		// 敵のセーブ処理
+	HRESULT SaveTable(void);		// 台のセーブ処理
+	HRESULT SaveAirplane(void);		// 飛行機のセーブ処理
+
+	// メンバ関数(ロード関係)
+	HRESULT LoadItem(void);			// アイテムのロード処理
+	HRESULT LoadMacchina(void);		// マキナ草のロード処理
+	HRESULT LoadEnemy(void);		// 敵のロード処理
+	HRESULT LoadTable(void);		// 台のロード処理
+	HRESULT LoadAirplane(void);		// 飛行機のロード処理
+
+	// メンバ変数
+	SItemInfo m_pItemInfo;			// アイテムの情報
 
 	// 静的メンバ変数
 	static const char* c_apBooleanDisp[2];			// bool型の表示

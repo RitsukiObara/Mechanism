@@ -318,6 +318,9 @@
     <ClCompile Include="stun.cpp">
       <Filter>Staging</Filter>
     </ClCompile>
+    <ClCompile Include="orbit.cpp">
+      <Filter>Staging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -570,6 +573,9 @@
       <Filter>Staging</Filter>
     </ClInclude>
     <ClInclude Include="stun.h">
+      <Filter>Staging</Filter>
+    </ClInclude>
+    <ClInclude Include="orbit.h">
       <Filter>Staging</Filter>
     </ClInclude>
   </ItemGroup>

@@ -207,6 +207,7 @@
     <ClCompile Include="objectbillboard.cpp" />
     <ClCompile Include="Objectmesh.cpp" />
     <ClCompile Include="objectX.cpp" />
+    <ClCompile Include="orbit.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="particle2D.cpp" />
     <ClCompile Include="pause.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="objectbillboard.h" />
     <ClInclude Include="Objectmesh.h" />
     <ClInclude Include="objectX.h" />
+    <ClInclude Include="orbit.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="particle2D.h" />
     <ClInclude Include="pause.h" />

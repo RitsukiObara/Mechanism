@@ -209,7 +209,9 @@ void collision::EnemyHit(CPlayer& player)
 				pos.x - PLAYER_SIZE.x <= pEnemy->GetPos().x + pEnemy->GetCollSize().x)
 			{ // 下からの当たり判定
 
-				if (player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH || 
+				if (player.GetAction()->GetState() == CPlayerAct::STATE_FLY ||
+					player.GetAction()->GetState() == CPlayerAct::STATE_CANNON ||
+					player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH || 
 					player.GetAbility()->GetAbility() == CAbility::ABILITY_DASHJUMP)
 				{ // ジェットダッシュまたは、ダッシュジャンプ状態の場合
 
@@ -232,7 +234,9 @@ void collision::EnemyHit(CPlayer& player)
 				pos.y <= pEnemy->GetPos().y + pEnemy->GetCollSize().y)
 			{ // 左からの当たり判定
 
-				if (player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH ||
+				if (player.GetAction()->GetState() == CPlayerAct::STATE_FLY ||
+					player.GetAction()->GetState() == CPlayerAct::STATE_CANNON ||
+					player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH ||
 					player.GetAbility()->GetAbility() == CAbility::ABILITY_DASHJUMP)
 				{ // ジェットダッシュ状態の場合
 
@@ -255,7 +259,9 @@ void collision::EnemyHit(CPlayer& player)
 				pos.y <= pEnemy->GetPos().y + pEnemy->GetCollSize().y)
 			{ // 右からの当たり判定
 
-				if (player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH ||
+				if (player.GetAction()->GetState() == CPlayerAct::STATE_FLY ||
+					player.GetAction()->GetState() == CPlayerAct::STATE_CANNON ||
+					player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH ||
 					player.GetAbility()->GetAbility() == CAbility::ABILITY_DASHJUMP)
 				{ // ジェットダッシュ状態の場合
 
@@ -307,6 +313,7 @@ void collision::EnemyPenetrate(CPlayer& player)
 		{ // 敵とプレイヤーが重なっている時
 
 			if (player.GetAction()->GetState() == CPlayerAct::STATE_FLY ||
+				player.GetAction()->GetState() == CPlayerAct::STATE_CANNON ||
 				player.GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH ||
 				player.GetAbility()->GetAbility() == CAbility::ABILITY_DASHJUMP)
 			{ // 飛んでいる場合
