@@ -19,6 +19,14 @@ class CCamera
 {
 public:			// 誰でもアクセス出来る
 
+	// 列挙型定義(種類)
+	enum TYPE
+	{
+		TYPE_NONE = 0,		// 通常状態
+		TYPE_VIBRATE,		// 振動状態
+		TYPE_MAX			// この列挙型の総数
+	};
+
 	CCamera();		// コンストラクタ
 	~CCamera();		// デストラクタ
 
@@ -43,6 +51,8 @@ public:			// 誰でもアクセス出来る
 	void SetDistance(const float fDis);			// 距離の設定処理
 	float GetDistance(void) const;				// 距離の取得処理
 
+	void SetType(const TYPE type);				// 種類の設定処理
+
 	void ChangeControl(void);					// カメラの操作状況の切り替え処理
 
 private:		// 自分だけアクセス出来る
@@ -53,12 +63,14 @@ private:		// 自分だけアクセス出来る
 	void MovePosR(void);			// 注視点操作処理
 	void MoveRange(void);			// 距離操作処理
 	void Chase(void);				// 追跡処理
+	void Vibrate(void);				// 振動処理
 	void Control(void);				// 操作処理
 	void PosSet(void);				// 位置の設定処理
 
 	// ゲーム関係
 	void GameCamera(void);			// ゲーム画面のカメラ処理
 	void PlayCamera(void);			// プレイ時のカメラ処理
+	void TypeProcess(void);			// カメラの種類ごとの処理
 	void GoalCamera(void);			// ゴール時のカメラ処理
 	void LeaveCamera(void);			// 退場時のカメラ処理
 
@@ -72,6 +84,7 @@ private:		// 自分だけアクセス出来る
 	D3DXVECTOR3 m_VecU;				// 上方向ベクトル
 	D3DXVECTOR3 m_rot;				// 向き
 	D3DVIEWPORT9 m_viewport;		// ビューポート
+	TYPE m_type;					// 種類
 	float m_rotDest;				// 目的の向き
 	float m_Dis;					// 距離
 	float m_DisDest;				// 目的の距離

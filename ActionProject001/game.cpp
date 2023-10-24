@@ -19,13 +19,8 @@
 #include "debugproc.h"
 #include "sound.h"
 
-#include "airplane.h"
 #include "objectElevation.h"
 #include "player.h"
-#include "screw.h"
-#include "enemy.h"
-#include "table.h"
-#include "macchina.h"
 #include "game_score.h"
 #include "goal.h"
 #include "skybox.h"
@@ -103,47 +98,8 @@ HRESULT CGame::Init(void)
 	CManager::Get()->GetFile()->Load(CFile::TYPE_TABLE);
 	CManager::Get()->GetFile()->Load(CFile::TYPE_AIRPLANE);
 
-	//// 飛行機の生成
-	//CAirplane::Create(D3DXVECTOR3(2000.0f, 200.0f, 0.0f), true);
-
-	//// ネジの生成処理
-	//CScrew::Create(D3DXVECTOR3(300.0f, 300.0f, 0.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(700.0f, 300.0f, 0.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(1100.0f, 300.0f, 0.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(2000.0f, 400.0f, 200.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(2000.0f, 500.0f, 300.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(2000.0f, 600.0f, 400.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(2000.0f, 650.0f, 500.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(2000.0f, 600.0f, 600.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(2000.0f, 500.0f, 700.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(2000.0f, 400.0f, 800.0f), NONE_D3DXVECTOR3, false);
-	//CScrew::Create(D3DXVECTOR3(2000.0f, 300.0f, 900.0f), NONE_D3DXVECTOR3, false);
-
-	//// 敵の生成処理
-	//CEnemy::Create(D3DXVECTOR3(3000.0f, 0.0f, 0.0f), CEnemy::TYPE_ITOCAN);
-	//CEnemy::Create(D3DXVECTOR3(-1000.0f, 0.0f, 1000.0f), CEnemy::TYPE_ITOCAN);
-	//CEnemy::Create(D3DXVECTOR3(2000.0f, 0.0f, 1000.0f), CEnemy::TYPE_ITOCAN);
-	//CEnemy::Create(D3DXVECTOR3(-1000.0f, 0.0f, 0.0f), CEnemy::TYPE_MACHIDORI);
-	//CEnemy::Create(D3DXVECTOR3(-1500.0f, 0.0f, 0.0f), CEnemy::TYPE_MACHIDORI);
-	//CEnemy::Create(D3DXVECTOR3(-2000.0f, 0.0f, 1000.0f), CEnemy::TYPE_MACHIDORI);
-	//CEnemy::Create(D3DXVECTOR3(3000.0f, 0.0f, 1000.0f), CEnemy::TYPE_MACHIDORI);
-
-	//CTable::Create(D3DXVECTOR3(400.0f, 400.0f, 0.0f));
-	//CTable::Create(D3DXVECTOR3(1500.0f, 200.0f, 0.0f));
-	//CTable::Create(D3DXVECTOR3(-1000.0f, 300.0f, 1000.0f));
-	//CTable::Create(D3DXVECTOR3(-1200.0f, 350.0f, 1000.0f));
-	//CTable::Create(D3DXVECTOR3(2000.0f, 300.0f, 1000.0f));
-	//CTable::Create(D3DXVECTOR3(2200.0f, 350.0f, 1000.0f));
-
 	// スコアを生成する
 	CGameScore::Create(D3DXVECTOR3(70.0f,500.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f));
-
-	//// マキナ草の生成
-	//CMacchina::Create(D3DXVECTOR3(-3000.0f, 0.0f, 100.0f));
-	//CMacchina::Create(D3DXVECTOR3(3000.0f, 0.0f, 100.0f));
-	//CMacchina::Create(D3DXVECTOR3(3200.0f, 0.0f, 100.0f));
-	//CMacchina::Create(D3DXVECTOR3(2000.0f, 0.0f, 1100.0f));
-	//CMacchina::Create(D3DXVECTOR3(-3000.0f, 0.0f, 1100.0f));
 
 	// ゴールの生成
 	CGoal::Create(D3DXVECTOR3(4000.0f, 300.0f, 1000.0f));

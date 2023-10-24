@@ -349,6 +349,9 @@ void CAbility::Ability(CPlayer& player)
 
 		// グラウンドクエイク状態にする
 		player.GetAbility()->SetAbility(CAbility::ABILITY_GROUNDQUAKE, player);
+
+		// カメラを振動カメラにする
+		CManager::Get()->GetCamera()->SetType(CCamera::TYPE_VIBRATE);
 	}
 
 	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_O) == true)

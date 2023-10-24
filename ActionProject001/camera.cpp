@@ -10,6 +10,7 @@
 #include "main.h"
 #include "manager.h"
 #include "player.h"
+#include "player_ability.h"
 #include "game.h"
 #include "useful.h"
 #include "renderer.h"
@@ -24,7 +25,6 @@
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
-
 // カメラ全体
 #define ASPECT_RATIO				(80.0f)				// 画面のアスペクト比
 #define MIN_DISTANCE				(50.0f)				// 距離の最小値
@@ -56,17 +56,19 @@
 CCamera::CCamera()
 {
 	// 全ての情報をクリアする
-	m_posV = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 視点
-	m_posVDest = m_posV;						// 目的の視点
-	m_posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 注視点
-	m_posRDest = m_posR;						// 目的の注視点
-	m_VecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向ベクトル
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
-	m_rotDest = m_rot.y;						// 目的の向き
-	m_Dis = 0.0f;								// 距離
-	m_DisDest = 0.0f;							// 目的の距離
-	m_nSwingCount = 0;							// 揺れカメラのカウント
-	m_bControl = false;							// 操作状況
+	m_posV = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 視点
+	m_posVDest = m_posV;							// 目的の視点
+	m_posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 注視点
+	m_posRDest = m_posR;							// 目的の注視点
+	m_VecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);			// 上方向ベクトル
+	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向き
+	ZeroMemory(&m_viewport, sizeof(D3DVIEWPORT9));	// ビューポート
+	m_type = TYPE_NONE;								// 種類
+	m_rotDest = m_rot.y;							// 目的の向き
+	m_Dis = 0.0f;									// 距離
+	m_DisDest = 0.0f;								// 目的の距離
+	m_nSwingCount = 0;								// 揺れカメラのカウント
+	m_bControl = false;								// 操作状況
 }
 
 //=======================
@@ -334,6 +336,15 @@ float CCamera::GetDistance(void) const
 }
 
 //=======================
+// 種類の設定処理
+//=======================
+void CCamera::SetType(const TYPE type)
+{
+	// 種類を設定する
+	m_type = type;
+}
+
+//=======================
 // カメラの操作状況の切り替え処理
 //=======================
 void CCamera::ChangeControl(void)
@@ -355,6 +366,7 @@ void CCamera::Reset(void)
 	m_posRDest = m_posR;						// 目的の注視点
 	m_VecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向ベクトル
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
+	m_type = TYPE_NONE;							// 種類
 	m_rotDest = m_rot.y;						// 目的の向き
 	m_DisDest = CAMERA_DISTANCE;				// 目的の距離
 	m_nSwingCount = 0;							// 揺れカメラのカウント
@@ -720,8 +732,8 @@ void CCamera::PlayCamera(void)
 			CGame::GetPause()->GetPause() == false)
 		{ // ポーズが NULL じゃない場合
 
-			// 追跡処理
-			Chase();
+			// 種類ごとの処理
+			TypeProcess();
 		}
 	}
 
@@ -739,6 +751,36 @@ void CCamera::PlayCamera(void)
 	}
 
 #endif
+}
+
+//=======================
+// カメラの種類ごとの処理
+//=======================
+void CCamera::TypeProcess(void)
+{
+	switch (m_type)
+	{
+	case CCamera::TYPE_NONE:		// 通常
+
+		// 追跡処理
+		Chase();
+
+		break;
+
+	case CCamera::TYPE_VIBRATE:		// 振動
+
+		// 振動カメラ処理
+		Vibrate();
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
+	}
 }
 
 //=======================
@@ -866,4 +908,74 @@ void CCamera::Chase(void)
 		m_posV.y += (m_posVDest.y - m_posV.y) * CORRECT_POSR;
 		m_posV.z += (m_posVDest.z - m_posV.z) * CORRECT_POSV;
 	}
+}
+
+//=======================
+// カメラの振動処理
+//=======================
+void CCamera::Vibrate(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos;			// 位置
+	D3DXVECTOR3 rot;			// 向き
+	CPlayer* pPlayer = CPlayer::Get();	// プレイヤーのポインタ
+
+	if (pPlayer != nullptr)
+	{ // プレイヤーが NULL じゃない場合
+
+		// プレイヤーの情報を取得する
+		pos = pPlayer->GetPos();		// 位置
+		rot = pPlayer->GetRot();		// 向き
+
+		if (m_nSwingCount % 5 == 0)
+		{ // 揺れカウントが一定数ごとに
+
+			float f = (float)(rand() % 8 + 6);
+
+			if (m_nSwingCount % 2 == 0)
+			{ // カウントが偶数の場合
+
+				// 目的の注視点を設定する
+				m_posRDest.y = pos.y + 100.0f - f;
+			}
+			else
+			{ // カウントが奇数の場合
+
+				// 目的の注視点を設定する
+				m_posRDest.y = pos.y + 100.0f + f;
+			}
+
+			// 目的の注視点を設定する
+			m_posRDest.x = pos.x + CHASE_SHIFT_X;
+			m_posRDest.z = pos.z;
+
+			// 目的の視点を設定する
+			m_posVDest.x = m_posRDest.x + sinf(m_rot.y) * -m_Dis;
+			m_posVDest.y = pos.y + 130.0f;
+			m_posVDest.z = m_posRDest.z + cosf(m_rot.y) * -m_Dis;
+		}
+
+		// 注視点を補正
+		m_posR.x += (m_posRDest.x - m_posR.x) * 0.3f;
+		m_posR.y += (m_posRDest.y - m_posR.y) * 0.3f;
+		m_posR.z += (m_posRDest.z - m_posR.z) * 0.3f;
+
+		// 視点を補正
+		m_posV.x += (m_posVDest.x - m_posV.x) * 0.3f;
+		m_posV.y += (m_posVDest.y - m_posV.y) * 0.3f;
+		m_posV.z += (m_posVDest.z - m_posV.z) * 0.3f;
+
+		if (pPlayer->GetAbility()->GetAbility() != CAbility::ABILITY_GROUNDQUAKE)
+		{ // カウント数が一定以上になった場合
+
+			// 種類を設定する
+			SetType(TYPE_NONE);
+
+			// 揺れカウントを初期化する
+			m_nSwingCount = 0;
+		}
+	}
+
+	// 揺れカウントを加算する
+	m_nSwingCount++;
 }
