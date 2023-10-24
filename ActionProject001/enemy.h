@@ -52,7 +52,7 @@ public:			// 誰でもアクセスできる
 	virtual void Hit(void);			// ヒット処理
 	virtual void SmashHit(void);	// 吹き飛びヒット処理
 	virtual void StunHit(void);		// 気絶のヒット処理
-	virtual void SetData(const D3DXVECTOR3& pos);				// 情報の設定処理
+	virtual void SetData(const D3DXVECTOR3& pos, const TYPE type);				// 情報の設定処理
 
 	// セット・ゲット関係
 	CStun* GetStun(void) const;					// 気絶演出の取得処理
@@ -65,6 +65,8 @@ public:			// 誰でもアクセスできる
 
 	void SetCollSize(const D3DXVECTOR3& size);	// 当たり判定のサイズの設定処理
 	D3DXVECTOR3 GetCollSize(void) const;		// 当たり判定のサイズの取得処理
+
+	TYPE GetType(void) const;					// 種類の取得処理
 
 	void SetEnableStep(const bool bStep);		// 踏みつけ状況の設定処理
 	bool IsStep(void) const;					// 踏みつけ状況の取得処理
@@ -88,6 +90,7 @@ private:		// 自分だけアクセスできる
 	D3DXVECTOR3 m_posInit;	// 初期位置
 	D3DXVECTOR3 m_move;		// 移動量
 	D3DXVECTOR3 m_sizeColl;	// 当たり判定のサイズ
+	TYPE m_type;			// 種類
 	bool m_bStep;			// 踏みつけ状況
 	bool m_bCollision;		// 当たり判定を通るかどうか
 

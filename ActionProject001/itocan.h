@@ -42,7 +42,7 @@ public:			// 誰でもアクセスできる
 	void Hit(void);			// ヒット処理
 	void SmashHit(void);	// 吹き飛びヒット処理
 	void StunHit(void);		// 気絶のヒット処理
-	void SetData(const D3DXVECTOR3& pos);				// 情報の設定処理
+	void SetData(const D3DXVECTOR3& pos, const TYPE type);				// 情報の設定処理
 
 private:		// 自分だけアクセスできる
 

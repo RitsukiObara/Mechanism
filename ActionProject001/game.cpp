@@ -94,10 +94,10 @@ HRESULT CGame::Init(void)
 	CScene::Init();
 
 	// プレイヤーを生成する
-	CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CPlayer::Create(D3DXVECTOR3(-5000.0f, 0.0f, 0.0f));
 
 	// 飛行機の生成
-	CAirplane::Create(D3DXVECTOR3(2000.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
+	CAirplane::Create(D3DXVECTOR3(2000.0f, 200.0f, 0.0f), true);
 
 	// ネジの生成処理
 	CScrew::Create(D3DXVECTOR3(300.0f, 300.0f, 0.0f), NONE_D3DXVECTOR3, false);
@@ -222,6 +222,17 @@ void CGame::Update(void)
 				assert(false);
 			}
 		}
+	}
+
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_F9) == true)
+	{ // F9キーを押した場合
+
+		// セーブする
+		CManager::Get()->GetFile()->Save(CFile::TYPE_ITEM);
+		CManager::Get()->GetFile()->Save(CFile::TYPE_MACCHINA);
+		CManager::Get()->GetFile()->Save(CFile::TYPE_ENEMY);
+		CManager::Get()->GetFile()->Save(CFile::TYPE_TABLE);
+		CManager::Get()->GetFile()->Save(CFile::TYPE_AIRPLANE);
 	}
 
 #endif

@@ -52,7 +52,6 @@ private:			// 自分だけアクセスできる
 	void ItemProcess(void);		// アイテムエディットの処理
 	void MacchinaProcess(void);	// マキナ草エディットの処理
 	void EnemyProcess(void);	// 敵エディットの処理
-	void AirplaneProcess(void);	// 飛行機エディットの処理
 
 	void SetMaccina(void);		// マキナ草の設定処理
 
@@ -75,6 +74,7 @@ private:			// 自分だけアクセスできる
 	D3DXVECTOR3 m_move;			// 移動量
 	TYPE m_type;				// 種類
 	CEnemy::TYPE m_enemyType;	// 敵の種類
+	float m_fAddDepth;			// 追加の奥行
 	bool m_bFront;				// 奥行状況
 	bool m_bAirplaneFront;		// 飛行機の向きの状況
 };

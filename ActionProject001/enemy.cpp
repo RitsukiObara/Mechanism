@@ -66,6 +66,7 @@ void CEnemy::Box(void)
 	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
+	m_type = TYPE_ITOCAN;			// 種類
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
 	m_pPrev = nullptr;				// 前のポインタ
@@ -132,6 +133,7 @@ HRESULT CEnemy::Init(void)
 	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
+	m_type = TYPE_ITOCAN;			// 種類
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
 
@@ -256,7 +258,7 @@ void CEnemy::StunHit(void)
 //=====================================
 // 情報の設定処理
 //=====================================
-void CEnemy::SetData(const D3DXVECTOR3& pos)
+void CEnemy::SetData(const D3DXVECTOR3& pos, const TYPE type)
 {
 	// 情報の設定処理
 	SetPos(pos);								// 位置
@@ -268,6 +270,7 @@ void CEnemy::SetData(const D3DXVECTOR3& pos)
 	m_posInit = pos;				// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
+	m_type = type;					// 種類
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
 }
@@ -332,7 +335,7 @@ CEnemy* CEnemy::Create(const D3DXVECTOR3& pos, const TYPE type)
 		}
 
 		// 情報の設定処理
-		pEnemy->SetData(pos);
+		pEnemy->SetData(pos, type);
 	}
 	else
 	{ // オブジェクトが NULL の場合
@@ -379,6 +382,15 @@ D3DXVECTOR3 CEnemy::GetCollSize(void) const
 {
 	// 当たり判定のサイズを返す
 	return m_sizeColl;
+}
+
+//=======================================
+// 種類の取得処理
+//=======================================
+CEnemy::TYPE CEnemy::GetType(void) const
+{
+	// 種類を返す
+	return m_type;
 }
 
 //=======================================

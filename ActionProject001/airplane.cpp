@@ -20,6 +20,7 @@
 CAirplane::CAirplane() : CModel(CObject::TYPE_AIRPLANE, CObject::PRIORITY_ENTITY)
 {
 	// 全ての値をクリアする
+	m_bFront = false;		// 前後状況
 	m_pPrev = nullptr;		// 前へのポインタ
 	m_pNext = nullptr;		// 次へのポインタ
 
@@ -131,20 +132,42 @@ void CAirplane::Draw(void)
 //=====================================
 // 情報の設定処理
 //=====================================
-void CAirplane::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
+void CAirplane::SetData(const D3DXVECTOR3& pos, const bool bFront)
 {
 	// 情報の設定処理
 	SetPos(pos);								// 位置
 	SetPosOld(pos);								// 前回の位置
-	SetRot(rot);								// 向き
 	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
 	SetFileData(CXFile::TYPE_AIRPLANE);			// モデルの情報
+
+	// 全ての値を設定する
+	m_bFront = bFront;		// 前後状況
+
+	if (m_bFront == true)
+	{ // 前後状況が true の場合
+
+		SetRot(D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));	// 向きを設定する
+	}
+	else
+	{ // 上記以外
+
+		SetRot(D3DXVECTOR3(0.0f, 0.0f, 0.0f));		// 向きを設定する
+	}
+}
+
+//=======================================
+// 前後状況の取得処理
+//=======================================
+bool CAirplane::GetFront(void) const
+{
+	// 前後状況を返す
+	return m_bFront;
 }
 
 //=======================================
 // 生成処理
 //=======================================
-CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
+CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const bool bFront)
 {
 	// ローカルオブジェクトを生成
 	CAirplane* pAirplane = nullptr;	// インスタンスを生成
@@ -180,7 +203,7 @@ CAirplane* CAirplane::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot)
 		}
 
 		// 情報の設定処理
-		pAirplane->SetData(pos, rot);
+		pAirplane->SetData(pos, bFront);
 	}
 	else
 	{ // オブジェクトが NULL の場合

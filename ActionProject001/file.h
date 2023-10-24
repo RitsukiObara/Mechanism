@@ -11,6 +11,7 @@
 // インクルードファイル
 //********************************************
 #include "main.h"
+#include "enemy.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -43,6 +44,40 @@ public:			// 誰でもアクセスできる
 		bool bSuccess;						// 成功状況
 	};
 
+	// 構造体定義(マキナ草の情報)
+	struct SMacchinaInfo
+	{
+		D3DXVECTOR3 pos[MAX_FILE_DATA];		// 位置
+		int nNum;							// 総数
+		bool bSuccess;						// 成功状況
+	};
+
+	// 構造体定義(敵の情報)
+	struct SEnemyInfo
+	{
+		D3DXVECTOR3 pos[MAX_FILE_DATA];		// 位置
+		CEnemy::TYPE type[MAX_FILE_DATA];	// 種類
+		int nNum;							// 総数
+		bool bSuccess;						// 成功状況
+	};
+
+	// 構造体定義(台の情報)
+	struct STableInfo
+	{
+		D3DXVECTOR3 pos[MAX_FILE_DATA];		// 位置
+		int nNum;							// 総数
+		bool bSuccess;						// 成功状況
+	};
+
+	// 構造体定義(飛行機の情報)
+	struct SAirplaneInfo
+	{
+		D3DXVECTOR3 pos[MAX_FILE_DATA];		// 位置
+		bool bFront[MAX_FILE_DATA];			// 前後状況
+		int nNum;							// 総数
+		bool bSuccess;						// 成功状況
+	};
+
 	CFile();					// コンストラクタ
 	~CFile();					// デストラクタ
 
@@ -70,7 +105,11 @@ private:		// 自分のみアクセスできる
 	HRESULT LoadAirplane(void);		// 飛行機のロード処理
 
 	// メンバ変数
-	SItemInfo m_pItemInfo;			// アイテムの情報
+	SItemInfo m_ItemInfo;			// アイテムの情報
+	SMacchinaInfo m_MacchinaInfo;	// マキナ草の情報
+	SEnemyInfo m_EnemyInfo;			// 敵の情報
+	STableInfo m_TableInfo;			// 台の情報
+	SAirplaneInfo m_AirplaneInfo;	// 飛行機の情報
 
 	// 静的メンバ変数
 	static const char* c_apBooleanDisp[2];			// bool型の表示

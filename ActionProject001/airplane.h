@@ -34,14 +34,18 @@ public:			// 誰でもアクセスできる
 	void Update(void);		// 更新処理
 	void Draw(void);		// 描画処理
 
-	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot);		// 情報の設定処理
+	void SetData(const D3DXVECTOR3& pos, const bool bFront);				// 情報の設定処理
+
+	// セット・ゲット関係
+	bool GetFront(void) const;		// 前後状況の取得処理
 
 	// 静的メンバ関数
-	static CAirplane* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot);		// 生成処理
+	static CAirplane* Create(const D3DXVECTOR3& pos, const bool bFront);	// 生成処理
 
 private:		// 自分だけアクセスできる
 
 	// メンバ変数
+	bool m_bFront;		// 前後状況
 
 	// リスト構造関係
 	CAirplane* m_pPrev;	// 前へのポインタ
