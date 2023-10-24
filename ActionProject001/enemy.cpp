@@ -21,6 +21,7 @@
 
 #include "itocan.h"
 #include "machidori.h"
+#include "stun.h"
 
 // マクロ定義
 #define GRAVITY			(0.5f)				// 重力
@@ -61,6 +62,7 @@ CEnemy::~CEnemy()
 void CEnemy::Box(void)
 {
 	// 全ての値をクリアする
+	m_pStun = nullptr;				// 気絶演出のポインタ
 	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
@@ -126,6 +128,7 @@ HRESULT CEnemy::Init(void)
 	}
 
 	// 全ての値を初期化する
+	m_pStun = nullptr;				// 気絶演出のポインタ
 	m_posInit = NONE_D3DXVECTOR3;	// 初期位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
@@ -141,6 +144,14 @@ HRESULT CEnemy::Init(void)
 //========================================
 void CEnemy::Uninit(void)
 {
+	if (m_pStun != nullptr)
+	{ // 気絶演出が NULL じゃない場合
+
+		// 終了処理
+		m_pStun->Uninit();
+		m_pStun = nullptr;
+	}
+
 	// 終了処理
 	CModel::Uninit();
 
@@ -163,6 +174,20 @@ void CEnemy::Draw(void)
 {
 	// 描画処理
 	CModel::Draw();
+}
+
+//=====================================
+// ヒット処理
+//=====================================
+void CEnemy::Hit(void)
+{
+	if (m_pStun != nullptr)
+	{ // 気絶演出が NULL じゃない場合
+
+		// 終了処理
+		m_pStun->Uninit();
+		m_pStun = nullptr;
+	}
 }
 
 //=====================================
@@ -202,6 +227,30 @@ void CEnemy::SmashHit(void)
 
 	// 情報を適用する
 	SetRot(rot);		// 向き
+
+	if (m_pStun != nullptr)
+	{ // 気絶演出が NULL じゃない場合
+
+		// 終了処理
+		m_pStun->Uninit();
+		m_pStun = nullptr;
+	}
+}
+
+//=====================================
+// 気絶のヒット処理
+//=====================================
+void CEnemy::StunHit(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置
+
+	if (m_pStun == nullptr)
+	{ // 気絶の情報が NULL の場合
+
+		// 気絶演出の生成処理
+		m_pStun = CStun::Create(D3DXVECTOR3(pos.x, pos.y + m_sizeColl.y, pos.z));
+	}
 }
 
 //=====================================
@@ -348,6 +397,29 @@ bool CEnemy::IsStep(void) const
 {
 	// 踏みつけ状況を返す
 	return m_bStep;
+}
+
+//=======================================
+// 気絶演出の取得処理
+//=======================================
+CStun* CEnemy::GetStun(void) const
+{
+	// 気絶演出を返す
+	return m_pStun;
+}
+
+//=======================================
+// 気絶状態の消去処理
+//=======================================
+void CEnemy::DeleteStun(void)
+{
+	if (m_pStun != nullptr)
+	{ // 気絶の状態が NULL じゃない場合
+
+		// メモリを解放する
+		m_pStun->Uninit();
+		m_pStun = nullptr;
+	}
 }
 
 //=======================================

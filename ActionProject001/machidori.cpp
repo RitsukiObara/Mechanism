@@ -19,6 +19,7 @@
 #include "destruction.h"
 #include "Particle.h"
 #include "collision.h"
+#include "stun.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -48,6 +49,8 @@
 #define HIT_DSTR_SIZE			(D3DXVECTOR3(40.0f,40.0f,0.0f))			// ヒット時の撃破のサイズ
 #define HIT_DSTR_COL			(D3DXCOLOR(1.0f, 0.7f, 0.1f, 1.0f))		// ヒット時の撃破の色
 #define HIT_DSTR_LIFE			(10)			// ヒット時の撃破の寿命
+#define STUN_COUNT				(150)			// 気絶時のカウント数
+#define STUN_DOWN				(15.0f)			// 気絶時の減少量
 
 //==============================
 // コンストラクタ
@@ -273,14 +276,39 @@ void CMachidori::Update(void)
 		// 状態カウントを加算する
 		m_nStateCount++;
 
-		// 重力処理
-		Gravity();
+		if (GetStun() != nullptr)
+		{ // 気絶演出が NULL じゃない場合
 
-		// 起伏地面の当たり判定
-		ElevationCollision();
+			// ローカル変数宣言
+			D3DXVECTOR3 pos = GetPos();		// 位置
 
-		// 台との当たり判定
-		TableCollision();
+			// 気絶演出の位置の設定処理
+			GetStun()->SetPos(D3DXVECTOR3(pos.x, pos.y + GetCollSize().y, pos.z));
+		}
+
+		// 高さの設定処理
+		Height();
+
+		// 起伏地面との当たり判定
+		if (ElevationCollision() == false &&
+			TableCollision() == false)
+		{
+			// 高さを下げる
+			m_fHeight -= STUN_DOWN;
+		}
+
+		if (m_nStateCount % STUN_COUNT == 0)
+		{ // 状態カウントが一定数になった場合
+
+			// 状態カウントを初期化する
+			m_nStateCount = 0;
+
+			// 上昇状態に設定する
+			m_state = STATE_UP;
+
+			// 気絶演出の消去処理
+			DeleteStun();
+		}
 
 		break;
 
@@ -293,7 +321,7 @@ void CMachidori::Update(void)
 	}
 
 	// 敵同士の当たり判定
-	collision::EnemyToEnemy(this);
+	//collision::EnemyToEnemy(this);
 }
 
 //=====================================
@@ -313,6 +341,9 @@ void CMachidori::Hit(void)
 	// ローカル変数宣言
 	D3DXVECTOR3 posDstr = GetPos();		// 撃破を出す位置
 	D3DXVECTOR3 move = GetMove();		// 移動量
+
+	// ヒット処理
+	CEnemy::Hit();
 
 	// 当たり判定状況を OFF にする
 	SetEnableCollision(false);
@@ -377,11 +408,18 @@ void CMachidori::SmashHit(void)
 //=====================================
 void CMachidori::StunHit(void)
 {
-	// 気絶状態にする
-	m_state = STATE_STUN;
+	if (m_state != STATE_STUN)
+	{ // 気絶状態以外の場合
 
-	// 状態カウントを初期化する
-	m_nStateCount = 0;
+		// 敵の気絶処理
+		CEnemy::StunHit();
+
+		// 気絶状態にする
+		m_state = STATE_STUN;
+
+		// 状態カウントを初期化する
+		m_nStateCount = 0;
+	}
 }
 
 //=====================================

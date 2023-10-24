@@ -17,6 +17,7 @@
 #include "Particle.h"
 #include "fraction.h"
 #include "collision.h"
+#include "stun.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -39,6 +40,7 @@
 #define HIT_DSTR_SIZE		(D3DXVECTOR3(40.0f,40.0f,0.0f))		// ヒット時の撃破のサイズ
 #define HIT_DSTR_COL		(D3DXCOLOR(1.0f, 0.7f, 0.1f, 1.0f))	// ヒット時の撃破の色
 #define HIT_DSTR_LIFE		(10)								// ヒット時の撃破の寿命
+#define STUN_COUNT			(150)								// 気絶演出時のカウント数
 
 //==============================
 // コンストラクタ
@@ -190,8 +192,28 @@ void CItocan::Update(void)
 
 	case STATE_STUN:
 
-		// 状態カウントを加算する
-		m_nStateCount++;
+		if (GetStun() != nullptr)
+		{ // 気絶演出が NULL じゃない場合
+
+			// ローカル変数宣言
+			D3DXVECTOR3 pos = GetPos();		// 位置
+
+			// 気絶演出の位置の設定処理
+			GetStun()->SetPos(D3DXVECTOR3(pos.x, pos.y + GetCollSize().y, pos.z));
+		}
+
+		if (m_nStateCount >= STUN_COUNT)
+		{ // 状態カウントが一定数以上になった場合
+
+			// 状態カウントを初期化する
+			m_nStateCount = 0;
+
+			// 停止状態にする
+			m_state = STATE_STOP;
+
+			// 気絶演出の消去処理
+			DeleteStun();
+		}
 
 		break;
 
@@ -218,7 +240,7 @@ void CItocan::Update(void)
 	}
 
 	// 敵同士の当たり判定
-	collision::EnemyToEnemy(this);
+	//collision::EnemyToEnemy(this);
 
 	// 状態カウントを加算する
 	m_nStateCount++;
@@ -240,6 +262,9 @@ void CItocan::Hit(void)
 {
 	// ローカル変数宣言
 	D3DXVECTOR3 posDstr = GetPos();		// 撃破を出す位置
+
+	// ヒット処理
+	CEnemy::Hit();
 
 	// 当たり判定状況を OFF にする
 	SetEnableCollision(false);
@@ -298,11 +323,18 @@ void CItocan::SmashHit(void)
 //=====================================
 void CItocan::StunHit(void)
 {
-	// 気絶状態にする
-	m_state = STATE_STUN;
+	if (m_state != STATE_STUN)
+	{ // 気絶状態以外の場合
 
-	// 状態カウントを0にする
-	m_nStateCount = 0;
+		// 敵の気絶処理
+		CEnemy::StunHit();
+
+		// 気絶状態にする
+		m_state = STATE_STUN;
+
+		// 状態カウントを0にする
+		m_nStateCount = 0;
+	}
 }
 
 //=====================================

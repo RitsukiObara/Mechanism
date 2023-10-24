@@ -483,6 +483,9 @@ void CPlayer::Hit(void)
 
 		// ダメージ状態にする
 		m_pAction->SetState(CPlayerAct::STATE_DAMAGE);
+
+		// 無能力状態にする
+		m_pAbility->SetAbility(CAbility::ABILITY_NONE, *this);
 	}
 }
 

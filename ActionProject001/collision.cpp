@@ -39,7 +39,7 @@
 #define PLAYER_SIZE						(D3DXVECTOR3(20.0f, 70.0f, 20.0f))		// プレイヤーのサイズ
 #define PLAYER_HALF_HEIGHT				(PLAYER_SIZE.y / 2)						// プレイヤーの高さの半分
 #define SCREW_COLL_RADIUS				(20.0f)			// ネジの当たり判定時の半径
-#define MACCHINA_HIT_RANGE				(D3DXVECTOR3(220.0f, 0.0f, 100.0f))		// マキナ草の当たり判定の範囲
+#define QUAKE_HIT_RANGE					(D3DXVECTOR3(220.0f, 100.0f, 100.0f))		// 地震の当たり判定の範囲
 
 //===============================
 // 丸影の起伏地面の当たり判定処理
@@ -327,53 +327,53 @@ void collision::EnemyPenetrate(CPlayer& player)
 	}
 }
 
-//===============================
-// 敵同士の当たり判定処理
-//===============================
-void collision::EnemyToEnemy(CEnemy* pTarget)
-{
-	// ローカル変数宣言
-	CEnemy* pEnemy = CEnemyManager::Get()->GetTop();		// 敵の情報
-	D3DXVECTOR3 pos = pTarget->GetPos();					// 位置
-	D3DXVECTOR3 posOld = pTarget->GetPosOld();				// 前回の位置
-	D3DXVECTOR3 EnemyVtxMin = NONE_D3DXVECTOR3;				// 敵の最小値
-	float fRot = 0.0f;										// 向き
-
-	while (pEnemy != nullptr)
-	{ // 敵の情報が NULL じゃない場合
-
-		if (pEnemy != pTarget)
-		{ // 敵が自分じゃない場合
-
-			// 敵の最小値を設定する
-			EnemyVtxMin = D3DXVECTOR3(-pEnemy->GetCollSize().x, 0.0f, -pEnemy->GetCollSize().z);
-
-			if (pEnemy->GetPos().z + pEnemy->GetFileData().collsize.z >= pos.z &&
-				pEnemy->GetPos().z - pEnemy->GetFileData().collsize.z <= pos.z &&
-				pEnemy->IsCollision() == true)
-			{ // 敵とZ軸が合っているかつ、当たり判定状況が true の場合
-
-				// 円の当たり判定(XY平面)
-				if (useful::CircleCollisionXY(pos, pEnemy->GetPos(), pTarget->GetCollSize().x, pEnemy->GetCollSize().x) == true)
-				{ // 当たり判定が true の場合
-
-					// 向きを設定する
-					fRot = atan2f(pEnemy->GetPos().x - pos.x, pEnemy->GetPos().y - pos.y);
-
-					// 位置を設定する
-					pos.x = pEnemy->GetPos().x + sinf(fRot) * pEnemy->GetCollSize().x;
-					pos.y = pEnemy->GetPos().y + cosf(fRot) * pEnemy->GetCollSize().y;
-				}
-			}
-		}
-
-		// 次のオブジェクトを代入する
-		pEnemy = pEnemy->GetNext();
-	}
-
-	// 位置を適用する
-	pTarget->SetPos(pos);
-}
+////===============================
+//// 敵同士の当たり判定処理
+////===============================
+//void collision::EnemyToEnemy(CEnemy* pTarget)
+//{
+//	// ローカル変数宣言
+//	CEnemy* pEnemy = CEnemyManager::Get()->GetTop();		// 敵の情報
+//	D3DXVECTOR3 pos = pTarget->GetPos();					// 位置
+//	D3DXVECTOR3 posOld = pTarget->GetPosOld();				// 前回の位置
+//	D3DXVECTOR3 EnemyVtxMin = NONE_D3DXVECTOR3;				// 敵の最小値
+//	float fRot = 0.0f;										// 向き
+//
+//	while (pEnemy != nullptr)
+//	{ // 敵の情報が NULL じゃない場合
+//
+//		if (pEnemy != pTarget)
+//		{ // 敵が自分じゃない場合
+//
+//			// 敵の最小値を設定する
+//			EnemyVtxMin = D3DXVECTOR3(-pEnemy->GetCollSize().x, 0.0f, -pEnemy->GetCollSize().z);
+//
+//			if (pEnemy->GetPos().z + pEnemy->GetFileData().collsize.z >= pos.z &&
+//				pEnemy->GetPos().z - pEnemy->GetFileData().collsize.z <= pos.z &&
+//				pEnemy->IsCollision() == true)
+//			{ // 敵とZ軸が合っているかつ、当たり判定状況が true の場合
+//
+//				// 円の当たり判定(XY平面)
+//				if (useful::CircleCollisionXY(pos, pEnemy->GetPos(), pTarget->GetCollSize().x, pEnemy->GetCollSize().x) == true)
+//				{ // 当たり判定が true の場合
+//
+//					// 向きを設定する
+//					fRot = atan2f(pEnemy->GetPos().x - pos.x, pEnemy->GetPos().y - pos.y);
+//
+//					// 位置を設定する
+//					pos.x = pEnemy->GetPos().x + sinf(fRot) * pEnemy->GetCollSize().x;
+//					pos.y = pEnemy->GetPos().y + cosf(fRot) * pEnemy->GetCollSize().y;
+//				}
+//			}
+//		}
+//
+//		// 次のオブジェクトを代入する
+//		pEnemy = pEnemy->GetNext();
+//	}
+//
+//	// 位置を適用する
+//	pTarget->SetPos(pos);
+//}
 
 //===============================
 // 敵の気絶処理
@@ -386,7 +386,8 @@ void collision::EnemyStun(CPlayer& player)
 	while (pEnemy != nullptr)
 	{ // 敵の情報が NULL じゃない場合
 
-		if (useful::RectangleCollisionXZ(player.GetPos(), pEnemy->GetPos(), MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3, -MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3))
+		if (useful::RectangleCollisionXZ(player.GetPos(), pEnemy->GetPos(), QUAKE_HIT_RANGE, NONE_D3DXVECTOR3, -QUAKE_HIT_RANGE, NONE_D3DXVECTOR3) &&
+			fabsf(player.GetPos().y - pEnemy->GetPos().y) <= QUAKE_HIT_RANGE.y)
 		{ // 当たり判定に当たった場合
 
 			// ヒット処理
@@ -444,7 +445,8 @@ void collision::MacchinaHit(CPlayer& player)
 	while (pMacchina != nullptr)
 	{ // 敵の情報が NULL じゃない場合
 
-		if (useful::RectangleCollisionXZ(player.GetPos(), pMacchina->GetPos(), MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3, -MACCHINA_HIT_RANGE, NONE_D3DXVECTOR3) &&
+		if (useful::RectangleCollisionXZ(player.GetPos(), pMacchina->GetPos(), QUAKE_HIT_RANGE, NONE_D3DXVECTOR3, -QUAKE_HIT_RANGE, NONE_D3DXVECTOR3) &&
+			fabsf(player.GetPos().y - pMacchina->GetPos().y) <= QUAKE_HIT_RANGE.y &&
 			pMacchina->GetCollision() == true)
 		{ // 当たり判定に当たった場合
 
