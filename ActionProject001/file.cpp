@@ -23,6 +23,15 @@
 #include "airplane_manager.h"
 
 //--------------------------------------------
+// マクロ定義
+//--------------------------------------------
+#define ITEM_TXT			"data\\TXT\\Screw.txt"			// アイテム(ネジ)のテキスト
+#define MACCHINA_TXT		"data\\TXT\\Macchina.txt"		// マキナ草のテキスト
+#define ENEMY_TXT			"data\\TXT\\Enemy.txt"			// 敵のテキスト
+#define TABLE_TXT			"data\\TXT\\Table.txt"			// 台のテキスト
+#define AIRPLANE_TXT		"data\\TXT\\Airplane.txt"		// 飛行機のテキスト
+
+//--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
 const char* CFile::c_apBooleanDisp[2] =					// bool型の表示
@@ -167,6 +176,16 @@ HRESULT CFile::Load(const TYPE type)
 			return E_FAIL;
 		}
 
+		if (m_ItemInfo.bSuccess == true)
+		{ // 読み込みに成功していた場合
+
+			for (int nCnt = 0; nCnt < m_ItemInfo.nNum; nCnt++)
+			{
+				// ネジの生成処理
+				CScrew::Create(m_ItemInfo.pos[nCnt], NONE_D3DXVECTOR3, false);
+			}
+		}
+
 		break;
 
 	case TYPE_MACCHINA:		// マキナ草
@@ -177,6 +196,16 @@ HRESULT CFile::Load(const TYPE type)
 
 			// 失敗を返す
 			return E_FAIL;
+		}
+
+		if (m_MacchinaInfo.bSuccess == true)
+		{ // 読み込みに成功していた場合
+
+			for (int nCnt = 0; nCnt < m_MacchinaInfo.nNum; nCnt++)
+			{
+				// マキナ草の生成処理
+				CMacchina::Create(m_MacchinaInfo.pos[nCnt]);
+			}
 		}
 
 		break;
@@ -191,6 +220,16 @@ HRESULT CFile::Load(const TYPE type)
 			return E_FAIL;
 		}
 
+		if (m_EnemyInfo.bSuccess == true)
+		{ // 読み込みに成功していた場合
+
+			for (int nCnt = 0; nCnt < m_EnemyInfo.nNum; nCnt++)
+			{
+				// 敵の生成処理
+				CEnemy::Create(m_EnemyInfo.pos[nCnt], m_EnemyInfo.type[nCnt]);
+			}
+		}
+
 		break;
 
 	case TYPE_TABLE:		// 台
@@ -203,6 +242,16 @@ HRESULT CFile::Load(const TYPE type)
 			return E_FAIL;
 		}
 
+		if (m_TableInfo.bSuccess == true)
+		{ // 読み込みに成功していた場合
+
+			for (int nCnt = 0; nCnt < m_TableInfo.nNum; nCnt++)
+			{
+				// 敵の生成処理
+				CTable::Create(m_TableInfo.pos[nCnt]);
+			}
+		}
+
 		break;
 
 	case TYPE_AIRPLANE:		// 飛行機
@@ -213,6 +262,16 @@ HRESULT CFile::Load(const TYPE type)
 
 			// 失敗を返す
 			return E_FAIL;
+		}
+
+		if (m_AirplaneInfo.bSuccess == true)
+		{ // 読み込みに成功していた場合
+
+			for (int nCnt = 0; nCnt < m_AirplaneInfo.nNum; nCnt++)
+			{
+				// 敵の生成処理
+				CAirplane::Create(m_AirplaneInfo.pos[nCnt], m_AirplaneInfo.bFront[nCnt]);
+			}
 		}
 
 		break;
@@ -284,7 +343,7 @@ HRESULT CFile::SaveItem(void)
 	FILE *pFile;				// ファイルポインタ
 
 	// ファイルを読み込み形式で開く
-	pFile = fopen("data\\TXT\\Screw.txt", "w");
+	pFile = fopen(ITEM_TXT, "w");
 
 	if (pFile != nullptr)
 	{ // ファイルが開けた場合
@@ -293,13 +352,13 @@ HRESULT CFile::SaveItem(void)
 		{ // オブジェクトへのポインタが NULL じゃなかった場合
 
 			// 文字列を書き込む
-			fprintf(pFile, "SET_SCREW\n");		// ネジの設定を書き込む
+			fprintf(pFile, "SET_ITEM\n");		// ネジの設定を書き込む
 
 			fprintf(pFile, "\tPOS = ");			// 位置の設定を書き込む
 			fprintf(pFile, "%.1f %.1f %.1f\n", pScrew->GetPos().x, pScrew->GetPos().y, pScrew->GetPos().z);			// 位置を書き込む
 
 			// 文字列を書き込む
-			fprintf(pFile, "END_SET_SCREW\n\n");			// ネジの設定の終了を書き込む
+			fprintf(pFile, "END_SET_ITEM\n\n");			// ネジの設定の終了を書き込む
 
 			// 次のオブジェクトを代入する
 			pScrew = pScrew->GetNext();
@@ -334,7 +393,7 @@ HRESULT CFile::SaveMacchina(void)
 	FILE *pFile;				// ファイルポインタ
 
 	// ファイルを読み込み形式で開く
-	pFile = fopen("data\\TXT\\Macchina.txt", "w");
+	pFile = fopen(MACCHINA_TXT, "w");
 
 	if (pFile != nullptr)
 	{ // ファイルが開けた場合
@@ -384,7 +443,7 @@ HRESULT CFile::SaveEnemy(void)
 	FILE *pFile;				// ファイルポインタ
 
 	// ファイルを読み込み形式で開く
-	pFile = fopen("data\\TXT\\Enemy.txt", "w");
+	pFile = fopen(ENEMY_TXT, "w");
 
 	if (pFile != nullptr)
 	{ // ファイルが開けた場合
@@ -437,7 +496,7 @@ HRESULT CFile::SaveTable(void)
 	FILE *pFile;				// ファイルポインタ
 
 	// ファイルを読み込み形式で開く
-	pFile = fopen("data\\TXT\\Table.txt", "w");
+	pFile = fopen(TABLE_TXT, "w");
 
 	if (pFile != nullptr)
 	{ // ファイルが開けた場合
@@ -487,7 +546,7 @@ HRESULT CFile::SaveAirplane(void)
 	FILE *pFile;				// ファイルポインタ
 
 	// ファイルを読み込み形式で開く
-	pFile = fopen("data\\TXT\\Airplane.txt", "w");
+	pFile = fopen(AIRPLANE_TXT, "w");
 
 	if (pFile != nullptr)
 	{ // ファイルが開けた場合
@@ -533,6 +592,69 @@ HRESULT CFile::SaveAirplane(void)
 //===========================================
 HRESULT CFile::LoadItem(void)
 {
+	// 変数を宣言
+	int nEnd;							// テキスト読み込み終了の確認用
+	char aString[MAX_STRING];			// テキストの文字列の代入用
+	m_ItemInfo.nNum = 0;				// 総数
+	m_ItemInfo.bSuccess = false;		// 成功状況
+
+	// ポインタを宣言
+	FILE *pFile;						// ファイルポインタ
+
+	// ファイルを読み込み形式で開く
+	pFile = fopen(ITEM_TXT, "r");
+
+	if (pFile != nullptr)
+	{ // ファイルが開けた場合
+
+		do
+		{ // 読み込んだ文字列が EOF ではない場合ループ
+
+			// ファイルから文字列を読み込む
+			nEnd = fscanf(pFile, "%s", &aString[0]);	// テキストを読み込みきったら EOF を返す
+
+			if (strcmp(&aString[0], "SET_ITEM") == 0)
+			{ // 読み込んだ文字列が SET_ITEM の場合
+
+				do
+				{ // 読み込んだ文字列が END_SET_ITEM ではない場合ループ
+
+				  // ファイルから文字列を読み込む
+					fscanf(pFile, "%s", &aString[0]);
+
+					if (strcmp(&aString[0], "POS") == 0)
+					{ // 読み込んだ文字列が POS の場合
+
+						fscanf(pFile, "%s", &aString[0]);				// = を読み込む (不要)
+						fscanf(pFile, "%f%f%f",
+							&m_ItemInfo.pos[m_ItemInfo.nNum].x,
+							&m_ItemInfo.pos[m_ItemInfo.nNum].y,
+							&m_ItemInfo.pos[m_ItemInfo.nNum].z);		// 位置を読み込む
+					}
+
+				} while (strcmp(&aString[0], "END_SET_ITEM") != 0);		// 読み込んだ文字列が END_SET_ITEM ではない場合ループ
+
+				// データの総数を増やす
+				m_ItemInfo.nNum++;
+			}
+		} while (nEnd != EOF);				// 読み込んだ文字列が EOF ではない場合ループ
+
+		// ファイルを閉じる
+		fclose(pFile);
+
+		// 成功状況を true にする
+		m_ItemInfo.bSuccess = true;
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
+
 	// 成功を返す
 	return S_OK;
 }
@@ -542,6 +664,69 @@ HRESULT CFile::LoadItem(void)
 //===========================================
 HRESULT CFile::LoadMacchina(void)
 {
+	// 変数を宣言
+	int nEnd;							// テキスト読み込み終了の確認用
+	char aString[MAX_STRING];			// テキストの文字列の代入用
+	m_MacchinaInfo.nNum = 0;			// 総数
+	m_MacchinaInfo.bSuccess = false;	// 成功状況
+
+	// ポインタを宣言
+	FILE *pFile;						// ファイルポインタ
+
+	// ファイルを読み込み形式で開く
+	pFile = fopen(MACCHINA_TXT, "r");
+
+	if (pFile != nullptr)
+	{ // ファイルが開けた場合
+
+		do
+		{ // 読み込んだ文字列が EOF ではない場合ループ
+
+			// ファイルから文字列を読み込む
+			nEnd = fscanf(pFile, "%s", &aString[0]);	// テキストを読み込みきったら EOF を返す
+
+			if (strcmp(&aString[0], "SET_MACCHINA") == 0)
+			{ // 読み込んだ文字列が SET_MACCHINA の場合
+
+				do
+				{ // 読み込んだ文字列が END_SET_MACCHINA ではない場合ループ
+
+				  // ファイルから文字列を読み込む
+					fscanf(pFile, "%s", &aString[0]);
+
+					if (strcmp(&aString[0], "POS") == 0)
+					{ // 読み込んだ文字列が POS の場合
+
+						fscanf(pFile, "%s", &aString[0]);				// = を読み込む (不要)
+						fscanf(pFile, "%f%f%f",
+							&m_MacchinaInfo.pos[m_MacchinaInfo.nNum].x,
+							&m_MacchinaInfo.pos[m_MacchinaInfo.nNum].y,
+							&m_MacchinaInfo.pos[m_MacchinaInfo.nNum].z);	// 位置を読み込む
+					}
+
+				} while (strcmp(&aString[0], "END_SET_MACCHINA") != 0);		// 読み込んだ文字列が END_SET_MACCHINA ではない場合ループ
+
+				// データの総数を増やす
+				m_MacchinaInfo.nNum++;
+			}
+		} while (nEnd != EOF);				// 読み込んだ文字列が EOF ではない場合ループ
+
+		// ファイルを閉じる
+		fclose(pFile);
+
+		// 成功状況を true にする
+		m_MacchinaInfo.bSuccess = true;
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
+
 	// 成功を返す
 	return S_OK;
 }
@@ -551,6 +736,76 @@ HRESULT CFile::LoadMacchina(void)
 //===========================================
 HRESULT CFile::LoadEnemy(void)
 {
+	// 変数を宣言
+	int nEnd;							// テキスト読み込み終了の確認用
+	char aString[MAX_STRING];			// テキストの文字列の代入用
+	m_EnemyInfo.nNum = 0;				// 総数
+	m_EnemyInfo.bSuccess = false;		// 成功状況
+
+	// ポインタを宣言
+	FILE *pFile;						// ファイルポインタ
+
+	// ファイルを読み込み形式で開く
+	pFile = fopen(ENEMY_TXT, "r");
+
+	if (pFile != nullptr)
+	{ // ファイルが開けた場合
+
+		do
+		{ // 読み込んだ文字列が EOF ではない場合ループ
+
+			// ファイルから文字列を読み込む
+			nEnd = fscanf(pFile, "%s", &aString[0]);	// テキストを読み込みきったら EOF を返す
+
+			if (strcmp(&aString[0], "SET_ENEMY") == 0)
+			{ // 読み込んだ文字列が SET_ENEMY の場合
+
+				do
+				{ // 読み込んだ文字列が END_SET_ENEMY ではない場合ループ
+
+				  // ファイルから文字列を読み込む
+					fscanf(pFile, "%s", &aString[0]);
+
+					if (strcmp(&aString[0], "POS") == 0)
+					{ // 読み込んだ文字列が POS の場合
+
+						fscanf(pFile, "%s", &aString[0]);				// = を読み込む (不要)
+						fscanf(pFile, "%f%f%f",
+							&m_EnemyInfo.pos[m_EnemyInfo.nNum].x,
+							&m_EnemyInfo.pos[m_EnemyInfo.nNum].y,
+							&m_EnemyInfo.pos[m_EnemyInfo.nNum].z);		// 位置を読み込む
+					}
+					else if (strcmp(&aString[0], "TYPE") == 0)
+					{ // 読み込んだ文字列が TYPE の場合
+
+						fscanf(pFile, "%s", &aString[0]);				// = を読み込む (不要)
+						fscanf(pFile, "%d",
+							&m_EnemyInfo.type[m_EnemyInfo.nNum]);		// 位置を読み込む
+					}
+
+				} while (strcmp(&aString[0], "END_SET_ENEMY") != 0);		// 読み込んだ文字列が END_SET_ENEMY ではない場合ループ
+
+				// データの総数を増やす
+				m_EnemyInfo.nNum++;
+			}
+		} while (nEnd != EOF);				// 読み込んだ文字列が EOF ではない場合ループ
+
+		// ファイルを閉じる
+		fclose(pFile);
+
+		// 成功状況を true にする
+		m_EnemyInfo.bSuccess = true;
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
+
 	// 成功を返す
 	return S_OK;
 }
@@ -560,6 +815,69 @@ HRESULT CFile::LoadEnemy(void)
 //===========================================
 HRESULT CFile::LoadTable(void)
 {
+	// 変数を宣言
+	int nEnd;							// テキスト読み込み終了の確認用
+	char aString[MAX_STRING];			// テキストの文字列の代入用
+	m_TableInfo.nNum = 0;				// 総数
+	m_TableInfo.bSuccess = false;		// 成功状況
+
+	// ポインタを宣言
+	FILE *pFile;						// ファイルポインタ
+
+	// ファイルを読み込み形式で開く
+	pFile = fopen(TABLE_TXT, "r");
+
+	if (pFile != nullptr)
+	{ // ファイルが開けた場合
+
+		do
+		{ // 読み込んだ文字列が EOF ではない場合ループ
+
+			// ファイルから文字列を読み込む
+			nEnd = fscanf(pFile, "%s", &aString[0]);	// テキストを読み込みきったら EOF を返す
+
+			if (strcmp(&aString[0], "SET_TABLE") == 0)
+			{ // 読み込んだ文字列が SET_TABLE の場合
+
+				do
+				{ // 読み込んだ文字列が END_SET_TABLE ではない場合ループ
+
+				  // ファイルから文字列を読み込む
+					fscanf(pFile, "%s", &aString[0]);
+
+					if (strcmp(&aString[0], "POS") == 0)
+					{ // 読み込んだ文字列が POS の場合
+
+						fscanf(pFile, "%s", &aString[0]);				// = を読み込む (不要)
+						fscanf(pFile, "%f%f%f",
+							&m_TableInfo.pos[m_TableInfo.nNum].x,
+							&m_TableInfo.pos[m_TableInfo.nNum].y,
+							&m_TableInfo.pos[m_TableInfo.nNum].z);		// 位置を読み込む
+					}
+
+				} while (strcmp(&aString[0], "END_SET_TABLE") != 0);		// 読み込んだ文字列が END_SET_TABLE ではない場合ループ
+
+				// データの総数を増やす
+				m_TableInfo.nNum++;
+			}
+		} while (nEnd != EOF);				// 読み込んだ文字列が EOF ではない場合ループ
+
+		// ファイルを閉じる
+		fclose(pFile);
+
+		// 成功状況を true にする
+		m_TableInfo.bSuccess = true;
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
+
 	// 成功を返す
 	return S_OK;
 }
@@ -569,6 +887,88 @@ HRESULT CFile::LoadTable(void)
 //===========================================
 HRESULT CFile::LoadAirplane(void)
 {
+	// 変数を宣言
+	int nEnd;							// テキスト読み込み終了の確認用
+	char aString[MAX_STRING];			// テキストの文字列の代入用
+	m_AirplaneInfo.nNum = 0;			// 総数
+	m_AirplaneInfo.bSuccess = false;	// 成功状況
+
+	// ポインタを宣言
+	FILE *pFile;						// ファイルポインタ
+
+	// ファイルを読み込み形式で開く
+	pFile = fopen(AIRPLANE_TXT, "r");
+
+	if (pFile != nullptr)
+	{ // ファイルが開けた場合
+
+		do
+		{ // 読み込んだ文字列が EOF ではない場合ループ
+
+			// ファイルから文字列を読み込む
+			nEnd = fscanf(pFile, "%s", &aString[0]);	// テキストを読み込みきったら EOF を返す
+
+			if (strcmp(&aString[0], "SET_AIRPLANE") == 0)
+			{ // 読み込んだ文字列が SET_AIRPLANE の場合
+
+				do
+				{ // 読み込んだ文字列が END_SET_AIRPLANE ではない場合ループ
+
+				  // ファイルから文字列を読み込む
+					fscanf(pFile, "%s", &aString[0]);
+
+					if (strcmp(&aString[0], "POS") == 0)
+					{ // 読み込んだ文字列が POS の場合
+
+						fscanf(pFile, "%s", &aString[0]);				// = を読み込む (不要)
+						fscanf(pFile, "%f%f%f",
+							&m_AirplaneInfo.pos[m_AirplaneInfo.nNum].x,
+							&m_AirplaneInfo.pos[m_AirplaneInfo.nNum].y,
+							&m_AirplaneInfo.pos[m_AirplaneInfo.nNum].z);		// 位置を読み込む
+					}
+					else if (strcmp(&aString[0], "FRONT") == 0)
+					{ // 読み込んだ文字列が FRONT の場合
+
+						fscanf(pFile, "%s", &aString[0]);			// = を読み込む (不要)
+						fscanf(pFile, "%s", &aString[0]);			// 位置を読み込む
+
+						if (strcmp(&aString[0], c_apBooleanDisp[0]) == 0)
+						{ // FALSEを読み込んだ場合
+
+							// false を設定する
+							m_AirplaneInfo.bFront[m_AirplaneInfo.nNum] = false;
+						}
+						else
+						{ // 上記以外
+
+							// true を設定する
+							m_AirplaneInfo.bFront[m_AirplaneInfo.nNum] = true;
+						}
+					}
+
+				} while (strcmp(&aString[0], "END_SET_AIRPLANE") != 0);		// 読み込んだ文字列が END_SET_AIRPLANE ではない場合ループ
+
+				// データの総数を増やす
+				m_AirplaneInfo.nNum++;
+			}
+		} while (nEnd != EOF);				// 読み込んだ文字列が EOF ではない場合ループ
+
+		// ファイルを閉じる
+		fclose(pFile);
+
+		// 成功状況を true にする
+		m_AirplaneInfo.bSuccess = true;
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
+
 	// 成功を返す
 	return S_OK;
 }
