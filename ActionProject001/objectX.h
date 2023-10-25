@@ -38,6 +38,8 @@ public:			// 誰でもアクセスできる
 		TYPE_GOAL,				// ゴール
 		TYPE_GOALPOINT,			// ゴールの中心
 		TYPE_RIPPLE,			// 波紋
+		TYPE_PORK,				// ポーク
+		TYPE_PLAYER,			// プレイヤー
 
 		// 敵モデル
 		TYPE_ITOCAN,			// イトキャン

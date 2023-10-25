@@ -24,6 +24,7 @@
 #include "game_score.h"
 #include "goal.h"
 #include "skybox.h"
+#include "pork.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -103,6 +104,9 @@ HRESULT CGame::Init(void)
 
 	// ゴールの生成
 	CGoal::Create(D3DXVECTOR3(4000.0f, 300.0f, 1000.0f));
+
+	// ポークの生成
+	CPork::Create(D3DXVECTOR3(-3500.0f, 0.0f, 0.0f), CPork::TYPE::TYPE_HOVER);
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント

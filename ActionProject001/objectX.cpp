@@ -29,6 +29,8 @@ const char* CXFile::c_apModelData[CXFile::TYPE_MAX] =		// モデルの名前
 	"data\\MODEL\\Goal.x",				// ゴール
 	"data\\MODEL\\GoalPoint.x",			// ゴールの中心
 	"data\\MODEL\\Ripple.x",			// 波紋
+	"data\\MODEL\\Pork.x",				// ポーク
+	"data\\MODEL\\Reon.x",				// レオン
 
 	// 敵モデル
 	"data\\MODEL\\Itocan.x",			// イトキャン

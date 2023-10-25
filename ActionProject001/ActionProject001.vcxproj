@@ -214,6 +214,8 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_ability.cpp" />
     <ClCompile Include="player_act.cpp" />
+    <ClCompile Include="pork.cpp" />
+    <ClCompile Include="pork_manager.cpp" />
     <ClCompile Include="precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -304,6 +306,8 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="player_ability.h" />
     <ClInclude Include="player_act.h" />
+    <ClInclude Include="pork.h" />
+    <ClInclude Include="pork_manager.h" />
     <ClInclude Include="precompile.h" />
     <ClInclude Include="ranking.h" />
     <ClInclude Include="renderer.h" />

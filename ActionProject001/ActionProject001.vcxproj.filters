@@ -321,6 +321,12 @@
     <ClCompile Include="orbit.cpp">
       <Filter>Staging</Filter>
     </ClCompile>
+    <ClCompile Include="pork.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="pork_manager.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -577,6 +583,12 @@
     </ClInclude>
     <ClInclude Include="orbit.h">
       <Filter>Staging</Filter>
+    </ClInclude>
+    <ClInclude Include="pork.h">
+      <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="pork_manager.h">
+      <Filter>Gimmick</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

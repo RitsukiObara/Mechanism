@@ -1,11 +1,11 @@
 //============================================
 //
-// 飛行機マネージャーヘッダー[airplane_manager.h]
+// ポークマネージャーヘッダー[pork_manager.h]
 // Author：小原立暉
 //
 //============================================
-#ifndef _AIRPLANE_MANAGER_H_		// このマクロ定義がされていなかったら
-#define _AIRPLANE_MANAGER_H_		// 2重インクルード防止のマクロを定義する
+#ifndef _PORK_MANAGER_H_		// このマクロ定義がされていなかったら
+#define _PORK_MANAGER_H_		// 2重インクルード防止のマクロを定義する
 
 //********************************************
 // インクルードファイル
@@ -15,37 +15,37 @@
 //--------------------------------------------
 // 前方宣言
 //--------------------------------------------
-class CAirplane;		// 飛行機
+class CPork;		// ポーク
 
 //--------------------------------------------
-// クラス(飛行機マネージャークラス)
+// クラス(ポークマネージャークラス)
 //--------------------------------------------
-class CAirplaneManager
+class CPorkManager
 {
 public:				// 誰でもアクセスできる
 
-	CAirplaneManager();			// コンストラクタ
-	~CAirplaneManager();			// デストラクタ
+	CPorkManager();			// コンストラクタ
+	~CPorkManager();			// デストラクタ
 
 	// メンバ関数
-	void Regist(CAirplane* pThis);		// 登録処理
+	void Regist(CPork* pThis);		// 登録処理
 	void Uninit(void);						// 終了処理
 	
-	CAirplane* GetTop(void);				// 先頭の取得処理
-	void Pull(CAirplane* pThis);			// リスト構造の引き抜き処理
+	CPork* GetTop(void);				// 先頭の取得処理
+	void Pull(CPork* pThis);			// リスト構造の引き抜き処理
 
 	// 静的メンバ関数
-	static CAirplaneManager* Create(void);		// 生成処理
-	static CAirplaneManager* Get(void);		// 取得処理
+	static CPorkManager* Create(void);		// 生成処理
+	static CPorkManager* Get(void);		// 取得処理
 
 private:			// 自分だけアクセスできる
 
 	// メンバ変数
-	CAirplane* m_pTop;		// 先頭のオブジェクト
+	CPork* m_pTop;		// 先頭のオブジェクト
 	int m_nNumAll;			// オブジェクトの総数
 
 	// 静的メンバ変数
-	static CAirplaneManager* m_pManager;		// マネージャーの変数
+	static CPorkManager* m_pManager;		// マネージャーの変数
 };
 
 #endif
