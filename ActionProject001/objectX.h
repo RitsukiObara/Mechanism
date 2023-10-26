@@ -45,6 +45,7 @@ public:			// 誰でもアクセスできる
 		// 敵モデル
 		TYPE_ITOCAN,			// イトキャン
 		TYPE_MACHIDORI,			// マシンドリー
+		TYPE_GARREJANTE,		// ガレジャンテ
 
 		// プレイヤーモデル
 		TYPE_PLAYERWAIST,		// 腰

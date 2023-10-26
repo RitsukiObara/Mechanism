@@ -18,10 +18,11 @@
 #include "player.h"
 #include "objectElevation.h"
 #include "elevation_manager.h"
+#include "stun.h"
 
 #include "itocan.h"
 #include "machidori.h"
-#include "stun.h"
+#include "garrejante.h"
 
 // マクロ定義
 #define GRAVITY			(0.5f)				// 重力
@@ -323,6 +324,13 @@ CEnemy* CEnemy::Create(const D3DXVECTOR3& pos, const TYPE type)
 
 			// インスタンスを生成
 			pEnemy = new CMachidori;
+
+			break;
+
+		case TYPE_GARREJANTE:
+
+			// インスタンスを生成
+			pEnemy = new CGarrejante;
 
 			break;
 

@@ -336,6 +336,9 @@
     <ClCompile Include="needle_manager.cpp">
       <Filter>Gimmick</Filter>
     </ClCompile>
+    <ClCompile Include="garrejante.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -607,6 +610,9 @@
     </ClInclude>
     <ClInclude Include="needle_manager.h">
       <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="garrejante.h">
+      <Filter>Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

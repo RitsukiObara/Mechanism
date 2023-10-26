@@ -383,6 +383,13 @@ void CEdit::EnemyProcess(void)
 
 			break;
 
+		case CEnemy::TYPE_GARREJANTE:
+
+			// ƒ‚ƒfƒ‹‚Ìî•ñİ’èˆ—
+			SetFileData(CXFile::TYPE_GARREJANTE);
+
+			break;
+
 		default:
 
 			// ’â~
@@ -657,6 +664,13 @@ void CEdit::Type(void)
 
 				// ƒ‚ƒfƒ‹‚Ìî•ñİ’èˆ—
 				SetFileData(CXFile::TYPE_MACHIDORI);
+
+				break;
+
+			case CEnemy::TYPE_GARREJANTE:
+
+				// ƒ‚ƒfƒ‹‚Ìî•ñİ’èˆ—
+				SetFileData(CXFile::TYPE_GARREJANTE);
 
 				break;
 

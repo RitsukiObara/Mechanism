@@ -166,6 +166,7 @@
     <ClCompile Include="edit.cpp" />
     <ClCompile Include="fraction.cpp" />
     <ClCompile Include="game_score.cpp" />
+    <ClCompile Include="garrejante.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="machidori.cpp" />
     <ClCompile Include="needle.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="edit.h" />
     <ClInclude Include="fraction.h" />
     <ClInclude Include="game_score.h" />
+    <ClInclude Include="garrejante.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="machidori.h" />
     <ClInclude Include="needle.h" />

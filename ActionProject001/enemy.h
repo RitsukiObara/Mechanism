@@ -29,6 +29,7 @@ public:			// 誰でもアクセスできる
 	{
 		TYPE_ITOCAN = 0,		// イトキャン
 		TYPE_MACHIDORI,			// マシンドリー
+		TYPE_GARREJANTE,		// ガレジャンテ
 		TYPE_MAX				// この列挙型の総数
 	};
 
