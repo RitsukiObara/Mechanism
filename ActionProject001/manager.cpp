@@ -26,6 +26,7 @@
 #include "table_manager.h"
 #include "macchina_manager.h"
 #include "pork_manager.h"
+#include "needle_manager.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -61,6 +62,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CTableManager::Create();			// 台マネージャー
 	CMacchinaManager::Create();			// マキナ草マネージャー
 	CPorkManager::Create();				// ポークマネージャー
+	CNeedleManager::Create();			// 棘マネージャー
 
 	if (m_pFile == nullptr)
 	{ // ファイルへのポインタが nullptr の場合
@@ -514,6 +516,7 @@ void CManager::Uninit(void)
 	CTableManager::Get()->Uninit();			// 台マネージャー
 	CMacchinaManager::Get()->Uninit();		// マキナ草マネージャー
 	CPorkManager::Get()->Uninit();			// ポークマネージャー
+	CNeedleManager::Get()->Uninit();		// 棘マネージャー
 
 	// マネージャーのメモリを解放する
 	delete m_pManager;

@@ -168,6 +168,8 @@
     <ClCompile Include="game_score.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="machidori.cpp" />
+    <ClCompile Include="needle.cpp" />
+    <ClCompile Include="needle_manager.cpp" />
     <ClCompile Include="new_record.cpp" />
     <ClCompile Include="objectAnim.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -261,6 +263,8 @@
     <ClInclude Include="game_score.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="machidori.h" />
+    <ClInclude Include="needle.h" />
+    <ClInclude Include="needle_manager.h" />
     <ClInclude Include="objectAnim.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />

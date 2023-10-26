@@ -21,6 +21,8 @@
 #include "table_manager.h"
 #include "airplane.h"
 #include "airplane_manager.h"
+#include "needle.h"
+#include "needle_manager.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -30,6 +32,7 @@
 #define ENEMY_TXT			"data\\TXT\\Enemy.txt"			// 敵のテキスト
 #define TABLE_TXT			"data\\TXT\\Table.txt"			// 台のテキスト
 #define AIRPLANE_TXT		"data\\TXT\\Airplane.txt"		// 飛行機のテキスト
+#define NEEDLE_TXT			"data\\TXT\\Needle.txt"			// 棘のテキスト
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -588,6 +591,59 @@ HRESULT CFile::SaveAirplane(void)
 }
 
 //===========================================
+// 棘のセーブ処理
+//===========================================
+HRESULT CFile::SaveNeedle(void)
+{
+	// ローカル変数宣言
+	CNeedle* pNeedle = CNeedleManager::Get()->GetTop();		// 先頭の棘を代入する
+
+	// ポインタを宣言
+	FILE *pFile;				// ファイルポインタ
+
+	// ファイルを読み込み形式で開く
+	pFile = fopen(AIRPLANE_TXT, "w");
+
+	if (pFile != nullptr)
+	{ // ファイルが開けた場合
+
+		while (pNeedle != nullptr)
+		{ // オブジェクトへのポインタが NULL じゃなかった場合
+
+			// 文字列を書き込む
+			fprintf(pFile, "SET_NEEDLE\n");			// 棘の設定を書き込む
+
+			fprintf(pFile, "\tPOS = ");				// 位置の設定を書き込む
+			fprintf(pFile, "%.1f %.1f %.1f\n", pNeedle->GetPos().x, pNeedle->GetPos().y, pNeedle->GetPos().z);		// 位置を書き込む
+
+			fprintf(pFile, "\tROT = ");				// 向きの設定を書き込む
+			fprintf(pFile, "%.1f %.1f %.1f\n", pNeedle->GetRot().x, pNeedle->GetRot().y, pNeedle->GetRot().z);		// 向きを書き込む
+
+			// 文字列を書き込む
+			fprintf(pFile, "END_SET_NEEDLE\n\n");	// 棘の設定の終了を書き込む
+
+			// 次のオブジェクトを代入する
+			pNeedle = pNeedle->GetNext();
+		}
+
+		// ファイルを閉じる
+		fclose(pFile);
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
+
+	// 成功を返す
+	return S_OK;
+}
+
+//===========================================
 // アイテムのロード処理
 //===========================================
 HRESULT CFile::LoadItem(void)
@@ -958,6 +1014,87 @@ HRESULT CFile::LoadAirplane(void)
 
 		// 成功状況を true にする
 		m_AirplaneInfo.bSuccess = true;
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
+
+	// 成功を返す
+	return S_OK;
+}
+
+//===========================================
+// 棘のロード処理
+//===========================================
+HRESULT CFile::LoadNeedle(void)
+{
+	// 変数を宣言
+	int nEnd;							// テキスト読み込み終了の確認用
+	char aString[MAX_STRING];			// テキストの文字列の代入用
+	m_NeedleInfo.nNum = 0;				// 総数
+	m_NeedleInfo.bSuccess = false;		// 成功状況
+
+	// ポインタを宣言
+	FILE *pFile;						// ファイルポインタ
+
+	// ファイルを読み込み形式で開く
+	pFile = fopen(NEEDLE_TXT, "r");
+
+	if (pFile != nullptr)
+	{ // ファイルが開けた場合
+
+		do
+		{ // 読み込んだ文字列が EOF ではない場合ループ
+
+			// ファイルから文字列を読み込む
+			nEnd = fscanf(pFile, "%s", &aString[0]);	// テキストを読み込みきったら EOF を返す
+
+			if (strcmp(&aString[0], "SET_NEEDLE") == 0)
+			{ // 読み込んだ文字列が SET_NEEDLE の場合
+
+				do
+				{ // 読み込んだ文字列が END_SET_NEEDLE ではない場合ループ
+
+				  // ファイルから文字列を読み込む
+					fscanf(pFile, "%s", &aString[0]);
+
+					if (strcmp(&aString[0], "POS") == 0)
+					{ // 読み込んだ文字列が POS の場合
+
+						fscanf(pFile, "%s", &aString[0]);				// = を読み込む (不要)
+						fscanf(pFile, "%f%f%f",
+							&m_NeedleInfo.pos[m_NeedleInfo.nNum].x,
+							&m_NeedleInfo.pos[m_NeedleInfo.nNum].y,
+							&m_NeedleInfo.pos[m_NeedleInfo.nNum].z);	// 位置を読み込む
+					}
+					if (strcmp(&aString[0], "ROT") == 0)
+					{ // 読み込んだ文字列が ROT の場合
+
+						fscanf(pFile, "%s", &aString[0]);				// = を読み込む (不要)
+						fscanf(pFile, "%f%f%f",
+							&m_NeedleInfo.rot[m_NeedleInfo.nNum].x,
+							&m_NeedleInfo.rot[m_NeedleInfo.nNum].y,
+							&m_NeedleInfo.rot[m_NeedleInfo.nNum].z);	// 向きを読み込む
+					}
+
+				} while (strcmp(&aString[0], "END_SET_NEEDLE") != 0);		// 読み込んだ文字列が END_SET_NEEDLE ではない場合ループ
+
+				// データの総数を増やす
+				m_NeedleInfo.nNum++;
+			}
+		} while (nEnd != EOF);				// 読み込んだ文字列が EOF ではない場合ループ
+
+		// ファイルを閉じる
+		fclose(pFile);
+
+		// 成功状況を true にする
+		m_NeedleInfo.bSuccess = true;
 	}
 	else
 	{ // ファイルが開けなかった場合

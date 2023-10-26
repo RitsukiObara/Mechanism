@@ -29,6 +29,7 @@ public:				// 誰でもアクセスできる
 		TYPE_ENEMY,			// 敵
 		TYPE_TABLE,			// 台
 		TYPE_AIRPLANE,		// 飛行機
+		TYPE_NEEDLE,		// 棘
 		TYPE_MAX			// この列挙型の総数
 	};
 
@@ -69,6 +70,7 @@ private:			// 自分だけアクセスできる
 	void DeleteEnemy(void);		// 敵の消去処理
 	void DeleteTable(void);		// 台の消去処理
 	void DeleteAirplane(void);	// 飛行機の消去処理
+	void DeleteNeedle(void);	// 棘の消去処理
 
 	// メンバ変数
 	D3DXVECTOR3 m_move;			// 移動量

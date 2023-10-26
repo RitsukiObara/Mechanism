@@ -40,7 +40,7 @@
 // 位置・距離関係
 #define POS_SPEED					(30.0f)				// 移動速度
 #define DIS_SPEED					(16.0f)				// 距離の移動量
-#define CAMERA_DISTANCE				(850.0f)			// カメラの距離
+#define CAMERA_DISTANCE				(550.0f)			// カメラの距離
 #define POSR_POINT					(40.0f)				// 追従モードの注視点の位置
 #define POSV_POINT					(40.0f)				// 追従モードの視点の位置
 #define CORRECT_POSR				(0.22f)				// 注視点の補正倍率
@@ -48,9 +48,9 @@
 #define RANKING_MOVE				(40.0f)				// ランキングカメラの移動量
 #define RANKING_STOP				(25000.0f)			// ランキングカメラの止まる座標
 
-#define CHASE_SHIFT_X				(550.0f)			// 追跡カメラの前にずらす距離(X軸)
-#define POSR_SHIFT_Y				(350.0f)			// 注視点のずらす幅(Y軸)
-#define POSV_SHIFT_Y				(380.0f)			// 視点のずらす幅(Y軸)
+#define CHASE_SHIFT_X				(400.0f)			// 追跡カメラの前にずらす距離(X軸)
+#define POSR_SHIFT_Y				(190.0f)			// 注視点のずらす幅(Y軸)
+#define POSV_SHIFT_Y				(220.0f)			// 視点のずらす幅(Y軸)
 
 //=======================
 // コンストラクタ

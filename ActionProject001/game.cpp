@@ -25,6 +25,7 @@
 #include "goal.h"
 #include "skybox.h"
 #include "pork.h"
+#include "needle.h"
 
 //--------------------------------------------
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾

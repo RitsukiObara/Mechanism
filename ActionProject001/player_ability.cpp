@@ -243,10 +243,11 @@ void CAbility::ResetAbility(void)
 	// 能力を設定する
 	m_ability = ABILITY_NONE;
 
-	// 可能状況を true にする
-	m_aPossible[TYPE_HOVER] = true;
-	m_aPossible[TYPE_JETDASH] = true;
-	m_aPossible[TYPE_GROUNDQUAKE] = true;
+	for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
+	{
+		m_aPossible[nCnt] = true;		// 可能状況
+		m_aAblCount[nCnt] = 0;			// 能力カウント
+	}
 }
 
 //========================

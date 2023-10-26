@@ -25,6 +25,8 @@
 #include "table_manager.h"
 #include "airplane.h"
 #include "airplane_manager.h"
+#include "needle.h"
+#include "needle_manager.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -130,6 +132,10 @@ void CEdit::Update(void)
 
 		break;
 
+	case CEdit::TYPE_NEEDLE:
+
+		break;
+
 	default:
 
 		// 停止
@@ -196,13 +202,13 @@ void CEdit::SetData(const D3DXVECTOR3& pos)
 CEdit* CEdit::Create(const D3DXVECTOR3& pos)
 {
 	// ローカルオブジェクトを生成
-	CEdit* pScrew = nullptr;	// インスタンスを生成
+	CEdit* pEdit = nullptr;	// インスタンスを生成
 
-	if (pScrew == nullptr)
+	if (pEdit == nullptr)
 	{ // オブジェクトが NULL の場合
 
 		// インスタンスを生成
-		pScrew = new CEdit;
+		pEdit = new CEdit;
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
@@ -211,11 +217,11 @@ CEdit* CEdit::Create(const D3DXVECTOR3& pos)
 		return nullptr;
 	}
 
-	if (pScrew != nullptr)
+	if (pEdit != nullptr)
 	{ // オブジェクトが NULL じゃない場合
 
 		// 初期化処理
-		if (FAILED(pScrew->Init()))
+		if (FAILED(pEdit->Init()))
 		{ // 初期化に失敗した場合
 
 			// 停止
@@ -226,7 +232,7 @@ CEdit* CEdit::Create(const D3DXVECTOR3& pos)
 		}
 
 		// 情報の設定処理
-		pScrew->SetData(pos);
+		pEdit->SetData(pos);
 	}
 	else
 	{ // オブジェクトが NULL の場合
@@ -235,8 +241,8 @@ CEdit* CEdit::Create(const D3DXVECTOR3& pos)
 		return nullptr;
 	}
 
-	// ネジのポインタを返す
-	return pScrew;
+	// エディットのポインタを返す
+	return pEdit;
 }
 
 //=======================================
@@ -678,6 +684,13 @@ void CEdit::Type(void)
 
 			break;
 
+		case CEdit::TYPE_NEEDLE:
+
+			// モデルの情報設定処理
+			SetFileData(CXFile::TYPE_NEEDLE);
+
+			break;
+
 		default:
 
 			// 停止
@@ -814,6 +827,13 @@ void CEdit::Set(void)
 
 			break;
 
+		case CEdit::TYPE_NEEDLE:
+
+			// 棘の生成処理
+			CNeedle::Create(pos, rot);
+
+			break;
+
 		default:
 
 			// 停止
@@ -863,6 +883,13 @@ void CEdit::Delete(void)
 
 		// 飛行機の消去処理
 		DeleteAirplane();
+
+		break;
+
+	case CEdit::TYPE_NEEDLE:
+
+		// 棘の消去処理
+		DeleteNeedle();
 
 		break;
 
@@ -1038,6 +1065,38 @@ void CEdit::DeleteAirplane(void)
 
 		// 次の飛行機を代入する
 		pAirplane = pAirplaneNext;
+	}
+}
+
+//=======================================
+// 棘の消去処理
+//=======================================
+void CEdit::DeleteNeedle(void)
+{
+	// ローカル変数宣言
+	CNeedle* pNeedle = CNeedleManager::Get()->GetTop();		// 棘のポインタ
+	CNeedle* pNeedleNext;									// 次の棘
+
+	while (pNeedle != nullptr)
+	{ // 棘が NULL じゃない場合回す
+		 
+		// 次の棘を設定する
+		pNeedleNext = pNeedle->GetNext();
+
+		if (useful::RectangleCollisionXY(pNeedle->GetPos(), GetPos(), pNeedle->GetFileData().collsize, GetFileData().collsize, -pNeedle->GetFileData().collsize, -GetFileData().collsize) == true &&
+			useful::RectangleCollisionXZ(pNeedle->GetPos(), GetPos(), pNeedle->GetFileData().collsize, GetFileData().collsize, -pNeedle->GetFileData().collsize, -GetFileData().collsize) == true)
+		{ // 当たり判定が true の場合
+
+			if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_9) == true)
+			{ // 9キーを押した場合
+
+				// 棘を消す
+				pNeedle->Uninit();
+			}
+		}
+
+		// 次の棘を代入する
+		pNeedle = pNeedleNext;
 	}
 }
 

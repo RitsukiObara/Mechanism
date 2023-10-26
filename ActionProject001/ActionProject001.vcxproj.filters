@@ -330,6 +330,12 @@
     <ClCompile Include="signboard.cpp">
       <Filter>Gimmick</Filter>
     </ClCompile>
+    <ClCompile Include="needle.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="needle_manager.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -594,6 +600,12 @@
       <Filter>Gimmick</Filter>
     </ClInclude>
     <ClInclude Include="signboard.h">
+      <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="needle.h">
+      <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="needle_manager.h">
       <Filter>Gimmick</Filter>
     </ClInclude>
   </ItemGroup>

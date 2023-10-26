@@ -33,6 +33,7 @@ public:			// 誰でもアクセスできる
 		TYPE_ENEMY,			// 敵
 		TYPE_TABLE,			// 台
 		TYPE_AIRPLANE,		// 飛行機
+		TYPE_NEEDLE,		// 棘
 		TYPE_MAX			// この列挙型の総数
 	};
 
@@ -78,6 +79,15 @@ public:			// 誰でもアクセスできる
 		bool bSuccess;						// 成功状況
 	};
 
+	// 構造体定義(棘の情報)
+	struct SNeedleInfo
+	{
+		D3DXVECTOR3 pos[MAX_FILE_DATA];		// 位置
+		D3DXVECTOR3 rot[MAX_FILE_DATA];		// 向き
+		int nNum;							// 総数
+		bool bSuccess;						// 成功状況
+	};
+
 	CFile();					// コンストラクタ
 	~CFile();					// デストラクタ
 
@@ -96,6 +106,7 @@ private:		// 自分のみアクセスできる
 	HRESULT SaveEnemy(void);		// 敵のセーブ処理
 	HRESULT SaveTable(void);		// 台のセーブ処理
 	HRESULT SaveAirplane(void);		// 飛行機のセーブ処理
+	HRESULT SaveNeedle(void);		// 棘のセーブ処理
 
 	// メンバ関数(ロード関係)
 	HRESULT LoadItem(void);			// アイテムのロード処理
@@ -103,6 +114,7 @@ private:		// 自分のみアクセスできる
 	HRESULT LoadEnemy(void);		// 敵のロード処理
 	HRESULT LoadTable(void);		// 台のロード処理
 	HRESULT LoadAirplane(void);		// 飛行機のロード処理
+	HRESULT LoadNeedle(void);		// 棘のロード処理
 
 	// メンバ変数
 	SItemInfo m_ItemInfo;			// アイテムの情報
@@ -110,6 +122,7 @@ private:		// 自分のみアクセスできる
 	SEnemyInfo m_EnemyInfo;			// 敵の情報
 	STableInfo m_TableInfo;			// 台の情報
 	SAirplaneInfo m_AirplaneInfo;	// 飛行機の情報
+	SNeedleInfo m_NeedleInfo;		// 棘の情報
 
 	// 静的メンバ変数
 	static const char* c_apBooleanDisp[2];			// bool型の表示
