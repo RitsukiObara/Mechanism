@@ -66,6 +66,7 @@ private:		// 自分だけアクセスできる
 	void Ability(CPlayer& player);		// 能力操作処理
 	void HoverJet(CPlayer& player);		// ホバージェット処理
 	void SkyDash(CPlayer& player);		// ジェットダッシュ処理
+	void DashJump(CPlayer& player);		// ダッシュジャンプ処理
 	void GroundQuake(CPlayer& player);	// グラウンドクエイク処理
 
 	void PossibleProcess(CPlayer& player);			// 可能状況判定処理

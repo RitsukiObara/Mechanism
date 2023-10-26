@@ -26,7 +26,9 @@
 #define GROUNDQUAKE_COUNT			(500)				// グラウンドクエイク状態の強制解除カウント
 #define GROUNDQUAKE_RIPPLE_COUNT	(10)				// グラウンドクエイク時の波紋が出る間隔
 #define GROUNDQUAKE_POSBL_COUNT		(15)				// グラウンドクエイク状態が使用可能になるカウント
-#define JETDASH_SPEED				(30.0f)				// ジェットダッシュ時のスピード
+#define JETDASH_SPEED				(25.0f)				// ジェットダッシュ時のスピード
+#define DASHJUMP_DEST_SPEED			(8.0f)				// ダッシュジャンプ時の目的のスピード
+#define DASHJUMP_ADD_SPEED			(0.5f)				// ダッシュジャンプ時の追加のスピード
 
 //============================================
 // コンストラクタ
@@ -113,21 +115,8 @@ void CAbility::Update(CPlayer& player)
 
 	case ABILITY_DASHJUMP:		// ダッシュジャンプ
 
-	{
-		float f = player.GetSpeed();
-
-		useful::FrameCorrect(8.0f, &f, 0.5f);
-
-		// 速度を適用する
-		player.SetSpeed(f);
-
-		if (f <= 8.0f)
-		{ // 速度が一定数以下になった場合
-
-			// 無能力状態にする
-			m_ability = ABILITY_NONE;
-		}
-	}
+		// ダッシュジャンプ処理
+		DashJump(player);
 
 		break;
 
@@ -206,7 +195,7 @@ void CAbility::SetAbility(const ABILITY ability, CPlayer& player)
 	case ABILITY_DASHJUMP:		// ダッシュジャンプ
 
 		// 速度を設定する
-		player.SetSpeed(JETDASH_SPEED);
+		player.SetSpeed(30.0f);
 
 		break;
 
@@ -397,14 +386,12 @@ void CAbility::SkyDash(CPlayer& player)
 	// 位置を設定する
 	pos.x += sinf(rot.y) * JETDASH_SPEED;
 
-	// 能力カウントを加算する
-	m_aAblCount[TYPE_JETDASH]++;
+	if (CManager::Get()->GetInputKeyboard()->GetRelease(DIK_U) == true)
+	{ // Iキーを離したまたは、一定カウント数を超えた場合
 
-	if (m_aAblCount[TYPE_JETDASH] >= JETDASH_COUNT)
-	{ // カウントが一定数以上の場合
-
-		if (player.IsJump() == true)
-		{ // ジャンプ状況が true の場合
+		if (player.IsJump() == true &&
+			player.GetMove().y > 0.0f)
+		{ // ジャンプ状況が true かつ、ジャンプ量が0.0f超過の場合
 
 			// 能力カウントを初期化する
 			m_aAblCount[TYPE_JETDASH] = 0;
@@ -416,12 +403,34 @@ void CAbility::SkyDash(CPlayer& player)
 		{ // 上記以外
 
 			// 無能力状態にする
-			m_ability = ABILITY_NONE;
+			SetAbility(ABILITY_NONE, player);
 		}
 	}
 
 	// 位置を適用する
 	player.SetPos(pos);
+}
+
+//============================================
+// ダッシュジャンプ処理
+//============================================
+void CAbility::DashJump(CPlayer& player)
+{
+	// ローカル変数宣言
+	float fSpeed = player.GetSpeed();		// 速度を取得する
+
+	// 均等な補正処理
+	useful::FrameCorrect(DASHJUMP_DEST_SPEED, &fSpeed, DASHJUMP_ADD_SPEED);
+
+	// 速度を適用する
+	player.SetSpeed(fSpeed);
+
+	if (fSpeed <= DASHJUMP_DEST_SPEED)
+	{ // 速度が一定数以下になった場合
+
+		// 無能力状態にする
+		m_ability = ABILITY_NONE;
+	}
 }
 
 //============================================
