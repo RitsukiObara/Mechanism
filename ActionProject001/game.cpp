@@ -100,7 +100,7 @@ HRESULT CGame::Init(void)
 	CManager::Get()->GetFile()->Load(CFile::TYPE_AIRPLANE);
 
 	// スコアを生成する
-	CGameScore::Create(D3DXVECTOR3(70.0f,500.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f));
+	CGameScore::Create(D3DXVECTOR3(50.0f,680.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f));
 
 	// ゴールの生成
 	CGoal::Create(D3DXVECTOR3(4000.0f, 300.0f, 1000.0f));

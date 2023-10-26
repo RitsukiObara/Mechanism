@@ -17,7 +17,7 @@
 //==============================
 // コンストラクタ
 //==============================
-CTable::CTable() : CModel(CObject::TYPE_AIRPLANE, CObject::PRIORITY_ENTITY)
+CTable::CTable() : CModel(CObject::TYPE_AIRPLANE, CObject::PRIORITY_BLOCK)
 {
 	// 全ての値をクリアする
 	m_pPrev = nullptr;		// 前へのポインタ

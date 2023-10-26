@@ -313,9 +313,6 @@ void CPlayer::Update(void)
 	// 台との当たり判定
 	TableCollision();
 
-	// 影の位置向き設定処理
-	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
-
 	// 行動制限判定
 	CollisionMagicWall();
 
@@ -892,6 +889,15 @@ void CPlayer::TableCollision(void)
 			// リセット処理
 			m_pAbility->ResetAbility();
 		}
+
+		// 影の位置向き設定処理
+		CShadowCircle::SetPosRot(m_nShadowIdx, GetPos(), GetRot());
+	}
+	else
+	{ // 上記以外
+
+		// 影の位置向き設定処理
+		CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
 	}
 
 	// 位置を適用させる

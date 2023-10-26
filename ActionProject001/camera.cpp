@@ -48,7 +48,9 @@
 #define RANKING_MOVE				(40.0f)				// ランキングカメラの移動量
 #define RANKING_STOP				(25000.0f)			// ランキングカメラの止まる座標
 
-#define CHASE_SHIFT_X				(550.0f)			// 追跡カメラの前にずらす距離
+#define CHASE_SHIFT_X				(550.0f)			// 追跡カメラの前にずらす距離(X軸)
+#define POSR_SHIFT_Y				(350.0f)			// 注視点のずらす幅(Y軸)
+#define POSV_SHIFT_Y				(380.0f)			// 視点のずらす幅(Y軸)
 
 //=======================
 // コンストラクタ
@@ -890,12 +892,12 @@ void CCamera::Chase(void)
 
 		// 目的の注視点を設定する
 		m_posRDest.x = pos.x + CHASE_SHIFT_X;
-		m_posRDest.y = pos.y + 100.0f;
+		m_posRDest.y = pos.y + POSR_SHIFT_Y;
 		m_posRDest.z = pos.z;
 
 		// 目的の視点を設定する
 		m_posVDest.x = m_posRDest.x + sinf(m_rot.y) * -m_Dis;
-		m_posVDest.y = pos.y + 130.0f;
+		m_posVDest.y = pos.y + POSV_SHIFT_Y;
 		m_posVDest.z = m_posRDest.z + cosf(m_rot.y) * -m_Dis;
 
 		// 注視点を補正
@@ -936,13 +938,13 @@ void CCamera::Vibrate(void)
 			{ // カウントが偶数の場合
 
 				// 目的の注視点を設定する
-				m_posRDest.y = pos.y + 100.0f - f;
+				m_posRDest.y = pos.y + POSR_SHIFT_Y - f;
 			}
 			else
 			{ // カウントが奇数の場合
 
 				// 目的の注視点を設定する
-				m_posRDest.y = pos.y + 100.0f + f;
+				m_posRDest.y = pos.y + POSR_SHIFT_Y + f;
 			}
 
 			// 目的の注視点を設定する
@@ -951,7 +953,7 @@ void CCamera::Vibrate(void)
 
 			// 目的の視点を設定する
 			m_posVDest.x = m_posRDest.x + sinf(m_rot.y) * -m_Dis;
-			m_posVDest.y = pos.y + 130.0f;
+			m_posVDest.y = pos.y + POSV_SHIFT_Y;
 			m_posVDest.z = m_posRDest.z + cosf(m_rot.y) * -m_Dis;
 		}
 
