@@ -327,6 +327,9 @@
     <ClCompile Include="pork_manager.cpp">
       <Filter>Gimmick</Filter>
     </ClCompile>
+    <ClCompile Include="signboard.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -588,6 +591,9 @@
       <Filter>Gimmick</Filter>
     </ClInclude>
     <ClInclude Include="pork_manager.h">
+      <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="signboard.h">
       <Filter>Gimmick</Filter>
     </ClInclude>
   </ItemGroup>

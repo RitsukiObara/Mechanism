@@ -14,12 +14,16 @@
 #include "pork_manager.h"
 #include "useful.h"
 
+#include "signboard.h"
+
 //==============================
 // コンストラクタ
 //==============================
 CPork::CPork() : CModel(CObject::TYPE_PORK, CObject::PRIORITY_ENTITY)
 {
 	// 全ての値をクリアする
+	m_pSignBoard = nullptr;	// 看板のポインタ
+
 	m_pPrev = nullptr;		// 前へのポインタ
 	m_pNext = nullptr;		// 次へのポインタ
 
@@ -87,6 +91,9 @@ HRESULT CPork::Init(void)
 		return E_FAIL;
 	}
 
+	// 全ての値を初期化する
+	m_pSignBoard = nullptr;		// 看板のポインタ
+
 	// 値を返す
 	return S_OK;
 }
@@ -96,6 +103,14 @@ HRESULT CPork::Init(void)
 //========================================
 void CPork::Uninit(void)
 {
+	if (m_pSignBoard != nullptr)
+	{ // 看板が存在する場合
+
+		// 終了処理
+		m_pSignBoard->Uninit();
+		m_pSignBoard = nullptr;
+	}
+
 	// 終了処理
 	CModel::Uninit();
 
@@ -116,7 +131,15 @@ void CPork::Uninit(void)
 //========================================
 void CPork::Update(void)
 {
+	//if (m_pSignBoard != nullptr)
+	//{ // 看板が NULL じゃない場合
 
+	//	D3DXVECTOR3 rot = m_pSignBoard->GetRot();
+
+	//	rot.y = D3DX_PI;
+
+	//	m_pSignBoard->SetRot(rot);
+	//}
 }
 
 //=====================================
@@ -138,7 +161,20 @@ void CPork::SetData(const D3DXVECTOR3& pos, const TYPE type)
 	SetRot(NONE_D3DXVECTOR3);					// 向き
 	SetPosOld(pos);								// 前回の位置
 	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
-	SetFileData(CXFile::TYPE_PLAYER);				// モデルの情報
+	SetFileData(CXFile::TYPE_PORK);				// モデルの情報
+
+	if (m_pSignBoard == nullptr)
+	{ // 看板のポインタが NULL の場合
+
+		// 看板の生成処理
+		m_pSignBoard = CSignBoard::Create(pos);
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+	}
 }
 
 //=======================================

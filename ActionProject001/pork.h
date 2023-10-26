@@ -13,6 +13,11 @@
 #include "model.h"
 
 //-----------------------------------
+// 前方宣言
+//-----------------------------------
+class CSignBoard;		// 看板
+
+//-----------------------------------
 // クラス定義(ポーク)
 //-----------------------------------
 class CPork : public CModel
@@ -49,6 +54,9 @@ public:			// 誰でもアクセスできる
 	static CPork* Create(const D3DXVECTOR3& pos, const TYPE type);	// 生成処理
 
 private:		// 自分だけアクセスできる
+
+	// メンバ変数
+	CSignBoard* m_pSignBoard;		// 看板のポインタ
 
 	// リスト構造関係
 	CPork* m_pPrev;	// 前へのポインタ

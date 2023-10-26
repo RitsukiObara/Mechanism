@@ -37,21 +37,6 @@ public:			// 誰でもアクセスできる
 	{
 		MOTIONTYPE_NEUTRAL = 0,		// 待機
 		MOTIONTYPE_MOVE,			// 移動
-		MOTIONTYPE_JUMP,			// ジャンプ
-		MOTIONTYPE_WALLFRIC,		// 壁擦り状態
-		MOTIONTYPE_WALLSTEPIN,		// 踏み込み
-		MOTIONTYPE_WALLKICK,		// 壁キック
-		MOTIONTYPE_BIGJUMP,			// 超ジャンプ
-		MOTIONTYPE_CLIFFCATCH,		// 崖捕まり
-		MOTIONTYPE_CLIFFUP,			// 崖上がり
-		MOTIONTYPE_HANGING,			// ぶら下がり
-		MOTIONTYPE_LANDING,			// 着地モーション
-		MOTIONTYPE_LAMPJUMP,		// 街灯ジャンプ
-		MOTIONTYPE_POLEDOWN,		// ポール下り
-		MOTIONTYPE_FALL,			// 落下
-		MOTIONTYPE_START,			// スタート前
-		MOTIONTYPE_ASCENT,			// よじ登り
-		MOTIONTYPE_ATTACK,			// 攻撃
 		MOTIONTYPE_MAX				// この列挙の総数
 	};
 

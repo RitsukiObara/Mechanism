@@ -19,7 +19,7 @@
 // マクロ定義
 //--------------------------------------------
 #define UI_SIZE				(D3DXVECTOR3(30.0f, 30.0f, 0.0f))		// 大きいUIのサイズ
-#define SHIFT				(D3DXVECTOR3(65.0f, 130.0f, 0.0f))		// ずらす幅
+#define SHIFT				(D3DXVECTOR3(65.0f, 180.0f, 0.0f))		// ずらす幅
 #define GROUND_COL			(D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f))		// 下地のサイズ
 
 //--------------------------------------------

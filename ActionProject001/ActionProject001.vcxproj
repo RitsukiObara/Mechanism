@@ -232,6 +232,7 @@
     <ClCompile Include="objectScroll.cpp" />
     <ClCompile Include="shadowCircle.cpp" />
     <ClCompile Include="shadowModel.cpp" />
+    <ClCompile Include="signboard.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="stun.cpp" />
@@ -321,6 +322,7 @@
     <ClInclude Include="objectScroll.h" />
     <ClInclude Include="shadowCircle.h" />
     <ClInclude Include="shadowModel.h" />
+    <ClInclude Include="signboard.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="stun.h" />

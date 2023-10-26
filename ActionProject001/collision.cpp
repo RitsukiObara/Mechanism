@@ -36,10 +36,10 @@
 //===============================
 #define COLLISION_ADD_DIFF_LENGTH		(0.01f)			// 僅かな誤差を埋めるためのマクロ定義(突っかかり防止)
 #define AIRPLANE_COLL_RADIUS			(55.0f)			// 飛行機の当たり判定時の半径
-#define PLAYER_SIZE						(D3DXVECTOR3(20.0f, 70.0f, 20.0f))		// プレイヤーのサイズ
+#define PLAYER_SIZE						(D3DXVECTOR3(20.0f, 150.0f, 20.0f))		// プレイヤーのサイズ
 #define PLAYER_HALF_HEIGHT				(PLAYER_SIZE.y / 2)						// プレイヤーの高さの半分
 #define SCREW_COLL_RADIUS				(20.0f)			// ネジの当たり判定時の半径
-#define QUAKE_HIT_RANGE					(D3DXVECTOR3(220.0f, 100.0f, 100.0f))		// 地震の当たり判定の範囲
+#define QUAKE_HIT_RANGE					(D3DXVECTOR3(220.0f, 120.0f, 100.0f))		// 地震の当たり判定の範囲
 
 //===============================
 // 丸影の起伏地面の当たり判定処理

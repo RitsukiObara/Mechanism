@@ -56,6 +56,7 @@ public:			// 誰でもアクセスできる
 		TYPE_STUN,				// 気絶演出
 		TYPE_ORBIT,				// 軌跡
 		TYPE_PORK,				// ポーク
+		TYPE_SIGNBOARD,			// 看板
 		TYPE_MAX				// この列挙型の総数
 	};
 

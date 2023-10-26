@@ -30,27 +30,29 @@ const char* CXFile::c_apModelData[CXFile::TYPE_MAX] =		// モデルの名前
 	"data\\MODEL\\GoalPoint.x",			// ゴールの中心
 	"data\\MODEL\\Ripple.x",			// 波紋
 	"data\\MODEL\\Pork.x",				// ポーク
-	"data\\MODEL\\Reon.x",				// レオン
+	"data\\MODEL\\SignBoard.x",			// 看板
 
 	// 敵モデル
 	"data\\MODEL\\Itocan.x",			// イトキャン
 	"data\\MODEL\\MachiDori.x",			// マシンドリー
 
 	// プレイヤーモデル
-	"data\\MODEL\\PlayerPants.x",		// 腰
-	"data\\MODEL\\PlayerBody.x",		// 体
-	"data\\MODEL\\PlayerNeck.x",		// 首
-	"data\\MODEL\\PlayerHead.x",		// 頭
-	"data\\MODEL\\PlayerLUpper.x",		// 左袖
-	"data\\MODEL\\PlayerRUpper.x",		// 右袖
-	"data\\MODEL\\PlayerLArm.x",		// 左腕
-	"data\\MODEL\\PlayerRArm.x",		// 右腕
-	"data\\MODEL\\PlayerLLeg.x",		// 左腿
-	"data\\MODEL\\PlayerRLeg.x",		// 右腿
-	"data\\MODEL\\PlayerLShin.x",		// 左脛
-	"data\\MODEL\\PlayerRShin.x",		// 右脛
-	"data\\MODEL\\PlayerLFoot.x",		// 左足
-	"data\\MODEL\\PlayerRFoot.x",		// 右足
+	"data/MODEL/ReonWaist.x",			// プレイヤーの腰
+	"data/MODEL/ReonBody.x",			// プレイヤーの体
+	"data/MODEL/ReonNeck.x",			// プレイヤーの首
+	"data/MODEL/ReonHead.x",			// プレイヤーの頭
+	"data/MODEL/ReonRArm.x",			// プレイヤーの右腕
+	"data/MODEL/ReonLArm.x",			// プレイヤーの左腕
+	"data/MODEL/ReonRUpper.x",			// プレイヤーの右上腕
+	"data/MODEL/ReonLUpper.x",			// プレイヤーの左上腕
+	"data/MODEL/ReonRHand.x",			// プレイヤーの右手
+	"data/MODEL/ReonLHand.x",			// プレイヤーの左手
+	"data/MODEL/ReonRLeg.x",			// プレイヤーの右脚
+	"data/MODEL/ReonLLeg.x",			// プレイヤーの左脚
+	"data/MODEL/ReonRShin.x",			// プレイヤーの右脛
+	"data/MODEL/ReonLShin.x",			// プレイヤーの左脛
+	"data/MODEL/ReonRFoot.x",			// プレイヤーの右足
+	"data/MODEL/ReonLFoot.x",			// プレイヤーの左足
 };
 
 //------------------------------------------------------------

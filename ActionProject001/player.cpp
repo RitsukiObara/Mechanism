@@ -101,7 +101,7 @@ HRESULT CPlayer::Init(void)
 	}
 
 	// ベタ打ち
-	SetNumModel(14);
+	SetNumModel(16);
 
 	// データの設定処理
 	CCharacter::SetData();
