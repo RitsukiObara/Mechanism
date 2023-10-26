@@ -28,6 +28,8 @@
 #include "table_manager.h"
 #include "macchina.h"
 #include "macchina_manager.h"
+#include "needle.h"
+#include "needle_manager.h"
 #include "goal.h"
 #include "useful.h"
 
@@ -542,4 +544,96 @@ void collision::GoalHit(CPlayer& player)
 			CGoal::Get()->Hit();
 		}
 	}
+}
+
+//===============================
+// プレイヤーと棘の当たり判定
+//===============================
+void collision::NeedleHit(CPlayer& player)
+{
+	// ローカル変数宣言
+	CNeedle* pNeedle = CNeedleManager::Get()->GetTop();		// 棘の情報
+	D3DXVECTOR3 pos = player.GetPos();						// 位置
+	D3DXVECTOR3 posOld = player.GetPosOld();				// 前回の位置
+	D3DXVECTOR3 move = player.GetMove();					// 移動量
+
+	while (pNeedle != nullptr)
+	{ // 敵の情報が NULL じゃない場合
+
+		if (pNeedle->GetPos().z + pNeedle->GetFileData().collsize.z >= pos.z &&
+			pNeedle->GetPos().z - pNeedle->GetFileData().collsize.z <= pos.z)
+		{ // 敵とZ軸が合っているかつ、当たり判定状況が true の場合
+
+			if (posOld.y >= pNeedle->GetPosOld().y + pNeedle->GetFileData().vtxMax.y &&
+				pos.y <= pNeedle->GetPos().y + pNeedle->GetFileData().vtxMax.y &&
+				pos.x + PLAYER_SIZE.x >= pNeedle->GetPos().x + pNeedle->GetFileData().vtxMin.x &&
+				pos.x - PLAYER_SIZE.x <= pNeedle->GetPos().x + pNeedle->GetFileData().vtxMax.x)
+			{ // 上からの当たり判定
+
+				// 位置を設定する
+				pos.y = pNeedle->GetPos().y + pNeedle->GetFileData().vtxMax.y;
+
+				// 移動量を 0.0f にする
+				move.y = 0.0f;
+
+				// ジャンプ状況を true にする
+				player.SetEnableJump(false);
+
+				// プレイヤーのヒット処理
+				player.Hit();
+			}
+			else if (posOld.y + PLAYER_SIZE.y <= pNeedle->GetPosOld().y + pNeedle->GetFileData().vtxMin.y &&
+				pos.y + PLAYER_SIZE.y >= pNeedle->GetPos().y + pNeedle->GetFileData().vtxMin.y &&
+				pos.x + PLAYER_SIZE.x >= pNeedle->GetPos().x + pNeedle->GetFileData().vtxMin.x &&
+				pos.x - PLAYER_SIZE.x <= pNeedle->GetPos().x + pNeedle->GetFileData().vtxMax.x)
+			{ // 下からの当たり判定
+
+				// 位置を設定する
+				pos.y = pNeedle->GetPos().y + pNeedle->GetFileData().vtxMin.y - PLAYER_SIZE.y;
+
+				// 移動量を 0.0f にする
+				move.y = 0.0f;
+
+				// プレイヤーのヒット処理
+				player.Hit();
+			}
+			else if (posOld.x + PLAYER_SIZE.x <= pNeedle->GetPosOld().x + pNeedle->GetFileData().vtxMin.x &&
+				pos.x + PLAYER_SIZE.x >= pNeedle->GetPos().x + pNeedle->GetFileData().vtxMin.x &&
+				pos.y + PLAYER_SIZE.y >= pNeedle->GetPos().y + pNeedle->GetFileData().vtxMin.y &&
+				pos.y <= pNeedle->GetPos().y + pNeedle->GetFileData().vtxMax.y)
+			{ // 左からの当たり判定
+
+				// 位置を設定する
+				pos.x = pNeedle->GetPos().x + pNeedle->GetFileData().vtxMin.x - PLAYER_SIZE.x;
+
+				// 移動量を 0.0f にする
+				move.x = 0.0f;
+
+				// プレイヤーのヒット処理
+				player.Hit();
+			}
+			else if (posOld.x - PLAYER_SIZE.x >= pNeedle->GetPosOld().x + pNeedle->GetFileData().vtxMax.x &&
+				pos.x - PLAYER_SIZE.x <= pNeedle->GetPos().x + pNeedle->GetFileData().vtxMax.x &&
+				pos.y + PLAYER_SIZE.y >= pNeedle->GetPos().y + pNeedle->GetFileData().vtxMin.y &&
+				pos.y <= pNeedle->GetPos().y + pNeedle->GetFileData().vtxMax.y)
+			{ // 右からの当たり判定
+
+				// 位置を設定する
+				pos.x = pNeedle->GetPos().x + pNeedle->GetFileData().vtxMax.x + PLAYER_SIZE.x;
+
+				// 移動量を 0.0f にする
+				move.x = 0.0f;
+
+				// プレイヤーのヒット処理
+				player.Hit();
+			}
+		}
+
+		// 次のオブジェクトを代入する
+		pNeedle = pNeedle->GetNext();
+	}
+
+	// 情報を適用する
+	player.SetPos(pos);		// 位置を適用する
+	player.SetMove(move);	// 移動量を適用する
 }

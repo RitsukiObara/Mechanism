@@ -313,6 +313,9 @@ void CPlayer::Update(void)
 	// ‘ä‚Æ‚Ì“–‚½‚è”»’è
 	TableCollision();
 
+	// ™‚Æ‚Ì“–‚½‚è”»’è
+	collision::NeedleHit(*this);
+
 	// s“®§ŒÀ”»’è
 	CollisionMagicWall();
 

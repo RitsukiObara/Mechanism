@@ -46,6 +46,9 @@ namespace collision
 
 	// ゴールの当たり判定
 	void GoalHit(CPlayer& player);				// プレイヤーとゴールとの当たり判定
+
+	// 棘の当たり判定
+	void NeedleHit(CPlayer& player);			// プレイヤーと棘の当たり判定
 }
 
 #endif
