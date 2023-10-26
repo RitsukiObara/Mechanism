@@ -199,8 +199,18 @@ void collision::EnemyHit(CPlayer& player)
 				else
 				{ // 上記以外
 
-					// プレイヤーのヒット処理
-					player.Hit();
+					if (pEnemy->IsStun() == true)
+					{ // 気絶状況が true の場合
+
+						// バウンド処理
+						player.BoundHit();
+					}
+					else
+					{ // 上記以外
+
+						// プレイヤーのヒット処理
+						player.Hit();
+					}
 				}
 			}
 			else if (posOld.y + PLAYER_SIZE.y <= pEnemy->GetPosOld().y + EnemyVtxMin.y &&
@@ -224,8 +234,18 @@ void collision::EnemyHit(CPlayer& player)
 				else
 				{ // 上記以外
 
-					// プレイヤーのヒット処理
-					player.Hit();
+					if (pEnemy->IsStun() == true)
+					{ // 気絶状況が true の場合
+
+						// バウンド処理
+						player.BoundHit();
+					}
+					else
+					{ // 上記以外
+
+						// プレイヤーのヒット処理
+						player.Hit();
+					}
 				}
 			}
 			else if (posOld.x + PLAYER_SIZE.x <= pEnemy->GetPosOld().x + EnemyVtxMin.x &&
@@ -249,8 +269,18 @@ void collision::EnemyHit(CPlayer& player)
 				else
 				{ // 上記以外
 
-					// プレイヤーのヒット処理
-					player.Hit();
+					if (pEnemy->IsStun() == true)
+					{ // 気絶状況が true の場合
+
+						// バウンド処理
+						player.BoundHit();
+					}
+					else
+					{ // 上記以外
+
+						// プレイヤーのヒット処理
+						player.Hit();
+					}
 				}
 			}
 			else if (posOld.x - PLAYER_SIZE.x >= pEnemy->GetPosOld().x + pEnemy->GetCollSize().x &&
@@ -274,8 +304,18 @@ void collision::EnemyHit(CPlayer& player)
 				else
 				{ // 上記以外
 
-					// プレイヤーのヒット処理
-					player.Hit();
+					if (pEnemy->IsStun() == true)
+					{ // 気絶状況が true の場合
+
+						// バウンド処理
+						player.BoundHit();
+					}
+					else
+					{ // 上記以外
+
+						// プレイヤーのヒット処理
+						player.Hit();
+					}
 				}
 			}
 		}
@@ -324,8 +364,18 @@ void collision::EnemyPenetrate(CPlayer& player)
 			else
 			{ // 上記以外
 
-				// プレイヤーのヒット処理
-				player.Hit();
+				if (pEnemy->IsStun() == true)
+				{ // 気絶状況が true の場合
+
+					// バウンド処理
+					player.BoundHit();
+				}
+				else
+				{ // 上記以外
+
+					// プレイヤーのヒット処理
+					player.Hit();
+				}
 			}
 		}
 
@@ -394,7 +444,8 @@ void collision::EnemyStun(CPlayer& player)
 	{ // 敵の情報が NULL じゃない場合
 
 		if (useful::RectangleCollisionXZ(player.GetPos(), pEnemy->GetPos(), QUAKE_HIT_RANGE, NONE_D3DXVECTOR3, -QUAKE_HIT_RANGE, NONE_D3DXVECTOR3) &&
-			fabsf(player.GetPos().y - pEnemy->GetPos().y) <= QUAKE_HIT_RANGE.y)
+			fabsf(player.GetPos().y - pEnemy->GetPos().y) <= QUAKE_HIT_RANGE.y &&
+			pEnemy->IsCollision() == true)
 		{ // 当たり判定に当たった場合
 
 			// ヒット処理

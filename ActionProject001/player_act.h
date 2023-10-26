@@ -22,6 +22,7 @@ public:			// 誰でもアクセスできる
 		STATE_NONE = 0,		// 通常状態
 		STATE_DAMAGE,		// ダメージ状態
 		STATE_INVINCIBLE,	// 無敵状態
+		STATE_BOUND,		// バウンド状態
 		STATE_CANNON,		// 大砲状態
 		STATE_FLY,			// 飛んでいる処理
 		STATE_MAX			// この列挙の総数

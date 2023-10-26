@@ -499,6 +499,27 @@ void CPlayer::StepHit(void)
 }
 
 //=======================================
+// バウンド処理
+//=======================================
+void CPlayer::BoundHit(void)
+{
+	if (m_pAction->GetState() != CPlayerAct::STATE_BOUND &&
+		m_pAction->GetState() != CPlayerAct::STATE_DAMAGE &&
+		m_pAction->GetState() != CPlayerAct::STATE_INVINCIBLE)
+	{ // 一定の状態以外の場合
+
+		// バウンド状態にする
+		m_pAction->SetState(CPlayerAct::STATE_BOUND);
+
+		// 無能力状態にする
+		m_pAbility->SetAbility(CAbility::ABILITY_NONE, *this);
+
+		// 速度を設定する
+		m_fSpeed = -5.0f;
+	}
+}
+
+//=======================================
 // 情報の設定処理
 //=======================================
 void CPlayer::SetData(const D3DXVECTOR3& pos)

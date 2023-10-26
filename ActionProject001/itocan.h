@@ -26,7 +26,6 @@ public:			// 誰でもアクセスできる
 		STATE_MOVE,			// 移動状態
 		STATE_DEATH,		// 死亡状態
 		STATE_SMASH,		// 吹き飛び状態
-		STATE_STUN,			// 気絶状態
 		STATE_MAX			// この列挙型の総数
 	};
 

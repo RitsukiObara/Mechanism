@@ -68,11 +68,17 @@ public:			// 誰でもアクセスできる
 
 	TYPE GetType(void) const;					// 種類の取得処理
 
+	void SetStunCount(const int nCount);		// 気絶カウントの設定処理
+	int GetStunCount(void) const;				// 気絶カウントの取得処理
+
 	void SetEnableStep(const bool bStep);		// 踏みつけ状況の設定処理
 	bool IsStep(void) const;					// 踏みつけ状況の取得処理
 
 	void SetEnableCollision(const bool bColl);	// 当たり判定状況の設定処理
 	bool IsCollision(void) const;				// 当たり判定状況の取得処理
+
+	void SetEnableStun(const bool bStun);		// 気絶状況の設定処理
+	bool IsStun(void) const;					// 気絶状況の取得処理
 
 	// その他の関数
 	void Gravity(void);				// 重力処理
@@ -91,8 +97,10 @@ private:		// 自分だけアクセスできる
 	D3DXVECTOR3 m_move;		// 移動量
 	D3DXVECTOR3 m_sizeColl;	// 当たり判定のサイズ
 	TYPE m_type;			// 種類
+	int m_nStunCount;		// 気絶カウント
 	bool m_bStep;			// 踏みつけ状況
 	bool m_bCollision;		// 当たり判定を通るかどうか
+	bool m_bStun;			// 気絶状況
 
 	// リスト構造関係
 	CEnemy* m_pPrev;	// 前へのポインタ

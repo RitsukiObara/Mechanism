@@ -99,98 +99,14 @@ void CItocan::Update(void)
 	// 前回の位置を設定する
 	SetPosOld(GetPos());
 
-	switch (m_state)
-	{
-	case STATE_STOP:		// 停止状態
+	if (IsStun() == true)
+	{ // 気絶状況が true の場合
 
-		if (m_nStateCount % CHECK_COUNT == 0)
-		{ // 一定カウント数になった場合
+		// ローカル変数宣言
+		int nStunCount = GetStunCount();	// 気絶カウントを取得する
 
-			// プレイヤーの判定処理
-			CheckPlayer();
-		}
-
-		// 状態の判定処理
-		CheckState();
-
-		break;
-
-	case STATE_MOVE:		// 移動状態
-
-		if (m_nStateCount % CHECK_COUNT == 0)
-		{ // 一定カウント数になった場合
-
-			// プレイヤーの判定処理
-			CheckPlayer();
-		}
-
-		// 状態の判定処理
-		CheckState();
-
-		// 向きの移動処理
-		RotMove();
-
-		// 移動処理
-		Move();
-
-		break;
-
-	case STATE_DEATH:		// 死亡状態
-
-		// 死亡時の拡大率処理
-		DeathScaling();
-
-		if (m_nStateCount >= DEATH_COUNT)
-		{ // 状態カウントが一定数になった場合
-
-			// 撃破の生成処理
-			CDestruction::Create(GetPos(), DEATH_DSTR_SIZE, DEATH_DSTR_COL, CDestruction::TYPE_THORN, DEATH_DSTR_LIFE);
-
-			// パーティクルの生成処理
-			CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
-
-			// ローカル変数宣言
-			CFraction::TYPE type = CFraction::TYPE_SCREW;
-
-			for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
-			{
-				// 種類を設定する
-				type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
-
-				// 破片の生成処理
-				CFraction::Create(GetPos(), type);
-			}
-
-			// 終了処理
-			Uninit();
-
-			// この先の処理を行わない
-			return;
-		}
-
-		break;
-
-	case STATE_SMASH:		// 吹き飛び状態
-
-		// 状態カウントを加算する
-		m_nStateCount++;
-
-		// 吹き飛び状態処理
-		Smash();
-
-		if (m_nStateCount >= SMASH_DEATH_COUNT)
-		{ // 状態カウントが一定数になった場合
-
-			// 終了処理
-			Uninit();
-
-			// この先の処理を行わない
-			return;
-		}
-
-		break;
-
-	case STATE_STUN:
+		// 気絶カウントを加算する
+		nStunCount++;
 
 		if (GetStun() != nullptr)
 		{ // 気絶演出が NULL じゃない場合
@@ -202,8 +118,14 @@ void CItocan::Update(void)
 			GetStun()->SetPos(D3DXVECTOR3(pos.x, pos.y + GetCollSize().y, pos.z));
 		}
 
-		if (m_nStateCount >= STUN_COUNT)
+		if (nStunCount >= STUN_COUNT)
 		{ // 状態カウントが一定数以上になった場合
+
+			// 気絶カウントを初期化する
+			nStunCount = 0;
+
+			// 気絶状況を false にする
+			SetEnableStun(false);
 
 			// 状態カウントを初期化する
 			m_nStateCount = 0;
@@ -215,14 +137,110 @@ void CItocan::Update(void)
 			DeleteStun();
 		}
 
-		break;
+		// 気絶カウントを適用する
+		SetStunCount(nStunCount);
+	}
+	else
+	{ // 上記以外
 
-	default:
+		switch (m_state)
+		{
+		case STATE_STOP:		// 停止状態
 
-		// 停止
-		assert(false);
+			if (m_nStateCount % CHECK_COUNT == 0)
+			{ // 一定カウント数になった場合
 
-		break;
+				// プレイヤーの判定処理
+				CheckPlayer();
+			}
+
+			// 状態の判定処理
+			CheckState();
+
+			break;
+
+		case STATE_MOVE:		// 移動状態
+
+			if (m_nStateCount % CHECK_COUNT == 0)
+			{ // 一定カウント数になった場合
+
+				// プレイヤーの判定処理
+				CheckPlayer();
+			}
+
+			// 状態の判定処理
+			CheckState();
+
+			// 向きの移動処理
+			RotMove();
+
+			// 移動処理
+			Move();
+
+			break;
+
+		case STATE_DEATH:		// 死亡状態
+
+			// 死亡時の拡大率処理
+			DeathScaling();
+
+			if (m_nStateCount >= DEATH_COUNT)
+			{ // 状態カウントが一定数になった場合
+
+				// 撃破の生成処理
+				CDestruction::Create(GetPos(), DEATH_DSTR_SIZE, DEATH_DSTR_COL, CDestruction::TYPE_THORN, DEATH_DSTR_LIFE);
+
+				// パーティクルの生成処理
+				CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
+
+				// ローカル変数宣言
+				CFraction::TYPE type = CFraction::TYPE_SCREW;
+
+				for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
+				{
+					// 種類を設定する
+					type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
+
+					// 破片の生成処理
+					CFraction::Create(GetPos(), type);
+				}
+
+				// 終了処理
+				Uninit();
+
+				// この先の処理を行わない
+				return;
+			}
+
+			break;
+
+		case STATE_SMASH:		// 吹き飛び状態
+
+			// 状態カウントを加算する
+			m_nStateCount++;
+
+			// 吹き飛び状態処理
+			Smash();
+
+			if (m_nStateCount >= SMASH_DEATH_COUNT)
+			{ // 状態カウントが一定数になった場合
+
+				// 終了処理
+				Uninit();
+
+				// この先の処理を行わない
+				return;
+			}
+
+			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
+		}
 	}
 
 	// 重力処理
@@ -323,14 +341,11 @@ void CItocan::SmashHit(void)
 //=====================================
 void CItocan::StunHit(void)
 {
-	if (m_state != STATE_STUN)
-	{ // 気絶状態以外の場合
+	if (IsStun() == false)
+	{ // 気絶状況が false の場合
 
 		// 敵の気絶処理
 		CEnemy::StunHit();
-
-		// 気絶状態にする
-		m_state = STATE_STUN;
 
 		// 状態カウントを0にする
 		m_nStateCount = 0;

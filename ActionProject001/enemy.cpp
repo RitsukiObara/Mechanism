@@ -67,8 +67,10 @@ void CEnemy::Box(void)
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
 	m_type = TYPE_ITOCAN;			// 種類
+	m_nStunCount = 0;				// 気絶カウント
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
+	m_bStun = false;				// 気絶状況
 	m_pPrev = nullptr;				// 前のポインタ
 	m_pNext = nullptr;				// 次のポインタ
 
@@ -134,8 +136,10 @@ HRESULT CEnemy::Init(void)
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
 	m_type = TYPE_ITOCAN;			// 種類
+	m_nStunCount = 0;				// 気絶カウント
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
+	m_bStun = false;				// 気絶状況
 
 	// 値を返す
 	return S_OK;
@@ -190,6 +194,12 @@ void CEnemy::Hit(void)
 		m_pStun->Uninit();
 		m_pStun = nullptr;
 	}
+
+	// 気絶状況を false にする
+	m_bStun = false;
+
+	// 気絶カウントを初期化する
+	m_nStunCount = 0;
 }
 
 //=====================================
@@ -237,6 +247,12 @@ void CEnemy::SmashHit(void)
 		m_pStun->Uninit();
 		m_pStun = nullptr;
 	}
+
+	// 気絶状況を false にする
+	m_bStun = false;
+
+	// 気絶カウントを初期化する
+	m_nStunCount = 0;
 }
 
 //=====================================
@@ -253,6 +269,12 @@ void CEnemy::StunHit(void)
 		// 気絶演出の生成処理
 		m_pStun = CStun::Create(D3DXVECTOR3(pos.x, pos.y + m_sizeColl.y, pos.z));
 	}
+
+	// 気絶状況を true にする
+	m_bStun = true;
+
+	// 気絶カウントを初期化する
+	m_nStunCount = 0;
 }
 
 //=====================================
@@ -271,8 +293,10 @@ void CEnemy::SetData(const D3DXVECTOR3& pos, const TYPE type)
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_sizeColl = NONE_D3DXVECTOR3;	// 当たり判定のサイズ
 	m_type = type;					// 種類
+	m_nStunCount = 0;				// 気絶カウント
 	m_bStep = false;				// 踏みつけ状況
 	m_bCollision = true;			// 当たり判定を通るかどうか
+	m_bStun = false;				// 気絶状況
 }
 
 //=======================================
@@ -394,6 +418,24 @@ CEnemy::TYPE CEnemy::GetType(void) const
 }
 
 //=======================================
+// 気絶カウントの設定処理
+//=======================================
+void CEnemy::SetStunCount(const int nCount)
+{
+	// 気絶カウントを設定する
+	m_nStunCount = nCount;
+}
+
+//=======================================
+// 気絶カウントの取得処理
+//=======================================
+int CEnemy::GetStunCount(void) const
+{
+	// 気絶カウントを返す
+	return m_nStunCount;
+}
+
+//=======================================
 // 踏みつけ状況の設定処理
 //=======================================
 void CEnemy::SetEnableStep(const bool bStep)
@@ -459,6 +501,24 @@ bool CEnemy::IsCollision(void) const
 {
 	// 当たり判定を返す
 	return m_bCollision;
+}
+
+//=======================================
+// 気絶状況の設定処理
+//=======================================
+void CEnemy::SetEnableStun(const bool bStun)
+{
+	// 気絶状況を設定する
+	m_bStun = bStun;
+}
+
+//=======================================
+// 気絶状況の取得処理
+//=======================================
+bool CEnemy::IsStun(void) const
+{
+	// 気絶状況を返す
+	return m_bStun;
 }
 
 //=======================================

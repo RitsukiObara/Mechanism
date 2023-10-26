@@ -51,6 +51,7 @@ public:			// 誰でもアクセスできる
 
 	void Hit(void);			// ヒット処理
 	void StepHit(void);		// 踏みつけ時の処理
+	void BoundHit(void);	// バウンド処理
 	void SetData(const D3DXVECTOR3& pos);		// 情報の設定処理
 
 	// セット・ゲット関係

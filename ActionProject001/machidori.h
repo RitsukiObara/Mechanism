@@ -28,7 +28,6 @@ public:			// 誰でもアクセスできる
 		STATE_UP,			// 上昇状態
 		STATE_DEATH,		// 死亡状態
 		STATE_SMASH,		// 吹き飛び状態
-		STATE_STUN,			// 気絶状態
 		STATE_MAX			// この列挙型の総数
 	};
 
@@ -50,7 +49,6 @@ private:		// 自分だけアクセスできる
 
 	// メンバ関数
 	void CheckPlayer(void);	// プレイヤーの判断処理
-	void CheckMove(void);	// 状態の判定処理
 	void Move(void);		// 移動処理
 	void Height(void);		// 高さ設定処理
 	void Elevation(void);	// 起伏地面の当たり判定

@@ -137,7 +137,27 @@ void CPlayerAct::Update(CPlayer& player)
 
 		break;
 
-	case STATE_CANNON:	// 大砲準備状態
+	case STATE_BOUND:		// バウンド状態
+
+		// 重力処理
+		Gravity(player);
+
+		// 移動処理
+		Move(player);
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		if (m_nStateCount >= 10)
+		{ // 状態カウントが一定数以上の場合
+
+			// 状態の設定処理
+			SetState(STATE_NONE);
+		}
+
+		break;
+
+	case STATE_CANNON:		// 大砲準備状態
 
 		// 大砲で向きを変える処理
 		CannonRot(player);
@@ -160,7 +180,7 @@ void CPlayerAct::Update(CPlayer& player)
 
 		break;
 
-	case STATE_FLY:		// 飛んでいる状態
+	case STATE_FLY:			// 飛んでいる状態
 
 		{
 			// ローカル変数宣言

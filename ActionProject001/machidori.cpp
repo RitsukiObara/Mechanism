@@ -113,168 +113,14 @@ void CMachidori::Update(void)
 	// 前回の位置を設定する
 	SetPosOld(GetPos());
 
-	switch (m_state)
-	{
-	case STATE_FLY:
+	if (IsStun() == true)
+	{ // 気絶状況が true の場合
 
-		// 起伏地面の当たり判定
-		Elevation();
+		// ローカル変数宣言
+		int nStunCount = GetStunCount();		// 気絶カウントを取得する
 
-		// カーブ用の向きを加算する
-		m_fCurveRot += ROT_MOVE;
-
-		// 向きの正規化
-		useful::RotNormalize(&m_fCurveRot);
-
-		// 高さの設定処理
-		Height();
-
-		// プレイヤーの判定処理
-		CheckPlayer();
-
-		// 移動処理
-		Move();
-
-		break;
-
-	case STATE_STANDBY:
-
-		// スタンバイ状態
-		StandBy();
-
-		// 状態カウントを加算する
-		m_nStateCount++;
-
-		if (m_nStateCount % STANDBY_COUNT == 0)
-		{ // 状態カウントが一定以上になった場合
-
-			// 状態カウントを0にする
-			m_nStateCount = 0;
-
-			// 攻撃状態にする
-			m_state = STATE_ATTACK;
-		}
-
-		break;
-
-	case STATE_ATTACK:
-
-		// 攻撃状態での向きの設定処理
-		AttackRot();
-
-		// 高さの設定処理
-		Height();
-
-		// 起伏地面との当たり判定
-		if (ElevationCollision() == true ||
-			TableCollision() == true)
-		{
-			// 状態カウントを加算する
-			m_nStateCount++;
-		}
-		else
-		{ // 上記以外
-
-			// 高さを下げる
-			m_fHeight -= ATTACK_DOWN;
-		}
-
-		if (m_nStateCount >= ATTACK_COUNT)
-		{ // 状態カウントが一定以上の場合
-
-			// 前回の左右状況の設定処理
-			SetRightOld();
-
-			// 状態カウントを初期化する
-			m_nStateCount = 0;
-
-			// 上昇状態にする
-			m_state = STATE_UP;
-		}
-
-		break;
-
-	case STATE_UP:
-
-		// 上昇状態の上昇処理
-		UpAscent();
-
-		break;
-
-	case STATE_DEATH:
-
-		// 状態カウントを加算する
-		m_nStateCount++;
-
-		// 死亡時の振動処理
-		DeathVib();
-
-		// 重力処理
-		Gravity();
-
-		// 起伏地面との当たり判定
-		ElevationCollision();
-
-		// 煙の生成処理
-		Smoke();
-
-		if (m_nStateCount >= DEATH_COUNT)
-		{ // 状態カウントが一定数になった場合
-
-			// 撃破の生成処理
-			CDestruction::Create(GetPos(), DEATH_DSTR_SIZE, DEATH_DSTR_COL, CDestruction::TYPE_THORN, DEATH_DSTR_LIFE);
-
-			// パーティクルの生成処理
-			CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
-
-			// ローカル変数宣言
-			CFraction::TYPE type = CFraction::TYPE_SCREW;
-
-			for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
-			{
-				// 種類を設定する
-				type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
-
-				// 破片の生成処理
-				CFraction::Create(GetPos(), type);
-			}
-
-			// 終了処理
-			Uninit();
-
-			// この先の処理を行わない
-			return;
-		}
-
-		break;
-
-	case STATE_SMASH:
-
-		// 状態カウントを加算する
-		m_nStateCount++;
-
-		// 重力処理
-		Gravity();
-
-		// 吹き飛び処理
-		Smash();
-
-		if (m_nStateCount >= SMASH_DEATH_COUNT)
-		{ // 状態カウントが一定数になった場合
-
-			// 終了処理
-			Uninit();
-
-			// この先の処理を行わない
-			return;
-		}
-
-		break;
-
-	case STATE_STUN:
-
-		// 状態カウントを加算する
-		m_nStateCount++;
+		// 気絶カウントを加算する
+		nStunCount++;
 
 		if (GetStun() != nullptr)
 		{ // 気絶演出が NULL じゃない場合
@@ -297,8 +143,14 @@ void CMachidori::Update(void)
 			m_fHeight -= STUN_DOWN;
 		}
 
-		if (m_nStateCount % STUN_COUNT == 0)
+		if (nStunCount % STUN_COUNT == 0)
 		{ // 状態カウントが一定数になった場合
+
+			// 気絶カウントを初期化する
+			nStunCount = 0;
+
+			// 気絶状況を false にする
+			SetEnableStun(false);
 
 			// 状態カウントを初期化する
 			m_nStateCount = 0;
@@ -310,14 +162,177 @@ void CMachidori::Update(void)
 			DeleteStun();
 		}
 
-		break;
+		// 気絶カウントを適用する
+		SetStunCount(nStunCount);
+	}
+	else
+	{ // 上記以外
 
-	default:
+		switch (m_state)
+		{
+		case STATE_FLY:
 
-		// 停止
-		assert(false);
+			// 起伏地面の当たり判定
+			Elevation();
 
-		break;
+			// カーブ用の向きを加算する
+			m_fCurveRot += ROT_MOVE;
+
+			// 向きの正規化
+			useful::RotNormalize(&m_fCurveRot);
+
+			// 高さの設定処理
+			Height();
+
+			// プレイヤーの判定処理
+			CheckPlayer();
+
+			// 移動処理
+			Move();
+
+			break;
+
+		case STATE_STANDBY:
+
+			// スタンバイ状態
+			StandBy();
+
+			// 状態カウントを加算する
+			m_nStateCount++;
+
+			if (m_nStateCount % STANDBY_COUNT == 0)
+			{ // 状態カウントが一定以上になった場合
+
+				// 状態カウントを0にする
+				m_nStateCount = 0;
+
+				// 攻撃状態にする
+				m_state = STATE_ATTACK;
+			}
+
+			break;
+
+		case STATE_ATTACK:
+
+			// 攻撃状態での向きの設定処理
+			AttackRot();
+
+			// 高さの設定処理
+			Height();
+
+			// 起伏地面との当たり判定
+			if (ElevationCollision() == true ||
+				TableCollision() == true)
+			{
+				// 状態カウントを加算する
+				m_nStateCount++;
+			}
+			else
+			{ // 上記以外
+
+				// 高さを下げる
+				m_fHeight -= ATTACK_DOWN;
+			}
+
+			if (m_nStateCount >= ATTACK_COUNT)
+			{ // 状態カウントが一定以上の場合
+
+				// 前回の左右状況の設定処理
+				SetRightOld();
+
+				// 状態カウントを初期化する
+				m_nStateCount = 0;
+
+				// 上昇状態にする
+				m_state = STATE_UP;
+			}
+
+			break;
+
+		case STATE_UP:
+
+			// 上昇状態の上昇処理
+			UpAscent();
+
+			break;
+
+		case STATE_DEATH:
+
+			// 状態カウントを加算する
+			m_nStateCount++;
+
+			// 死亡時の振動処理
+			DeathVib();
+
+			// 重力処理
+			Gravity();
+
+			// 起伏地面との当たり判定
+			ElevationCollision();
+
+			// 煙の生成処理
+			Smoke();
+
+			if (m_nStateCount >= DEATH_COUNT)
+			{ // 状態カウントが一定数になった場合
+
+				// 撃破の生成処理
+				CDestruction::Create(GetPos(), DEATH_DSTR_SIZE, DEATH_DSTR_COL, CDestruction::TYPE_THORN, DEATH_DSTR_LIFE);
+
+				// パーティクルの生成処理
+				CParticle::Create(GetPos(), CParticle::TYPE_ENEMYDEATH);
+
+				// ローカル変数宣言
+				CFraction::TYPE type = CFraction::TYPE_SCREW;
+
+				for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
+				{
+					// 種類を設定する
+					type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
+
+					// 破片の生成処理
+					CFraction::Create(GetPos(), type);
+				}
+
+				// 終了処理
+				Uninit();
+
+				// この先の処理を行わない
+				return;
+			}
+
+			break;
+
+		case STATE_SMASH:
+
+			// 状態カウントを加算する
+			m_nStateCount++;
+
+			// 重力処理
+			Gravity();
+
+			// 吹き飛び処理
+			Smash();
+
+			if (m_nStateCount >= SMASH_DEATH_COUNT)
+			{ // 状態カウントが一定数になった場合
+
+				// 終了処理
+				Uninit();
+
+				// この先の処理を行わない
+				return;
+			}
+
+			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
+		}
 	}
 
 	// 敵同士の当たり判定
@@ -408,14 +423,11 @@ void CMachidori::SmashHit(void)
 //=====================================
 void CMachidori::StunHit(void)
 {
-	if (m_state != STATE_STUN)
-	{ // 気絶状態以外の場合
+	if (IsStun() == false)
+	{ // 気絶状況が false の場合
 
 		// 敵の気絶処理
 		CEnemy::StunHit();
-
-		// 気絶状態にする
-		m_state = STATE_STUN;
 
 		// 状態カウントを初期化する
 		m_nStateCount = 0;
