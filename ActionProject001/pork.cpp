@@ -24,6 +24,7 @@
 //-------------------------------------------
 #define DISTINCT_SIZE		(800.0f)		// 判別するときのサイズ
 #define SIGNBOARD_ADD		(0.5f)			// 看板の追加の向きの移動量
+#define PORK_POS_Z			(100.0f)		// ポークの位置(Z軸)
 
 //==============================
 // コンストラクタ
@@ -173,9 +174,9 @@ void CPork::Draw(void)
 void CPork::SetData(const D3DXVECTOR3& pos, const TYPE type)
 {
 	// 情報の設定処理
-	SetPos(pos);								// 位置
+	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z + PORK_POS_Z));								// 位置
 	SetRot(NONE_D3DXVECTOR3);					// 向き
-	SetPosOld(pos);								// 前回の位置
+	SetPosOld(GetPos());						// 前回の位置
 	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
 	SetFileData(CXFile::TYPE_PORK);				// モデルの情報
 
@@ -187,7 +188,7 @@ void CPork::SetData(const D3DXVECTOR3& pos, const TYPE type)
 	{ // 看板のポインタが NULL の場合
 
 		// 看板の生成処理
-		m_pSignBoard = CSignBoard::Create(pos);
+		m_pSignBoard = CSignBoard::Create(GetPos());
 	}
 	else
 	{ // 上記以外
@@ -197,7 +198,7 @@ void CPork::SetData(const D3DXVECTOR3& pos, const TYPE type)
 	}
 
 	// チュートリアルを生成する
-	CTutorial::Create(pos, type);
+	CTutorial::Create(GetPos(), type);
 }
 
 //=======================================

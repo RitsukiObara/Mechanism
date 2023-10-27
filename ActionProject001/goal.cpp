@@ -457,17 +457,6 @@ void CGoal::PlayerSetting(void)
 	// ローカル変数宣言
 	D3DXVECTOR3 move;
 
-	if (m_type == TYPE_PUNCH)
-	{ // パンチ状態の場合
-
-
-	}
-	else
-	{ // 上記以外
-
-
-	}
-
 	switch (m_type)
 	{
 	case CGoal::TYPE_PUNCH:

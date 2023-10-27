@@ -20,7 +20,8 @@
 //--------------------------------------------
 #define UI_SIZE				(D3DXVECTOR3(30.0f, 30.0f, 0.0f))		// 大きいUIのサイズ
 #define SHIFT				(D3DXVECTOR3(65.0f, 180.0f, 0.0f))		// ずらす幅
-#define GROUND_COL			(D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f))		// 下地のサイズ
+#define NORMAL_COL			(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f))		// 通常の色
+#define UNAVAILABLE_COL		(D3DXCOLOR(0.3f, 0.3f, 0.3f, 0.5f))		// 使用不可の色
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -139,6 +140,22 @@ void CAbilityUI::Update(void)
 
 	// 位置追尾処理
 	PosChase();
+
+	for (int nCnt = 0; nCnt < CAbility::TYPE_MAX; nCnt++)
+	{
+		if (CPlayer::Get()->GetAbility()->GetPossible((CAbility::TYPE)(nCnt)) == true)
+		{ // 使用可能な場合
+
+			// 頂点カラーの設定
+			m_apAbilityUI[nCnt]->SetVtxColor(NORMAL_COL);
+		}
+		else
+		{ // 上記以外
+
+			// 頂点カラーの設定
+			m_apAbilityUI[nCnt]->SetVtxColor(UNAVAILABLE_COL);
+		}
+	}
 }
 
 //========================
@@ -252,7 +269,7 @@ void CAbilityUI::PossibleColor(void)
 		{ // 上記以外
 
 			// 色を設定する
-			m_apAbilityUI[nCnt]->SetVtxColor(GROUND_COL);
+			m_apAbilityUI[nCnt]->SetVtxColor(NORMAL_COL);
 		}
 	}
 }

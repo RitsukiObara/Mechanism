@@ -22,7 +22,7 @@
 //--------------------------------------------
 #define HOVER_COUNT					(100)				// ホバー状態のカウント
 #define JETDASH_COUNT				(20)				// ジェットダッシュ状態のカウント
-#define JETDASH_POSBL_COUNT			(30)				// ジェットダッシュ状態が使用可能になるカウント
+#define JETDASH_POSBL_COUNT			(10)				// ジェットダッシュ状態が使用可能になるカウント
 #define GROUNDQUAKE_COUNT			(500)				// グラウンドクエイク状態の強制解除カウント
 #define GROUNDQUAKE_RIPPLE_COUNT	(10)				// グラウンドクエイク時の波紋が出る間隔
 #define GROUNDQUAKE_POSBL_COUNT		(15)				// グラウンドクエイク状態が使用可能になるカウント
