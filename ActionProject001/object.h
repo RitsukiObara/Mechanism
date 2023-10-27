@@ -60,6 +60,7 @@ public:			// 誰でもアクセスできる
 		TYPE_RANKINGWORD,		// ランキングの文字
 		TYPE_RANKINGTABLE,		// ランキング表
 		TYPE_RANKINGPRECE,		// ランキングの順位表示
+		TYPE_TUTORIAL,			// チュートリアル
 		TYPE_MAX				// この列挙型の総数
 	};
 

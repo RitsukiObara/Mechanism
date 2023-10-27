@@ -27,11 +27,11 @@ public:				// 誰でもアクセスできる
 	void Update(void);		// 更新処理
 	void Draw(void);		// 描画処理
 
-	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size);		// 情報の設定処理
+	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const float fShift);		// 情報の設定処理
 
 	// 静的メンバ関数
 	static CResultScore* Get(void);		// スコアの取得処理
-	static CResultScore* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size);		// 生成処理
+	static CResultScore* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const float fShift);		// 生成処理
 
 private:			// 自分だけアクセスできる
 

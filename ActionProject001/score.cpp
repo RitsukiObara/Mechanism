@@ -17,7 +17,6 @@
 // マクロ定義
 #define SCORE_TEXTURE		"data\\TEXTURE\\Number.png"		// スコアのテクスチャ
 #define DISP_ADD_SCORE		(50)							// 描画用スコアの加算数
-#define NUMBER_SHIFT		(50.0f)							// 数字のずらす幅
 
 //========================
 // コンストラクタ
@@ -188,12 +187,12 @@ void CScore::Draw(void)
 //========================
 // 情報の設定処理
 //========================
-void CScore::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size)
+void CScore::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const float fShift)
 {
 	for (int nCnt = 0; nCnt < MAX_SCORE_DIGIT; nCnt++)
 	{
 		// 設定処理
-		m_apNumber[nCnt]->SetPos(D3DXVECTOR3(pos.x + (nCnt * NUMBER_SHIFT), pos.y, 0.0f));		// 位置設定
+		m_apNumber[nCnt]->SetPos(D3DXVECTOR3(pos.x + (nCnt * fShift), pos.y, 0.0f));		// 位置設定
 		m_apNumber[nCnt]->SetRot(rot);				// 向き設定
 		m_apNumber[nCnt]->SetSize(size);			// サイズ設定
 		m_apNumber[nCnt]->SetLength();				// 長さ設定
@@ -280,59 +279,4 @@ void CScore::AddScore(const int nScore)
 {
 	// スコアを設定する
 	m_nScore += nScore;
-}
-
-//========================
-// 生成処理
-//========================
-CScore* CScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const TYPE type)
-{
-	// ローカルオブジェクトを生成
-	CScore* pScore = nullptr;	// プレイヤーのインスタンスを生成
-
-	if (pScore == nullptr)
-	{ // オブジェクトが NULL の場合
-
-		// 停止
-		assert(false);
-	}
-	else
-	{ // オブジェクトが NULL じゃない場合
-
-		// 停止
-		assert(false);
-
-		// NULL を返す
-		return nullptr;
-	}
-
-	if (pScore != nullptr)
-	{ // オブジェクトが NULL じゃない場合
-
-		// 初期化処理
-		if (FAILED(pScore->Init()))
-		{ // 初期化に失敗した場合
-
-			// 停止
-			assert(false);
-
-			// NULL を返す
-			return nullptr;
-		}
-
-		// 情報の設定処理
-		pScore->SetData(pos, rot, size);
-	}
-	else
-	{ // オブジェクトが NULL の場合
-
-		// 停止
-		assert(false);
-
-		// NULL を返す
-		return nullptr;
-	}
-
-	// オブジェクト2Dのポインタを返す
-	return pScore;
 }

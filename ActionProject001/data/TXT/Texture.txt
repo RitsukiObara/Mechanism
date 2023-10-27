@@ -6,10 +6,16 @@
 #===========================================================
 
 # テクスチャの情報
+TEXTURE = data\TEXTURE\ButTutorial001.png	# ホバージェットのチュートリアル(ボタン)
+TEXTURE = data\TEXTURE\ButTutorial002.png	# ジェットダッシュのチュートリアル(ボタン)
+TEXTURE = data\TEXTURE\ButTutorial003.png	# グラウンドクエイクのチュートリアル(ボタン)
 TEXTURE = data\TEXTURE\Dstr001.png			# 撃破(トゲトゲ)
 TEXTURE = data\TEXTURE\Dstr002.png			# 撃破(フワフワ)
 TEXTURE = data\TEXTURE\explosion000.png		# 爆発
 TEXTURE = data\TEXTURE\HoverMark.png		# ホバージェットマーク
+TEXTURE = data\TEXTURE\KeyTutorial001.png	# ホバージェットのチュートリアル(キーボード)
+TEXTURE = data\TEXTURE\KeyTutorial002.png	# ジェットダッシュのチュートリアル(キーボード)
+TEXTURE = data\TEXTURE\KeyTutorial003.png	# グラウンドクエイクのチュートリアル(キーボード)
 TEXTURE = data\TEXTURE\NewRecord.png		# 新記録
 TEXTURE = data\TEXTURE\Number.png			# 番号
 TEXTURE = data\TEXTURE\ObaraArcadia2.png	# アルカディアマーク

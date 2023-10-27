@@ -249,6 +249,7 @@
     <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="title_logo.cpp" />
+    <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="useful.cpp" />
     <ClCompile Include="macchina.cpp" />
     <ClCompile Include="macchina_manager.cpp" />
@@ -346,6 +347,7 @@
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="title_logo.h" />
+    <ClInclude Include="tutorial.h" />
     <ClInclude Include="useful.h" />
     <ClInclude Include="macchina.h" />
     <ClInclude Include="macchina_manager.h" />

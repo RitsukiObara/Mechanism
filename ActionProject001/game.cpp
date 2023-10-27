@@ -81,7 +81,7 @@ HRESULT CGame::Init(void)
 	CElevation::TxtSet();
 
 	// メッシュのテキスト読み込み
-	CMesh::TxtSet();
+	//CMesh::TxtSet();
 
 	//if (m_pField == NULL)
 	//{ // フィールドへのポインタが NULL の場合
@@ -114,7 +114,9 @@ HRESULT CGame::Init(void)
 	CGoal::Create(D3DXVECTOR3(14000.0f, 300.0f, 1000.0f));
 
 	// ポークの生成
-	CPork::Create(D3DXVECTOR3(-3500.0f, 0.0f, 0.0f), CPork::TYPE::TYPE_HOVER);
+	CPork::Create(D3DXVECTOR3(-3500.0f, 0.0f, 0.0f), CPork::TYPE_HOVER);
+	CPork::Create(D3DXVECTOR3(2950.0f, 0.0f, 0.0f), CPork::TYPE_DASH);
+	CPork::Create(D3DXVECTOR3(5600.0f, 0.0f, 1000.0f), CPork::TYPE_QUAKE);
 
 	// 飛行中の間隔
 	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 200.0f, 100.0f), NONE_D3DXVECTOR3, false);

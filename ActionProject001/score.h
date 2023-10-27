@@ -34,7 +34,7 @@ public:				// 誰でもアクセスできる
 	virtual void Update(void);		// 更新処理
 	virtual void Draw(void);		// 描画処理
 
-	virtual void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size);		// 情報の設定処理
+	virtual void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const float fShift);		// 情報の設定処理
 
 	void Calculate(void);			// 計算処理
 
@@ -45,9 +45,6 @@ public:				// 誰でもアクセスできる
 	int GetScoreDisp(void) const;			// 表示スコアの取得処理
 	void AddScore(const int nScore);		// スコアの加算処理
 	CNumber* GetNumber(int nID) const;		// 数値の取得処理
-
-	// 静的メンバ変数
-	static CScore* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const TYPE type);		// 生成処理
 
 private:			// 自分だけアクセスできる
 

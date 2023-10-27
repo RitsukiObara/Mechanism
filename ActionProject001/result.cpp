@@ -19,6 +19,13 @@
 #include "result_score.h"
 
 //--------------------------------------------
+// マクロ定義
+//--------------------------------------------
+#define SCORE_SIZE		(D3DXVECTOR3(60.0f, 80.0f, 0.0f))		// スコアのサイズ
+#define SCORE_SHIFT		(120.0f)								// スコアのずらす幅
+#define SCORE_POS		(D3DXVECTOR3((SCREEN_WIDTH * 0.5f) - ((SCORE_SHIFT * 3) + SCORE_SIZE.x), SCREEN_HEIGHT * 0.5f, 0.0f))		// スコアの位置
+
+//--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
 CResult::STATE CResult::m_state = STATE_TIMEDISP;		// 状態
@@ -51,7 +58,7 @@ HRESULT CResult::Init(void)
 	CMesh::TxtSet();
 
 	// リザルトスコアを生成する
-	CResultScore::Create(D3DXVECTOR3(400.0f, SCREEN_HEIGHT * 0.5f, 0.0f), NONE_D3DXVECTOR3, D3DXVECTOR3(25.0f, 30.0f, 0.0f));
+	CResultScore::Create(SCORE_POS, NONE_D3DXVECTOR3, SCORE_SIZE, SCORE_SHIFT);
 
 	// 全ての値を初期化する
 	m_state = STATE_TIMEDISP;		// 状態

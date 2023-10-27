@@ -22,6 +22,7 @@
 #define SCORE_WIDTH_SHIFT		(70.0f)									// スコアの横のずらす幅
 #define SCORE_HEIGHT_SHIFT		(110.0f)								// スコアの縦のずらす幅
 #define SCORE_SIZE				(D3DXVECTOR3(30.0f, 40.0f, 0.0f))		// スコアのサイズ
+#define SCORE_SHIFT				(60.0f)									// スコアのサイズ
 #define SCORE_POS				(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 150.0f, 220.0f, 0.0f))		// スコアの位置
 #define SCORE_TRANS_POS			(D3DXVECTOR3(500.0f, 220.0f, 0.0f))		// 自動遷移後のスコアの位置
 #define NO_NEW_RECORD			(0)										// 新記録じゃないときの数値
@@ -201,7 +202,7 @@ void CRankingTable::SetData(void)
 		pos.z = 0.0f;
 
 		// スコアの情報の設定処理
-		m_apScore[nCntRank]->SetData(pos, NONE_D3DXVECTOR3, SCORE_SIZE);
+		m_apScore[nCntRank]->SetData(pos, NONE_D3DXVECTOR3, SCORE_SIZE, SCORE_SHIFT);
 
 		// スコアを設定する
 		m_apScore[nCntRank]->SetScore(CManager::Get()->GetFile()->GetRankingInfo().aRank[nCntRank]);

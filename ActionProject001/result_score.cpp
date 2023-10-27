@@ -15,6 +15,8 @@
 
 #include "game.h"
 
+
+
 //--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
@@ -85,10 +87,10 @@ void CResultScore::Draw(void)
 //========================
 // 情報の設定処理
 //========================
-void CResultScore::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size)
+void CResultScore::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const float fShift)
 {
 	// 情報を設定処理
-	CScore::SetData(pos, rot, size);
+	CScore::SetData(pos, rot, size, fShift);
 
 	// スコアを設定する
 	CScore::SetScore(CGame::GetScore());
@@ -123,7 +125,7 @@ CResultScore* CResultScore::Get(void)
 //========================
 // 生成処理
 //========================
-CResultScore* CResultScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size)
+CResultScore* CResultScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const float fShift)
 {
 	if (m_pResultScore == nullptr)
 	{ // オブジェクトが NULL の場合
@@ -156,7 +158,7 @@ CResultScore* CResultScore::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& ro
 		}
 
 		// 情報の設定処理
-		m_pResultScore->SetData(pos, rot, size);
+		m_pResultScore->SetData(pos, rot, size, fShift);
 	}
 	else
 	{ // オブジェクトが NULL の場合

@@ -55,8 +55,14 @@ public:			// 誰でもアクセスできる
 
 private:		// 自分だけアクセスできる
 
+	// メンバ関数
+	void SignBoardCycle(void);		// 看板の回転処理
+	void DistinctPlayer(void);		// プレイヤーの判別処理
+
 	// メンバ変数
 	CSignBoard* m_pSignBoard;		// 看板のポインタ
+	TYPE m_type;					// 種類
+	bool m_bTutorial;				// チュートリアル状況
 
 	// リスト構造関係
 	CPork* m_pPrev;	// 前へのポインタ

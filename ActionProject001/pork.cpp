@@ -15,6 +15,15 @@
 #include "useful.h"
 
 #include "signboard.h"
+#include "player.h"
+#include "player_ability.h"
+#include "tutorial.h"
+
+//-------------------------------------------
+// マクロ定義
+//-------------------------------------------
+#define DISTINCT_SIZE		(800.0f)		// 判別するときのサイズ
+#define SIGNBOARD_ADD		(0.5f)			// 看板の追加の向きの移動量
 
 //==============================
 // コンストラクタ
@@ -23,6 +32,8 @@ CPork::CPork() : CModel(CObject::TYPE_PORK, CObject::PRIORITY_ENTITY)
 {
 	// 全ての値をクリアする
 	m_pSignBoard = nullptr;	// 看板のポインタ
+	m_type = TYPE_HOVER;	// 種類
+	m_bTutorial = false;	// チュートリアル状況
 
 	m_pPrev = nullptr;		// 前へのポインタ
 	m_pNext = nullptr;		// 次へのポインタ
@@ -93,6 +104,8 @@ HRESULT CPork::Init(void)
 
 	// 全ての値を初期化する
 	m_pSignBoard = nullptr;		// 看板のポインタ
+	m_type = TYPE_HOVER;		// 種類
+	m_bTutorial = false;		// チュートリアル状況
 
 	// 値を返す
 	return S_OK;
@@ -131,15 +144,18 @@ void CPork::Uninit(void)
 //========================================
 void CPork::Update(void)
 {
-	//if (m_pSignBoard != nullptr)
-	//{ // 看板が NULL じゃない場合
+	if (m_bTutorial == true)
+	{ // チュートリアル状況が true の場合
 
-	//	D3DXVECTOR3 rot = m_pSignBoard->GetRot();
+		// 看板の回転処理
+		SignBoardCycle();
+	}
+	else
+	{ // 上記以外
 
-	//	rot.y = D3DX_PI;
-
-	//	m_pSignBoard->SetRot(rot);
-	//}
+		// プレイヤーの判別処理
+		DistinctPlayer();
+	}
 }
 
 //=====================================
@@ -163,6 +179,10 @@ void CPork::SetData(const D3DXVECTOR3& pos, const TYPE type)
 	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
 	SetFileData(CXFile::TYPE_PORK);				// モデルの情報
 
+	// 全ての値を設定する
+	m_type = type;				// 種類
+	m_bTutorial = false;		// チュートリアル状況
+
 	if (m_pSignBoard == nullptr)
 	{ // 看板のポインタが NULL の場合
 
@@ -175,6 +195,9 @@ void CPork::SetData(const D3DXVECTOR3& pos, const TYPE type)
 		// 停止
 		assert(false);
 	}
+
+	// チュートリアルを生成する
+	CTutorial::Create(pos, type);
 }
 
 //=======================================
@@ -230,4 +253,84 @@ CPork* CPork::Create(const D3DXVECTOR3& pos, const TYPE type)
 
 	// ポークのポインタを返す
 	return pPork;
+}
+
+//=======================================
+// 看板の回転処理
+//=======================================
+void CPork::SignBoardCycle(void)
+{
+	if (m_pSignBoard != nullptr)
+	{ // 看板が NULL じゃない場合
+
+		// ローカル変数宣言
+		D3DXVECTOR3 rot = m_pSignBoard->GetRot();		// 看板の向きを取得する
+
+		// 向きを目標に近づけていく
+		useful::FrameCorrect(D3DX_PI, &rot.y, SIGNBOARD_ADD);
+		
+		// 看板の向きを適用する
+		m_pSignBoard->SetRot(rot);
+	}
+}
+
+//=======================================
+// プレイヤーの判別処理
+//=======================================
+void CPork::DistinctPlayer(void)
+{
+	// ローカル変数宣言
+	CPlayer* pPlayer = CPlayer::Get();		// プレイヤー
+
+	if (pPlayer != nullptr)
+	{ // プレイヤーの情報があった場合
+
+		if (pPlayer->GetPos().x <= GetPos().x + DISTINCT_SIZE &&
+			pPlayer->GetPos().x >= GetPos().x - DISTINCT_SIZE)
+		{ // 範囲内だった場合
+
+			switch (m_type)
+			{
+			case CPork::TYPE_HOVER:		// ホバージェット
+
+				if (pPlayer->GetAbility()->GetAbility() == CAbility::ABILITY_HOVER)
+				{ // ホバージェット状態の場合
+
+					// チュートリアル状況を true にする
+					m_bTutorial = true;
+				}
+
+				break;
+
+			case CPork::TYPE_DASH:		// ジェットダッシュ
+
+				if (pPlayer->GetAbility()->GetAbility() == CAbility::ABILITY_JETDASH)
+				{ // ジェットダッシュ状態の場合
+
+					// チュートリアル状況を true にする
+					m_bTutorial = true;
+				}
+
+				break;
+
+			case CPork::TYPE_QUAKE:		// グラウンドクエイク
+
+				if (pPlayer->GetAbility()->GetAbility() == CAbility::ABILITY_GROUNDQUAKE)
+				{ // グラウンドクエイク状態の場合
+
+					// チュートリアル状況を true にする
+					m_bTutorial = true;
+				}
+
+				break;
+
+			default:
+
+				// 停止
+				assert(false);
+
+				break;
+			}
+		}
+	}
 }

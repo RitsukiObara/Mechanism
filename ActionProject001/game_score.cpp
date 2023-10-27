@@ -14,6 +14,11 @@
 #include "useful.h"
 
 //--------------------------------------------
+// マクロ定義
+//--------------------------------------------
+#define NUMBER_SHIFT		(50.0f)							// 数字のずらす幅
+
+//--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
 CGameScore* CGameScore::m_pGameScore = nullptr;						// スコアの情報
@@ -86,7 +91,7 @@ void CGameScore::Draw(void)
 void CGameScore::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size)
 {
 	// 情報を設定処理
-	CScore::SetData(pos, rot, size);
+	CScore::SetData(pos, rot, size, NUMBER_SHIFT);
 }
 
 //========================

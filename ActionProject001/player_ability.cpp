@@ -311,7 +311,8 @@ CAbility* CAbility::Create(void)
 //=======================================
 void CAbility::Ability(CPlayer& player)
 {
-	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_Y) == true &&
+	if ((CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_Y) == true ||
+		CManager::Get()->GetInputGamePad()->GetTrigger(CInputGamePad::JOYKEY_Y, 0) == true) &&
 		m_aPossible[TYPE_HOVER] == true &&
 		player.IsJump() == true)
 	{ // 空中でYキーを押した場合
@@ -322,7 +323,8 @@ void CAbility::Ability(CPlayer& player)
 		// 使用状況を false にする
 		m_aPossible[TYPE_HOVER] = false;
 	}
-	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_U) == true &&
+	else if ((CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_U) == true ||
+		CManager::Get()->GetInputGamePad()->GetTrigger(CInputGamePad::JOYKEY_X, 0) == true) &&
 		m_aPossible[TYPE_JETDASH] == true)
 	{ // Uキーを押した場合
 
@@ -332,7 +334,8 @@ void CAbility::Ability(CPlayer& player)
 		// 使用状況を false にする
 		m_aPossible[TYPE_JETDASH] = false;
 	}
-	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_I) == true &&
+	else if ((CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_I) == true ||
+		CManager::Get()->GetInputGamePad()->GetTrigger(CInputGamePad::JOYKEY_B, 0) == true) &&
 		m_aPossible[TYPE_GROUNDQUAKE] == true &&
 		player.IsJump() == false)
 	{ // 地上でIキーを押した場合
@@ -342,13 +345,6 @@ void CAbility::Ability(CPlayer& player)
 
 		// カメラを振動カメラにする
 		CManager::Get()->GetCamera()->SetType(CCamera::TYPE_VIBRATE);
-	}
-
-	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_O) == true)
-	{ // Oキーを押した場合
-
-		// 無能力に設定する
-		player.GetAbility()->SetAbility(CAbility::ABILITY_NONE, player);
 	}
 }
 

@@ -351,6 +351,9 @@
     <ClCompile Include="result_score.cpp">
       <Filter>Scene\Result</Filter>
     </ClCompile>
+    <ClCompile Include="tutorial.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -637,6 +640,9 @@
     </ClInclude>
     <ClInclude Include="result_score.h">
       <Filter>Scene\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorial.h">
+      <Filter>Gimmick</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

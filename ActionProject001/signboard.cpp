@@ -138,6 +138,6 @@ CSignBoard* CSignBoard::Create(const D3DXVECTOR3& pos)
 		return nullptr;
 	}
 
-	// ポークのポインタを返す
+	// 看板のポインタを返す
 	return pSign;
 }
