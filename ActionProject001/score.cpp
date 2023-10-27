@@ -247,6 +247,33 @@ int CScore::GetScore(void) const
 }
 
 //========================
+// 表示スコアの設定処理
+//========================
+void CScore::SetScoreDisp(const int nScore)
+{
+	// 表示用スコアを設定する
+	m_nDispScore = nScore;
+}
+
+//========================
+// 表示スコアの取得処理
+//========================
+int CScore::GetScoreDisp(void) const
+{
+	// 表示用スコアを返す
+	return m_nDispScore;
+}
+
+//========================
+// 数値の取得処理
+//========================
+CNumber* CScore::GetNumber(int nID) const
+{
+	// 数値を返す
+	return m_apNumber[nID];
+}
+
+//========================
 // スコアの加算処理
 //========================
 void CScore::AddScore(const int nScore)

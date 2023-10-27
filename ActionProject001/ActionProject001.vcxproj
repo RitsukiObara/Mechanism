@@ -224,8 +224,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ranking.cpp" />
+    <ClCompile Include="ranking_precedence.cpp" />
+    <ClCompile Include="ranking_table.cpp" />
+    <ClCompile Include="ranking_word.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
+    <ClCompile Include="result_score.cpp" />
     <ClCompile Include="ripple.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="score.cpp" />
@@ -317,8 +321,12 @@
     <ClInclude Include="pork_manager.h" />
     <ClInclude Include="precompile.h" />
     <ClInclude Include="ranking.h" />
+    <ClInclude Include="ranking_precedence.h" />
+    <ClInclude Include="ranking_table.h" />
+    <ClInclude Include="ranking_word.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
+    <ClInclude Include="result_score.h" />
     <ClInclude Include="ripple.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="score.h" />

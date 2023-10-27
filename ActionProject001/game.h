@@ -54,6 +54,9 @@ public:						// 誰でもアクセスできる
 	static void SetState(const STATE state);		// ゲームの進行状態の設定処理
 	static STATE GetState(void);					// ゲームの進行状態の取得処理
 
+	static void ResetScore(void);		// スコアのリセット処理
+	static int GetScore(void);			// スコアの取得処理
+
 	// NULL化処理
 	static void DeletePause(void);		// ポーズのNULL化処理
 
@@ -74,6 +77,7 @@ private:					// 自分だけアクセスできる
 	static CPause* m_pPause;			// ポーズの情報
 	static STATE m_GameState;			// ゲームの進行状態
 	static int m_nFinishCount;			// 終了カウント
+	static int m_nScore;				// スコア
 
 // デバッグ版
 #ifdef _DEBUG

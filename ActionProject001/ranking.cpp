@@ -11,7 +11,13 @@
 #include "file.h"
 #include "input.h"
 #include "Fade.h"
+
+#include "ranking_word.h"
+#include "ranking_table.h"
+#include "ranking_precedence.h"
+
 #include "Objectmesh.h"
+#include "game.h"
 
 //マクロ定義
 #define SET_TITLE_TIMER			(300)			// タイトル画面に行く秒数
@@ -37,12 +43,21 @@ CRanking::~CRanking()
 // ランキングの初期化処理
 //==========================================
 HRESULT CRanking::Init(void)
-{	
+{
 	// シーンの初期化
 	CScene::Init();
 
 	// テキスト読み込み処理
 	CMesh::TxtSet();
+
+	// ランキングの文字を生成
+	CRankingWord::Create();
+
+	// ランキング表を生成
+	CRankingTable::Create();
+
+	// 順位表示を生成
+	CRankingPrece::Create();
 
 	// 全ての値を初期化する
 	m_nTransCount = 0;			// 自動遷移カウント
@@ -73,6 +88,9 @@ void CRanking::Update(void)
 		CManager::Get()->GetInputGamePad()->GetTrigger(CInputGamePad::JOYKEY_A, 0) == true ||
 		m_nTransCount % SET_TITLE_TIMER == 0)
 	{ // ENTERキーを押したまたは、カウントが一定数に達した場合
+
+		// スコアのリセット処理
+		CGame::ResetScore();
 
 		// タイトルに遷移する
 		CManager::Get()->GetFade()->SetFade(CScene::MODE_TITLE);

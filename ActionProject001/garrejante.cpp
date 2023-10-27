@@ -177,6 +177,9 @@ void CGarrejante::Update(void)
 			// 吹き飛び状態処理
 			Smash();
 
+			// 重力処理
+			Gravity();
+
 			if (m_nStateCount >= SMASH_DEATH_COUNT)
 			{ // 状態カウントが一定数になった場合
 
@@ -341,8 +344,7 @@ void CGarrejante::Smash(void)
 	useful::RotNormalize(&rot.z);
 
 	// 位置を更新する
-	pos.x += move.x;
-	pos.z += move.z;
+	pos += move;
 
 	// 情報を適用する
 	SetPos(pos);		// 位置

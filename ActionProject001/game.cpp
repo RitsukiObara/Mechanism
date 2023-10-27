@@ -26,6 +26,7 @@
 #include "skybox.h"
 #include "pork.h"
 #include "needle.h"
+#include "screw.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -33,6 +34,7 @@
 CPause* CGame::m_pPause = nullptr;							// ポーズの情報
 CGame::STATE CGame::m_GameState = CGame::STATE_START;		// ゲームの進行状態
 int CGame::m_nFinishCount = 0;								// 終了カウント
+int CGame::m_nScore = 0;									// スコア
 
 // デバッグ版
 #ifdef _DEBUG
@@ -51,6 +53,7 @@ CGame::CGame() : CScene(TYPE_NONE, PRIORITY_BG)
 	m_pPause = nullptr;			// ポーズ
 	m_nFinishCount = 0;			// 終了カウント
 	m_GameState = STATE_START;	// 状態
+	m_nScore = 0;				// スコア
 
 // デバッグ版
 #ifdef _DEBUG
@@ -77,6 +80,9 @@ HRESULT CGame::Init(void)
 	// テキスト読み込み処理
 	CElevation::TxtSet();
 
+	// メッシュのテキスト読み込み
+	CMesh::TxtSet();
+
 	//if (m_pField == NULL)
 	//{ // フィールドへのポインタが NULL の場合
 
@@ -91,7 +97,7 @@ HRESULT CGame::Init(void)
 	CScene::Init();
 
 	// プレイヤーを生成する
-	CPlayer::Create(D3DXVECTOR3(-5000.0f, 0.0f, 0.0f));
+	CPlayer::Create(D3DXVECTOR3(-4500.0f, 0.0f, 0.0f));
 
 	// ロード処理
 	CManager::Get()->GetFile()->Load(CFile::TYPE_ITEM);
@@ -99,15 +105,28 @@ HRESULT CGame::Init(void)
 	CManager::Get()->GetFile()->Load(CFile::TYPE_ENEMY);
 	CManager::Get()->GetFile()->Load(CFile::TYPE_TABLE);
 	CManager::Get()->GetFile()->Load(CFile::TYPE_AIRPLANE);
+	CManager::Get()->GetFile()->Load(CFile::TYPE_NEEDLE);
 
 	// スコアを生成する
 	CGameScore::Create(D3DXVECTOR3(50.0f,680.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f));
 
 	// ゴールの生成
-	CGoal::Create(D3DXVECTOR3(4000.0f, 300.0f, 1000.0f));
+	CGoal::Create(D3DXVECTOR3(14000.0f, 300.0f, 1000.0f));
 
 	// ポークの生成
 	CPork::Create(D3DXVECTOR3(-3500.0f, 0.0f, 0.0f), CPork::TYPE::TYPE_HOVER);
+
+	// 飛行中の間隔
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 200.0f, 100.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 300.0f, 200.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 370.0f, 300.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 470.0f, 400.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 510.0f, 500.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 510.0f, 600.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 470.0f, 700.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 370.0f, 800.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 250.0f, 900.0f), NONE_D3DXVECTOR3, false);
+	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 100.0f, 1000.0f), NONE_D3DXVECTOR3, false);
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント
@@ -201,6 +220,7 @@ void CGame::Update(void)
 		CManager::Get()->GetFile()->Save(CFile::TYPE_ENEMY);
 		CManager::Get()->GetFile()->Save(CFile::TYPE_TABLE);
 		CManager::Get()->GetFile()->Save(CFile::TYPE_AIRPLANE);
+		CManager::Get()->GetFile()->Save(CFile::TYPE_NEEDLE);
 	}
 
 #endif
@@ -355,6 +375,9 @@ void CGame::Transition(void)
 	if (m_nFinishCount % 80 == 0)
 	{ // 終了カウントが一定数を超えた場合
 
+		// 得点を渡す
+		m_nScore = CGameScore::Get()->GetScore();
+
 		// リザルトに遷移する
 		CManager::Get()->GetFade()->SetFade(CScene::MODE_RESULT);
 	}
@@ -385,6 +408,24 @@ CGame::STATE CGame::GetState(void)
 {
 	// ゲームの進行状態を返す
 	return m_GameState;
+}
+
+//======================================
+// スコアのリセット処理
+//======================================
+void CGame::ResetScore(void)
+{
+	// スコアを初期化する
+	m_nScore = 0;
+}
+
+//======================================
+// スコアの取得処理
+//======================================
+int CGame::GetScore(void)
+{
+	// スコアを返す
+	return m_nScore;
 }
 
 //======================================

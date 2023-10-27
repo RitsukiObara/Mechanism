@@ -27,7 +27,7 @@
 // マクロ定義
 #define GRAVITY			(0.5f)				// 重力
 #define SMASH_MOVE		(8.5f)				// 吹き飛ばす移動量
-#define SMASH_JUMP		(18.0f)				// 吹き飛ばすジャンプ量
+#define SMASH_JUMP		(16.0f)				// 吹き飛ばすジャンプ量
 #define SMASH_ADD_RIGHT	(14.0f)				// 右に吹き飛ばす追加の移動量
 #define SMASH_ADD_LEFT	(12.0f)				// 左に吹き飛ばす追加の移動量
 

@@ -39,11 +39,14 @@ public:				// 誰でもアクセスできる
 	void Calculate(void);			// 計算処理
 
 	// セット・ゲット関係
-	void SetScore(const int nScore);	// スコアの設定処理
-	int GetScore(void) const;			// スコアの取得処理
+	void SetScore(const int nScore);		// スコアの設定処理
+	int GetScore(void) const;				// スコアの取得処理
+	void SetScoreDisp(const int nScore);	// 表示スコアの設定処理
+	int GetScoreDisp(void) const;			// 表示スコアの取得処理
+	void AddScore(const int nScore);		// スコアの加算処理
+	CNumber* GetNumber(int nID) const;		// 数値の取得処理
 
 	// 静的メンバ変数
-	void AddScore(const int nScore);	// スコアの加算処理
 	static CScore* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& size, const TYPE type);		// 生成処理
 
 private:			// 自分だけアクセスできる

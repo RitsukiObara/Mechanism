@@ -12,6 +12,7 @@
 //********************************************
 #include "main.h"
 #include "enemy.h"
+#include "ranking.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -34,6 +35,7 @@ public:			// 誰でもアクセスできる
 		TYPE_TABLE,			// 台
 		TYPE_AIRPLANE,		// 飛行機
 		TYPE_NEEDLE,		// 棘
+		TYPE_RANKING,		// ランキング
 		TYPE_MAX			// この列挙型の総数
 	};
 
@@ -88,6 +90,13 @@ public:			// 誰でもアクセスできる
 		bool bSuccess;						// 成功状況
 	};
 
+	// ランキングの情報
+	struct SRankingInfo
+	{
+		int aRank[MAX_RANKING];				// ランキングのデータ
+		bool bSuccess;						// 成功状況
+	};
+
 	CFile();					// コンストラクタ
 	~CFile();					// デストラクタ
 
@@ -98,6 +107,9 @@ public:			// 誰でもアクセスできる
 	HRESULT Save(const TYPE type);	// セーブ処理
 	HRESULT Load(const TYPE type);	// ロード処理
 
+	void SetRankingInfo(int* pRank);		// ランキングの設定処理
+	SRankingInfo GetRankingInfo(void);		// ランキングの取得処理
+
 private:		// 自分のみアクセスできる
 
 	// メンバ関数(セーブ関係)
@@ -107,6 +119,7 @@ private:		// 自分のみアクセスできる
 	HRESULT SaveTable(void);		// 台のセーブ処理
 	HRESULT SaveAirplane(void);		// 飛行機のセーブ処理
 	HRESULT SaveNeedle(void);		// 棘のセーブ処理
+	HRESULT SaveRanking(void);		// ランキングのセーブ処理
 
 	// メンバ関数(ロード関係)
 	HRESULT LoadItem(void);			// アイテムのロード処理
@@ -115,6 +128,7 @@ private:		// 自分のみアクセスできる
 	HRESULT LoadTable(void);		// 台のロード処理
 	HRESULT LoadAirplane(void);		// 飛行機のロード処理
 	HRESULT LoadNeedle(void);		// 棘のロード処理
+	HRESULT LoadRanking(void);		// ランキングのロード処理
 
 	// メンバ変数
 	SItemInfo m_ItemInfo;			// アイテムの情報
@@ -123,6 +137,7 @@ private:		// 自分のみアクセスできる
 	STableInfo m_TableInfo;			// 台の情報
 	SAirplaneInfo m_AirplaneInfo;	// 飛行機の情報
 	SNeedleInfo m_NeedleInfo;		// 棘の情報
+	SRankingInfo m_RankingInfo;		// ランキングの情報
 
 	// 静的メンバ変数
 	static const char* c_apBooleanDisp[2];			// bool型の表示

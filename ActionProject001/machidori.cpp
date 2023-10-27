@@ -20,6 +20,7 @@
 #include "Particle.h"
 #include "collision.h"
 #include "stun.h"
+#include "ripple.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -224,6 +225,13 @@ void CMachidori::Update(void)
 			if (ElevationCollision() == true ||
 				TableCollision() == true)
 			{
+				if (m_nStateCount == 0)
+				{ // 初めて地面にぶつかったとき
+
+					// 波紋の生成
+					CRipple::Create(GetPos(), NONE_D3DXVECTOR3);
+				}
+
 				// 状態カウントを加算する
 				m_nStateCount++;
 			}

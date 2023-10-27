@@ -57,6 +57,9 @@ public:			// 誰でもアクセスできる
 		TYPE_ORBIT,				// 軌跡
 		TYPE_PORK,				// ポーク
 		TYPE_SIGNBOARD,			// 看板
+		TYPE_RANKINGWORD,		// ランキングの文字
+		TYPE_RANKINGTABLE,		// ランキング表
+		TYPE_RANKINGPRECE,		// ランキングの順位表示
 		TYPE_MAX				// この列挙型の総数
 	};
 

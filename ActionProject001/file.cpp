@@ -33,6 +33,7 @@
 #define TABLE_TXT			"data\\TXT\\Table.txt"			// 台のテキスト
 #define AIRPLANE_TXT		"data\\TXT\\Airplane.txt"		// 飛行機のテキスト
 #define NEEDLE_TXT			"data\\TXT\\Needle.txt"			// 棘のテキスト
+#define RANKING_BIN			"data\\BIN\\Ranking.bin"		// ランキングのテキスト
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -58,6 +59,13 @@ CFile::CFile()
 		m_TableInfo.pos[nCnt] = NONE_D3DXVECTOR3;		// 台の位置
 		m_AirplaneInfo.pos[nCnt] = NONE_D3DXVECTOR3;	// 飛行機の位置
 		m_AirplaneInfo.bFront[nCnt] = false;			// 飛行機の向き
+		m_NeedleInfo.pos[nCnt] = NONE_D3DXVECTOR3;		// 棘の位置
+		m_NeedleInfo.rot[nCnt] = NONE_D3DXVECTOR3;		// 棘の向き
+	}
+
+	for (int nCntRank = 0; nCntRank < MAX_RANKING; nCntRank++)
+	{
+		m_RankingInfo.aRank[nCntRank] = 0;				// ランキングの値
 	}
 
 	// 総数をクリアする
@@ -66,6 +74,7 @@ CFile::CFile()
 	m_EnemyInfo.nNum = 0;				// 敵
 	m_TableInfo.nNum = 0;				// 台
 	m_AirplaneInfo.nNum = 0;			// 飛行機
+	m_NeedleInfo.nNum = 0;				// 棘
 
 	// 成功状況をクリアする
 	m_ItemInfo.bSuccess = false;		// アイテム
@@ -73,6 +82,8 @@ CFile::CFile()
 	m_EnemyInfo.bSuccess = false;		// 敵
 	m_TableInfo.bSuccess = false;		// 台
 	m_AirplaneInfo.bSuccess = false;	// 飛行機
+	m_NeedleInfo.bSuccess = false;		// 棘
+	m_RankingInfo.bSuccess = false;		// ランキング
 }
 
 //===========================================
@@ -142,6 +153,30 @@ HRESULT CFile::Save(const TYPE type)
 
 		// 飛行機のセーブ処理
 		if (FAILED(SaveAirplane()))
+		{ // 失敗した場合
+
+			// 失敗を返す
+			return E_FAIL;
+		}
+
+		break;
+
+	case TYPE_NEEDLE:		// 棘
+
+		// 棘のセーブ処理
+		if (FAILED(SaveNeedle()))
+		{ // 失敗した場合
+
+			// 失敗を返す
+			return E_FAIL;
+		}
+
+		break;
+
+	case TYPE_RANKING:
+
+		// ランキングのセーブ処理
+		if (FAILED(SaveRanking()))
 		{ // 失敗した場合
 
 			// 失敗を返す
@@ -279,6 +314,40 @@ HRESULT CFile::Load(const TYPE type)
 
 		break;
 
+	case TYPE_NEEDLE:
+
+		// 棘のロード処理
+		if (FAILED(LoadNeedle()))
+		{ // 失敗した場合
+
+			// 失敗を返す
+			return E_FAIL;
+		}
+
+		if (m_NeedleInfo.bSuccess == true)
+		{ // 読み込みに成功していた場合
+
+			for (int nCnt = 0; nCnt < m_NeedleInfo.nNum; nCnt++)
+			{
+				// 敵の生成処理
+				CNeedle::Create(m_NeedleInfo.pos[nCnt], m_NeedleInfo.rot[nCnt]);
+			}
+		}
+
+		break;
+
+	case TYPE_RANKING:
+
+		// ランキングのロード処理
+		if (FAILED(LoadRanking()))
+		{ // 失敗した場合
+
+			// 失敗を返す
+			return E_FAIL;
+		}
+
+		break;
+
 	default:
 
 		// 停止
@@ -289,6 +358,27 @@ HRESULT CFile::Load(const TYPE type)
 
 	// 結果を返す
 	return S_OK;
+}
+
+//===========================================
+// ランキングの設定処理
+//===========================================
+void CFile::SetRankingInfo(int* pRank)
+{
+	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++, pRank++)
+	{
+		// ランキングの情報を設定する
+		m_RankingInfo.aRank[nCnt] = *pRank;
+	}
+}
+
+//===========================================
+// ランキングの取得処理
+//===========================================
+CFile::SRankingInfo CFile::GetRankingInfo(void)
+{
+	// ランキングの情報を返す
+	return m_RankingInfo;
 }
 
 //===========================================
@@ -602,7 +692,7 @@ HRESULT CFile::SaveNeedle(void)
 	FILE *pFile;				// ファイルポインタ
 
 	// ファイルを読み込み形式で開く
-	pFile = fopen(AIRPLANE_TXT, "w");
+	pFile = fopen(NEEDLE_TXT, "w");
 
 	if (pFile != nullptr)
 	{ // ファイルが開けた場合
@@ -641,6 +731,44 @@ HRESULT CFile::SaveNeedle(void)
 
 	// 成功を返す
 	return S_OK;
+}
+
+//===========================================
+// ランキングのセーブ処理
+//===========================================
+HRESULT CFile::SaveRanking(void)
+{
+	FILE *pFile;												// ファイルポインタを宣言
+	m_RankingInfo.bSuccess = false;								// 成功状況
+
+	// ファイルを開く
+	pFile = fopen(RANKING_BIN, "wb");			// バイナリファイルに書き込むために開く
+
+	// ファイルを比較する
+	if (pFile != NULL)
+	{ // ファイルが開けた場合
+
+		// ファイルから数値を書き出す
+		fwrite(&m_RankingInfo.aRank[0], sizeof(int), MAX_RANKING, pFile);
+
+		// ファイルを閉じる
+		fclose(pFile);
+
+		// 成功状況を true にする
+		m_RankingInfo.bSuccess = true;
+
+		// 成功を返す
+		return S_OK;
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		// 失敗を返す
+		return E_FAIL;
+	}
 }
 
 //===========================================
@@ -1108,4 +1236,48 @@ HRESULT CFile::LoadNeedle(void)
 
 	// 成功を返す
 	return S_OK;
+}
+
+//===========================================
+// ランキングのロード処理
+//===========================================
+HRESULT CFile::LoadRanking(void)
+{
+	FILE *pFile;						// ファイルポインタを宣言
+	m_RankingInfo.bSuccess = false;		// 成功状況
+
+	// ファイルを開く
+	pFile = fopen(RANKING_BIN, "rb");			// バイナリファイルから読み込むために開く
+
+	// ファイルを比較する
+	if (pFile != NULL)
+	{ // ファイルが開けた場合
+
+		// ファイルから数値を読み込む
+		fread(&m_RankingInfo.aRank[0], sizeof(int), MAX_RANKING, pFile);
+
+		// ファイルを閉じる
+		fclose(pFile);
+
+		// 成功状況を true にする
+		m_RankingInfo.bSuccess = true;
+
+		// 成功を返す
+		return S_OK;
+	}
+	else
+	{ // ファイルが開けなかった場合
+
+		// 停止
+		assert(false);
+
+		for (int nCntRank = 0; nCntRank < MAX_RANKING; nCntRank++)
+		{
+			// 数値を設定する
+			m_RankingInfo.aRank[0] = 0;
+		}
+
+		// 失敗を返す
+		return E_FAIL;
+	}
 }

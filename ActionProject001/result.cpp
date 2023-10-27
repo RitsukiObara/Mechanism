@@ -16,6 +16,7 @@
 
 #include "file.h"
 #include "camera.h"
+#include "result_score.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -48,6 +49,9 @@ HRESULT CResult::Init(void)
 
 	// テキスト読み込み処理
 	CMesh::TxtSet();
+
+	// リザルトスコアを生成する
+	CResultScore::Create(D3DXVECTOR3(400.0f, SCREEN_HEIGHT * 0.5f, 0.0f), NONE_D3DXVECTOR3, D3DXVECTOR3(25.0f, 30.0f, 0.0f));
 
 	// 全ての値を初期化する
 	m_state = STATE_TIMEDISP;		// 状態

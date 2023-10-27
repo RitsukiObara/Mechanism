@@ -29,7 +29,7 @@ const char* CAbilityUI::m_acTextureFileName[CAbility::TYPE_MAX] = 			// テクスチ
 {
 	"data\\TEXTURE\\HoverMark.png",			// ホバージェット
 	"data\\TEXTURE\\SkyDashMark.png",		// ジェットダッシュ
-	"data\\TEXTURE\\",						// グラウンドクエイク
+	"data\\TEXTURE\\GroundQuake.png",		// グラウンドクエイク
 };
 
 //========================

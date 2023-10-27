@@ -339,6 +339,18 @@
     <ClCompile Include="garrejante.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="ranking_precedence.cpp">
+      <Filter>Scene\Ranking</Filter>
+    </ClCompile>
+    <ClCompile Include="ranking_word.cpp">
+      <Filter>Scene\Ranking</Filter>
+    </ClCompile>
+    <ClCompile Include="ranking_table.cpp">
+      <Filter>Scene\Ranking</Filter>
+    </ClCompile>
+    <ClCompile Include="result_score.cpp">
+      <Filter>Scene\Result</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -613,6 +625,18 @@
     </ClInclude>
     <ClInclude Include="garrejante.h">
       <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="ranking_precedence.h">
+      <Filter>Scene\Ranking</Filter>
+    </ClInclude>
+    <ClInclude Include="ranking_word.h">
+      <Filter>Scene\Ranking</Filter>
+    </ClInclude>
+    <ClInclude Include="ranking_table.h">
+      <Filter>Scene\Ranking</Filter>
+    </ClInclude>
+    <ClInclude Include="result_score.h">
+      <Filter>Scene\Result</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
