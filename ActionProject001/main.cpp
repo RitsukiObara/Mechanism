@@ -9,7 +9,7 @@
 
 // マクロ定義
 #define CLASS_NAME					"WindowClass"				// ウインドウクラスの名前
-#define WINDOW_NAME					"Leggero"					// ウインドウの名前(キャプションに表示)
+#define WINDOW_NAME					"Mechanism"					// ウインドウの名前(キャプションに表示)
 #define ID_BUTTON_FINISH			(101)						// 終了ボタンのID
 
 // プロトタイプ宣言
