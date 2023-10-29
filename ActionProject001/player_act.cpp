@@ -7,32 +7,33 @@
 //********************************************
 // インクルードファイル
 //********************************************
+#include "manager.h"
 #include "player.h"
-#include "motion.h"
 #include "player_act.h"
 #include "player_ability.h"
 #include "ability_UI.h"
 #include "collision.h"
 #include "useful.h"
-#include "manager.h"
 #include "input.h"
+
+#include "motion.h"
+#include "turn.h"
 
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
-#define CANNON_COUNT			(60)				// 飛ぶまでのカウント
-#define ROT_Y_MOVE				(D3DX_PI * 0.1f)	// 向きの移動量(Y軸)
-#define JUMP_MOVE				(20.0f)				// ジャンプの移動量
-#define CANNON_Y_MOVE			(30.0f)				// 大砲のY軸の移動量
-#define CANNON_Z_MOVE			(15.0f)				// 大砲のZ軸の移動量
-#define PLAYER_SPEED			(8.0f)				// プレイヤーのスピード
-#define DAMAGE_COUNT			(25)				// ダメージ状態のカウント数
-#define INVINCIBLE_ALPHA_CHANGE	(6)					// 無敵状態の透明度が変わるカウント
-#define INVINCIBLE_COUNT		(70)				// 無敵状態のカウント数
-
-// 重力関係
-#define NONE_GRAVITY		(-0.9f)					// 通常状態の重力
-#define HOVER_GRAVITY		(0.8f)					// ホバー状態の重力
+#define CANNON_COUNT			(60)								// 飛ぶまでのカウント
+#define ROT_Y_MOVE				(D3DX_PI * 0.1f)					// 向きの移動量(Y軸)
+#define JUMP_MOVE				(20.0f)								// ジャンプの移動量
+#define CANNON_Y_MOVE			(30.0f)								// 大砲のY軸の移動量
+#define CANNON_Z_MOVE			(15.0f)								// 大砲のZ軸の移動量
+#define PLAYER_SPEED			(8.0f)								// プレイヤーのスピード
+#define DAMAGE_COUNT			(25)								// ダメージ状態のカウント数
+#define INVINCIBLE_ALPHA_CHANGE	(6)									// 無敵状態の透明度が変わるカウント
+#define INVINCIBLE_COUNT		(70)								// 無敵状態のカウント数
+#define TURN_SHIFT				(D3DXVECTOR3(55.0f, 25.0f, 0.0f))	// 振り向きのずれる座標
+#define NONE_GRAVITY			(-0.9f)								// 通常状態の重力
+#define HOVER_GRAVITY			(0.8f)								// ホバー状態の重力
 
 //============================================
 // コンストラクタ
@@ -369,8 +370,24 @@ void CPlayerAct::Control(CPlayer& player)
 			player.GetAbility()->GetAbility() != CAbility::ABILITY_DASHJUMP)
 		{ // 一定の状態以外の場合
 
-			// 右向き状況を true にする
-			player.SetEnableRight(true);
+			if (player.IsRight() == false)
+			{ // 左向きだった場合
+
+				// 右向きにする
+				player.SetEnableRight(true);
+
+				if (player.GetAbility()->GetAbility() != CAbility::ABILITY_JETDASH &&
+					player.GetAbility()->GetAbility() != CAbility::ABILITY_DASHJUMP &&
+					player.IsJump() == false)
+				{ //地面で振り向いた場合
+
+					// 振り向きの位置を設定する
+					D3DXVECTOR3 pos = D3DXVECTOR3(player.GetPos().x + sinf(player.GetRot().y) * TURN_SHIFT.x, player.GetPos().y + TURN_SHIFT.y, player.GetPos().z);
+
+					// 振り向き演出の生成
+					CTurn::Create(pos, player.IsRight());
+				}
+			}
 
 			// 目標の向きを設定する
 			rotDest.y = D3DX_PI * 0.5f;
@@ -389,8 +406,24 @@ void CPlayerAct::Control(CPlayer& player)
 			player.GetAbility()->GetAbility() != CAbility::ABILITY_DASHJUMP)
 		{ // 一定の状態以外の場合
 
-			// 右向き状況を false にする
-			player.SetEnableRight(false);
+			if (player.IsRight() == true)
+			{ // 右向きだった場合
+
+				// 左向き状況にする
+				player.SetEnableRight(false);
+
+				if (player.GetAbility()->GetAbility() != CAbility::ABILITY_JETDASH &&
+					player.GetAbility()->GetAbility() != CAbility::ABILITY_DASHJUMP &&
+					player.IsJump() == false)
+				{ //地面で振り向いた場合
+
+					// 振り向きの位置を設定する
+					D3DXVECTOR3 pos = D3DXVECTOR3(player.GetPos().x + sinf(player.GetRot().y) * TURN_SHIFT.x, player.GetPos().y + TURN_SHIFT.y, player.GetPos().z);
+
+					// 振り向き演出の生成
+					CTurn::Create(pos, player.IsRight());
+				}
+			}
 
 			// 目標の向きを設定する
 			rotDest.y = -D3DX_PI * 0.5f;
@@ -405,7 +438,8 @@ void CPlayerAct::Control(CPlayer& player)
 		// 移動状況を false にする
 		player.SetEnableMove(false);
 
-		if (player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_NEUTRAL)
+		if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
+			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_NEUTRAL)
 		{ // 待機モーションじゃない場合
 
 			// 待機モーションを設定する
@@ -439,7 +473,8 @@ void CPlayerAct::MoveProcess(CPlayer& player)
 	// 移動状況を true にする
 	player.SetEnableMove(true);
 
-	if (player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_MOVE)
+	if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
+		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_MOVE)
 	{ // 移動モーションじゃない場合
 
 		// 移動モーションを設定する

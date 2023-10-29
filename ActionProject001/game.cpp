@@ -111,7 +111,7 @@ HRESULT CGame::Init(void)
 	CGameScore::Create(D3DXVECTOR3(50.0f,680.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f));
 
 	// ゴールの生成
-	CGoal::Create(D3DXVECTOR3(14000.0f, 300.0f, 1000.0f));
+	CGoal::Create(D3DXVECTOR3(20000.0f, 300.0f, 0.0f));
 
 	// ポークの生成
 	CPork::Create(D3DXVECTOR3(-3500.0f, 0.0f, 0.0f), CPork::TYPE_HOVER);

@@ -21,6 +21,8 @@
 // マクロ定義
 //----------------------------------------------------------------------------------------------------------------------
 #define ELEVATION_TXT			"data/TXT/Elevation.txt"			// 起伏地面のテキスト
+#define TEXTURE_DIVI_X			(0.2f)								// テクスチャの分割数(X軸)
+#define TEXTURE_DIVI_Z			(1.0f / 6.0f)						// テクスチャの分割数(Z軸)
 
 //================================
 // コンストラクタ
@@ -397,7 +399,7 @@ void CElevation::SetVertex(void)
 			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 			// テクスチャ座標の設定
-			pVtx[0].tex = D3DXVECTOR2(nCntWid * 0.05f, nCntDep * 0.05f);
+			pVtx[0].tex = D3DXVECTOR2(nCntWid * TEXTURE_DIVI_X, nCntDep * TEXTURE_DIVI_Z);
 
 			pVtx++;				// 頂点データを進める
 		}

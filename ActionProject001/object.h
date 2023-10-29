@@ -57,10 +57,12 @@ public:			// 誰でもアクセスできる
 		TYPE_ORBIT,				// 軌跡
 		TYPE_PORK,				// ポーク
 		TYPE_SIGNBOARD,			// 看板
+		TYPE_TURN,				// 振り向き
 		TYPE_RANKINGWORD,		// ランキングの文字
 		TYPE_RANKINGTABLE,		// ランキング表
 		TYPE_RANKINGPRECE,		// ランキングの順位表示
 		TYPE_TUTORIAL,			// チュートリアル
+		TYPE_BLOCK,				// ブロック
 		TYPE_MAX				// この列挙型の総数
 	};
 

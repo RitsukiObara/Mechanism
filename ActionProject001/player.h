@@ -37,6 +37,7 @@ public:			// 誰でもアクセスできる
 	{
 		MOTIONTYPE_NEUTRAL = 0,		// 待機
 		MOTIONTYPE_MOVE,			// 移動
+		MOTIONTYPE_JETDASH,			// ジェットダッシュ
 		MOTIONTYPE_MAX				// この列挙の総数
 	};
 

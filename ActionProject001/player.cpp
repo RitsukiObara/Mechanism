@@ -47,6 +47,7 @@
 #define FINISH_GRAVITY			(-0.6f)		// 終了状態の重力
 #define NEAR_POS				(0.0f)		// 手前の位置
 #define FAR_POS					(1000.0f)	// 奥行の位置
+#define ADD_GRAVITY				(-50.0f)	// 追加の重力
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -747,7 +748,7 @@ void CPlayer::ElevationCollision(void)
 			pos.y = fHeight;
 
 			// 重力を設定する
-			m_move.y = -50.0f;
+			m_move.y = ADD_GRAVITY;
 
 			// ジャンプ状況を false にする
 			bJump = false;

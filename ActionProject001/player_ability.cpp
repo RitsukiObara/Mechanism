@@ -9,13 +9,16 @@
 //********************************************
 #include "manager.h"
 #include "player.h"
+#include "motion.h"
 #include "player_ability.h"
-#include "objectElevation.h"
-#include "elevation_manager.h"
 #include "input.h"
 #include "collision.h"
-#include "ripple.h"
 #include "useful.h"
+
+#include "ripple.h"
+#include "objectElevation.h"
+#include "elevation_manager.h"
+#include "turn.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -29,6 +32,8 @@
 #define JETDASH_SPEED				(25.0f)				// ジェットダッシュ時のスピード
 #define DASHJUMP_DEST_SPEED			(8.0f)				// ダッシュジャンプ時の目的のスピード
 #define DASHJUMP_ADD_SPEED			(0.5f)				// ダッシュジャンプ時の追加のスピード
+#define DASH_SMOKE_SHIFT			(70.0f)				// 煙のずれる座標
+#define DASH_SMOKE_COUNT			(4)					// 煙のカウント
 
 //============================================
 // コンストラクタ
@@ -333,6 +338,9 @@ void CAbility::Ability(CPlayer& player)
 
 		// 使用状況を false にする
 		m_aPossible[TYPE_JETDASH] = false;
+
+		// ジェットダッシュモーションを設定する
+		player.GetMotion()->Set(CPlayer::MOTIONTYPE_JETDASH);
 	}
 	else if ((CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_I) == true ||
 		CManager::Get()->GetInputGamePad()->GetTrigger(CInputGamePad::JOYKEY_B, 0) == true) &&
@@ -379,11 +387,21 @@ void CAbility::SkyDash(CPlayer& player)
 	D3DXVECTOR3 pos = player.GetPos();		// 位置を取得する
 	D3DXVECTOR3 rot = player.GetRot();		// 向きを取得する
 
+	// 能力カウントを加算する
+	m_aAblCount[TYPE_JETDASH]++;
+
 	// 位置を設定する
 	pos.x += sinf(rot.y) * JETDASH_SPEED;
 
+	if (m_aAblCount[TYPE_JETDASH] % DASH_SMOKE_COUNT == 0)
+	{ // 一定のカウント数になった場合
+
+		// 振り向き演出の生成
+		CTurn::Create(D3DXVECTOR3(player.GetPos().x, player.GetPos().y + DASH_SMOKE_SHIFT, player.GetPos().z), player.IsRight());
+	}
+
 	if (CManager::Get()->GetInputKeyboard()->GetRelease(DIK_U) == true)
-	{ // Iキーを離したまたは、一定カウント数を超えた場合
+	{ // Iキーを離した場合
 
 		if (player.IsJump() == true &&
 			player.GetMove().y > 0.0f)

@@ -198,6 +198,16 @@ void collision::EnemyHit(CPlayer& player)
 					// 踏みつけ時の処理
 					player.StepHit();
 				}
+				else if (player.GetAction()->GetState() == CPlayerAct::STATE_FLY ||
+					player.GetAction()->GetState() == CPlayerAct::STATE_CANNON)
+				{ // 大砲状態または、飛行状態の場合
+
+					// 敵のヒット処理
+					pEnemy->SmashHit();
+
+					// コンボの加算処理
+					player.GetCombo()->AddCombo(100);
+				}
 				else
 				{ // 上記以外
 
@@ -362,6 +372,9 @@ void collision::EnemyPenetrate(CPlayer& player)
 
 				// 吹き飛ばし処理
 				pEnemy->SmashHit();
+
+				// コンボの加算処理
+				player.GetCombo()->AddCombo(100);
 			}
 			else
 			{ // 上記以外

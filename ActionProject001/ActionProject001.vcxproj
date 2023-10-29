@@ -157,6 +157,7 @@
     <ClCompile Include="ability_UI.cpp" />
     <ClCompile Include="airplane.cpp" />
     <ClCompile Include="airplane_manager.cpp" />
+    <ClCompile Include="block.cpp" />
     <ClCompile Include="bonus.cpp" />
     <ClCompile Include="collpolygon.cpp" />
     <ClCompile Include="combo.cpp" />
@@ -249,6 +250,7 @@
     <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="title_logo.cpp" />
+    <ClCompile Include="turn.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="useful.cpp" />
     <ClCompile Include="macchina.cpp" />
@@ -258,6 +260,7 @@
     <ClInclude Include="ability_UI.h" />
     <ClInclude Include="airplane.h" />
     <ClInclude Include="airplane_manager.h" />
+    <ClInclude Include="block.h" />
     <ClInclude Include="bonus.h" />
     <ClInclude Include="collpolygon.h" />
     <ClInclude Include="combo.h" />
@@ -347,6 +350,7 @@
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="title_logo.h" />
+    <ClInclude Include="turn.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="useful.h" />
     <ClInclude Include="macchina.h" />

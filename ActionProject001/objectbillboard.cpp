@@ -430,6 +430,26 @@ void CBillboard::SetVtxAnim(const float fTex, const int nPattern)
 }
 
 //===========================================
+// アニメーションの設定(反転)
+//===========================================
+void CBillboard::SetVtxAnimRev(const float fTex, const int nPattern)
+{
+	VERTEX_3D * pVtx;											//頂点情報へのポインタ
+
+	//頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	//テクスチャ座標の設定
+	pVtx[0].tex = D3DXVECTOR2(nPattern * fTex + fTex, 0.0f);
+	pVtx[1].tex = D3DXVECTOR2(nPattern * fTex, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(nPattern * fTex + fTex, 1.0f);
+	pVtx[3].tex = D3DXVECTOR2(nPattern * fTex, 1.0f);
+
+	//頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+}
+
+//===========================================
 // 頂点カラーの設定
 //===========================================
 void CBillboard::SetVtxColor(D3DXCOLOR col)

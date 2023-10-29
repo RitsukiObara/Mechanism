@@ -47,6 +47,8 @@
 #define CORRECT_POSV				(0.20f)				// 視点の補正倍率
 #define RANKING_MOVE				(40.0f)				// ランキングカメラの移動量
 #define RANKING_STOP				(25000.0f)			// ランキングカメラの止まる座標
+#define MIN_POSR_Y					(90.0f)				// 注視点の最低座標(Y軸)
+#define MIN_POSV_Y					(120.0f)			// 視点の最低座標(Y軸)
 
 #define CHASE_SHIFT_X				(400.0f)			// 追跡カメラの前にずらす距離(X軸)
 #define POSR_SHIFT_Y				(190.0f)			// 注視点のずらす幅(Y軸)
@@ -191,6 +193,20 @@ void CCamera::Update(void)
 
 	//// 目的の向きを設定する
 	//m_rotDest = 0.0f;
+
+	if (m_posR.y <= MIN_POSR_Y)
+	{ // 注視点が一定数になった場合
+
+		// 注視点を設定する
+		m_posR.y = MIN_POSR_Y;
+	}
+
+	if (m_posV.y <= MIN_POSV_Y)
+	{ // 視点が一定数になった場合
+
+		// 視点を設定する
+		m_posV.y = MIN_POSV_Y;
+	}
 }
 
 //=======================
