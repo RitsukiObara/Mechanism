@@ -91,6 +91,7 @@ private:		// 自分だけアクセスできる
 	void ElevationCollision(void);	// 起伏地面の当たり判定処理
 	void SetNone(void);				// 着地時の通常状態の設定処理
 	void CollisionMagicWall(void);	// 移動制限判定
+	void BlockCollision(void);		// ブロックの当たり判定
 	void TableCollision(void);		// 台との当たり判定
 
 	void GoalProcess(void);			// ゴール状態の処理

@@ -39,7 +39,7 @@ namespace collision
 	void EnemyStun(CPlayer& player);			// 敵の気絶処理
 
 	// テーブルの当たり判定
-	bool TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth, const float fDepth);		// 台との当たり判定
+	bool TableCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fDepth);		// 台との当たり判定
 
 	// マキナ草の当たり判定
 	void MacchinaHit(CPlayer& player);			// プレイヤーとマキナ草との当たり判定
@@ -49,6 +49,9 @@ namespace collision
 
 	// 棘の当たり判定
 	void NeedleHit(CPlayer& player);			// プレイヤーと棘の当たり判定
+
+	// ブロックの当たり判定
+	bool BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight, const bool bJump);		// ブロックとの当たり判定
 }
 
 #endif

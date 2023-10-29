@@ -22,6 +22,12 @@ public:			// 誰でもアクセスできる
 	CBlock();				// コンストラクタ
 	~CBlock();				// デストラクタ
 
+	// リスト構造関係
+	void SetPrev(CBlock* pPrev);	// 前のポインタの設定処理
+	void SetNext(CBlock* pNext);	// 後のポインタの設定処理
+	CBlock* GetPrev(void) const;	// 前のポインタの設定処理
+	CBlock* GetNext(void) const;	// 次のポインタの設定処理
+
 	// メンバ関数
 	HRESULT Init(void);		// 初期化処理
 	void Uninit(void);		// 終了処理
@@ -35,6 +41,9 @@ public:			// 誰でもアクセスできる
 
 private:		// 自分だけアクセスできる
 
+	// リスト構造関係
+	CBlock* m_pPrev;	// 前へのポインタ
+	CBlock* m_pNext;	// 次へのポインタ
 };
 
 #endif

@@ -27,6 +27,7 @@ TEXTURE = data\TEXTURE\Rank.png				# 順位
 TEXTURE = data\TEXTURE\RankingWord.png		# ランキングの文字
 TEXTURE = data\TEXTURE\SkyBox.jpg			# スカイボックス
 TEXTURE = data\TEXTURE\SkyDashMark.png		# 空中ダッシュマーク
+TEXTURE = data\TEXTURE\SmokeStaging.png		# 煙演出
 TEXTURE = data\TEXTURE\TimeNumber.png		# タイムの数字
 TEXTURE = data\TEXTURE\YourScore.png		# あなたのスコアの表示
 

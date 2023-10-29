@@ -30,6 +30,8 @@
 #include "macchina_manager.h"
 #include "needle.h"
 #include "needle_manager.h"
+#include "block.h"
+#include "block_manager.h"
 #include "goal.h"
 #include "useful.h"
 
@@ -475,7 +477,7 @@ void collision::EnemyStun(CPlayer& player)
 //===============================
 // 台との当たり判定
 //===============================
-bool collision::TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, const float fWidth, const float fDepth)
+bool collision::TableCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fDepth)
 {
 	// ローカル変数宣言
 	CTable* pTable = CTableManager::Get()->GetTop();		// 敵の情報
@@ -485,15 +487,15 @@ bool collision::TableCollision(D3DXVECTOR3* pos, const D3DXVECTOR3& posOld, cons
 	{ // 敵の情報が NULL じゃない場合
 
 		if (posOld.y >= pTable->GetPosOld().y + pTable->GetFileData().vtxMax.y &&
-			pos->y <= pTable->GetPosOld().y + pTable->GetFileData().vtxMax.y &&
-			pos->x + fWidth >= pTable->GetPos().x + pTable->GetFileData().vtxMin.x &&
-			pos->x - fWidth <= pTable->GetPos().x + pTable->GetFileData().vtxMax.x &&
-			pos->z + fDepth >= pTable->GetPos().z + pTable->GetFileData().vtxMin.z &&
-			pos->z - fDepth <= pTable->GetPos().z + pTable->GetFileData().vtxMax.z)
+			pPos->y <= pTable->GetPosOld().y + pTable->GetFileData().vtxMax.y &&
+			pPos->x + fWidth >= pTable->GetPos().x + pTable->GetFileData().vtxMin.x &&
+			pPos->x - fWidth <= pTable->GetPos().x + pTable->GetFileData().vtxMax.x &&
+			pPos->z + fDepth >= pTable->GetPos().z + pTable->GetFileData().vtxMin.z &&
+			pPos->z - fDepth <= pTable->GetPos().z + pTable->GetFileData().vtxMax.z)
 		{ // 上からの当たり判定
 
 			// 位置を補正
-			pos->y = pTable->GetPos().y + pTable->GetFileData().vtxMax.y + COLLISION_ADD_DIFF_LENGTH;
+			pPos->y = pTable->GetPos().y + pTable->GetFileData().vtxMax.y + COLLISION_ADD_DIFF_LENGTH;
 
 			// 着地判定を付与する
 			bLand = true;
@@ -571,11 +573,11 @@ void collision::NeedleHit(CPlayer& player)
 	D3DXVECTOR3 move = player.GetMove();					// 移動量
 
 	while (pNeedle != nullptr)
-	{ // 敵の情報が NULL じゃない場合
+	{ // 棘の情報が NULL じゃない場合
 
 		if (pNeedle->GetPos().z + pNeedle->GetFileData().collsize.z >= pos.z &&
 			pNeedle->GetPos().z - pNeedle->GetFileData().collsize.z <= pos.z)
-		{ // 敵とZ軸が合っているかつ、当たり判定状況が true の場合
+		{ // 棘とZ軸が合っているかつ、当たり判定状況が true の場合
 
 			if (posOld.y >= pNeedle->GetPosOld().y + pNeedle->GetFileData().vtxMax.y &&
 				pos.y <= pNeedle->GetPos().y + pNeedle->GetFileData().vtxMax.y &&
@@ -649,4 +651,116 @@ void collision::NeedleHit(CPlayer& player)
 	// 情報を適用する
 	player.SetPos(pos);		// 位置を適用する
 	player.SetMove(move);	// 移動量を適用する
+}
+
+//===============================
+// ブロックとの当たり判定
+//===============================
+bool collision::BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight, const bool bJump)
+{
+	// ローカル変数宣言
+	CBlock* pBlock = CBlockManager::Get()->GetTop();		// ブロックの情報
+	bool bLand = false;				// 着地状況
+
+	while (pBlock != nullptr)
+	{ // ブロックの情報が NULL じゃない場合
+
+		if (pBlock->GetPos().z + pBlock->GetFileData().vtxMax.z >= pPos->z &&
+			pBlock->GetPos().z + pBlock->GetFileData().vtxMin.z <= pPos->z)
+		{ // 敵とZ軸が合っているかつ、当たり判定状況が true の場合
+
+			if (bJump == false)
+			{ // 地上に立っている場合
+
+				if (posOld.y >= pBlock->GetPosOld().y + pBlock->GetFileData().vtxMax.y &&
+					pPos->y <= pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y &&
+					pPos->x + fWidth >= pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x &&
+					pPos->x - fWidth <= pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x)
+				{ // 上からの当たり判定
+
+					// 位置を設定する
+					pPos->y = pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y;
+
+					// 着地判定を通す
+					bLand = true;
+				}
+				else if (posOld.y + fHeight <= pBlock->GetPosOld().y + pBlock->GetFileData().vtxMin.y &&
+					pPos->y + fHeight >= pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y &&
+					pPos->x + fWidth >= pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x &&
+					pPos->x - fWidth <= pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x)
+				{ // 下からの当たり判定
+
+					// 位置を設定する
+					pPos->y = pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y - fHeight;
+				}
+				else if (posOld.x + fWidth <= pBlock->GetPosOld().x + pBlock->GetFileData().vtxMin.x &&
+					pPos->x + fWidth >= pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x &&
+					pPos->y + fHeight >= pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y &&
+					pPos->y <= pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y)
+				{ // 左からの当たり判定
+
+					// 位置を設定する
+					pPos->x = pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x - fWidth;
+				}
+				else if (posOld.x - fWidth >= pBlock->GetPosOld().x + pBlock->GetFileData().vtxMax.x &&
+					pPos->x - fWidth <= pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x &&
+					pPos->y + fHeight >= pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y &&
+					pPos->y <= pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y)
+				{ // 右からの当たり判定
+
+					// 位置を設定する
+					pPos->x = pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x + fWidth;
+				}
+			}
+			else
+			{ // 上記以外
+
+				if (posOld.x + fWidth <= pBlock->GetPosOld().x + pBlock->GetFileData().vtxMin.x &&
+					pPos->x + fWidth >= pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x &&
+					pPos->y + fHeight >= pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y &&
+					pPos->y <= pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y)
+				{ // 左からの当たり判定
+
+					// 位置を設定する
+					pPos->x = pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x - fWidth;
+				}
+				else if (posOld.x - fWidth >= pBlock->GetPosOld().x + pBlock->GetFileData().vtxMax.x &&
+					pPos->x - fWidth <= pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x &&
+					pPos->y + fHeight >= pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y &&
+					pPos->y <= pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y)
+				{ // 右からの当たり判定
+
+					// 位置を設定する
+					pPos->x = pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x + fWidth;
+				}
+				else if (posOld.y >= pBlock->GetPosOld().y + pBlock->GetFileData().vtxMax.y &&
+					pPos->y <= pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y &&
+					pPos->x + fWidth >= pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x &&
+					pPos->x - fWidth <= pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x)
+				{ // 上からの当たり判定
+
+					// 位置を設定する
+					pPos->y = pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y;
+
+					// 着地判定を通す
+					bLand = true;
+				}
+				else if (posOld.y + fHeight <= pBlock->GetPosOld().y + pBlock->GetFileData().vtxMin.y &&
+					pPos->y + fHeight >= pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y &&
+					pPos->x + fWidth >= pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x &&
+					pPos->x - fWidth <= pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x)
+				{ // 下からの当たり判定
+
+					// 位置を設定する
+					pPos->y = pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y - fHeight;
+				}
+			}
+		}
+
+		// 次のオブジェクトを代入する
+		pBlock = pBlock->GetNext();
+	}
+
+	// 着地判定を返す
+	return bLand;
 }

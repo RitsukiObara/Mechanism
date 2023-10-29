@@ -84,6 +84,7 @@ public:			// 誰でもアクセスできる
 	// その他の関数
 	void Gravity(void);				// 重力処理
 	bool ElevationCollision(void);	// 起伏地面の当たり判定処理
+	bool BlockCollision(void);		// ブロックとの当たり判定
 	bool TableCollision(void);		// 台との当たり判定
 
 	// 静的メンバ関数

@@ -223,6 +223,7 @@ void CMachidori::Update(void)
 
 			// 起伏地面との当たり判定
 			if (ElevationCollision() == true ||
+				BlockCollision() == true ||
 				TableCollision() == true)
 			{
 				if (m_nStateCount == 0)
@@ -277,6 +278,12 @@ void CMachidori::Update(void)
 
 			// 起伏地面との当たり判定
 			ElevationCollision();
+
+			// ブロックとの当たり判定
+			BlockCollision();
+
+			// 台との当たり判定
+			TableCollision();
 
 			// 煙の生成処理
 			Smoke();

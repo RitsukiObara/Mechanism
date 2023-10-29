@@ -39,6 +39,8 @@
 // マクロ定義
 //--------------------------------------------
 #define STEPHIT_JUMP			(20.0f)		// 踏みつけたときのジャンプ力
+#define BLOCK_COLLISION_WIDTH	(20.0f)		// ブロックとの当たり判定の時の幅
+#define BLOCK_COLLISION_HEIGHT	(150.0f)	// ブロックとの当たり判定の時の高さ
 #define TABLE_COLLISION_WIDTH	(20.0f)		// 台との当たり判定の時の幅
 #define TABLE_COLLISION_DEPTH	(20.0f)		// 台との当たり判定の時の奥行
 #define PUNCH_COUNT				(150)		// パンチ状態のカウント数
@@ -310,6 +312,9 @@ void CPlayer::Update(void)
 
 	// 起伏地面との当たり判定処理
 	ElevationCollision();
+
+	// ブロックとの当たり判定
+	BlockCollision();
 
 	// 台との当たり判定
 	TableCollision();
@@ -865,6 +870,30 @@ void CPlayer::CollisionMagicWall(void)
 
 	// 位置を適用する
 	SetPos(pos);
+}
+
+//=======================================
+// ブロックの当たり判定
+//=======================================
+void CPlayer::BlockCollision(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();			// 位置
+	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
+
+	// ブロックとの当たり判定
+	if (collision::BlockCollision(&pos, posOld, BLOCK_COLLISION_WIDTH, BLOCK_COLLISION_HEIGHT, m_bJump))
+	{ // 着地した場合
+
+		// ジャンプしていない
+		m_bJump = false;
+
+		// 移動量を0にする
+		m_move.y = 0.0f;
+	}
+
+	// 情報を設定する
+	SetPos(pos);	// 位置
 }
 
 //=======================================

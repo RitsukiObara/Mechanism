@@ -360,6 +360,9 @@
     <ClCompile Include="block.cpp">
       <Filter>Gimmick</Filter>
     </ClCompile>
+    <ClCompile Include="block_manager.cpp">
+      <Filter>Gimmick</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -654,6 +657,9 @@
       <Filter>Staging</Filter>
     </ClInclude>
     <ClInclude Include="block.h">
+      <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="block_manager.h">
       <Filter>Gimmick</Filter>
     </ClInclude>
   </ItemGroup>

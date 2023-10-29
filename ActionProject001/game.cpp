@@ -26,7 +26,7 @@
 #include "skybox.h"
 #include "pork.h"
 #include "needle.h"
-#include "screw.h"
+#include "block.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -129,6 +129,8 @@ HRESULT CGame::Init(void)
 	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 370.0f, 800.0f), NONE_D3DXVECTOR3, false);
 	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 250.0f, 900.0f), NONE_D3DXVECTOR3, false);
 	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 100.0f, 1000.0f), NONE_D3DXVECTOR3, false);
+
+	CBlock::Create(D3DXVECTOR3(-4000.0f, 0.0f, 0.0f), NONE_D3DXVECTOR3, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント

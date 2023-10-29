@@ -41,6 +41,7 @@ public:			// 誰でもアクセスできる
 		TYPE_PORK,				// ポーク
 		TYPE_SIGNBOARD,			// 看板
 		TYPE_NEEDLE,			// 棘
+		TYPE_BLOCK,				// ブロック
 
 		// 敵モデル
 		TYPE_ITOCAN,			// イトキャン

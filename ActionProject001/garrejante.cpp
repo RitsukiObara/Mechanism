@@ -204,8 +204,9 @@ void CGarrejante::Update(void)
 	// 起伏地面との当たり判定
 	ElevationCollision();
 
-	// 台との当たり判定
-	if (TableCollision() == true)
+	// 台・ブロックとの当たり判定
+	if (BlockCollision() == true ||
+		TableCollision() == true)
 	{ // 着地判定が true の場合
 
 		// 台の着地判定処理
