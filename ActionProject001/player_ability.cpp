@@ -19,6 +19,7 @@
 #include "objectElevation.h"
 #include "elevation_manager.h"
 #include "turn.h"
+#include "block.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -135,6 +136,9 @@ void CAbility::Update(CPlayer& player)
 
 		// 敵の気絶処理
 		collision::EnemyStun(player);
+
+		// ブロックの破壊処理
+		BlockBreak(player);
 
 		break;
 
@@ -463,6 +467,7 @@ void CAbility::GroundQuake(CPlayer& player)
 	m_aAblCount[TYPE_GROUNDQUAKE]++;
 
 	if (CManager::Get()->GetInputKeyboard()->GetRelease(DIK_I) == true ||
+		player.IsJump() == true ||
 		m_aAblCount[TYPE_GROUNDQUAKE] >= GROUNDQUAKE_COUNT)
 	{ // Iキーを離したまたは、一定カウント数を超えた場合
 
@@ -528,6 +533,39 @@ void CAbility::PossibleProcess(CPlayer& player)
 			// 使用可能にする
 			m_aPossible[TYPE_GROUNDQUAKE] = true;
 		}
+	}
+}
+
+//============================================
+// ブロックの破壊処理
+//============================================
+void CAbility::BlockBreak(CPlayer& player)
+{
+	if (player.GetBlock() != nullptr &&
+		player.GetBlock()->IsBreak() == true)
+	{ // ブロックが破壊できる場合
+
+		// 破壊カウントを取得する
+		int nCount = player.GetBlock()->GetBreakCount();
+
+		// カウントを加算する
+		nCount++;
+
+		if (nCount % 50 == 0)
+		{ // カウントが 50 になった場合
+
+			// 終了処理
+			player.GetBlock()->Uninit();
+
+			// ブロックのNULL化処理
+			player.DeleteBlock();
+
+			// この先の処理を行わない
+			return;
+		}
+
+		// 破壊カウントを適用する
+		player.GetBlock()->SetBreakCount(nCount);
 	}
 }
 

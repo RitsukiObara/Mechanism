@@ -46,33 +46,103 @@
 #define QUAKE_HIT_RANGE					(D3DXVECTOR3(220.0f, 120.0f, 100.0f))		// 地震の当たり判定の範囲
 
 //===============================
-// 丸影の起伏地面の当たり判定処理
+// 丸影の当たり判定処理
 //===============================
-void collision::ShadowElevCollision(const D3DXVECTOR3& pos, int nIdx)
+void collision::ShadowCollision(const D3DXVECTOR3& pos, int nIdx)
 {
 	// ローカル変数宣言
 	CShadowCircle* pShadow = CShadowCircle::GetShadow(nIdx);	// 影のポインタ
-	CElevation* pMesh = nullptr;			// メッシュのポインタ
-	D3DXVECTOR3 posShadow = pos;				// 影の位置
+	D3DXVECTOR3 posPlayer = pos;				// プレイヤーの位置
+	D3DXVECTOR3 posCand = NONE_D3DXVECTOR3;		// 影の位置の候補
 
 	if (pShadow != nullptr)
 	{ // 影のポインタが NULL じゃなかった場合
 
-		// オブジェクトのポインタを取得する
-		pMesh = CElevationManager::Get()->GetTop();
+		// 影の位置を取得する
+		posCand = D3DXVECTOR3(posPlayer.x, pShadow->GetPos().y, posPlayer.z);
 
-		while (pMesh != nullptr)
-		{ // オブジェクトのが NULL じゃない限り回す
+		// 丸影の起伏地面の当たり判定
+		ShadowElevCollision(posCand);
 
-			// 影の位置を設定する
-			posShadow.y = pMesh->ElevationCollision(posShadow);
+		// 丸影とブロックの当たり判定
+		ShadowBlockCollision(posCand, posPlayer);
 
-			// 次のオブジェクトを代入する
-			pMesh = pMesh->GetNext();
-		}
+		// 丸影と台の当たり判定
+		ShadowTableCollision(posCand, posPlayer);
 
 		// 位置を設定する
-		pShadow->SetPos(posShadow);
+		pShadow->SetPos(posCand);
+	}
+}
+
+//===============================
+// 丸影と起伏地面の当たり判定
+//===============================
+void collision::ShadowElevCollision(D3DXVECTOR3& pos)
+{
+	// ローカル変数宣言
+	CElevation* pMesh = CElevationManager::Get()->GetTop();		// メッシュのポインタを取得する
+
+	while (pMesh != nullptr)
+	{ // オブジェクトのが NULL じゃない限り回す
+
+		// 影の位置を設定する
+		pos.y = pMesh->ElevationCollision(pos);
+
+		// 次のオブジェクトを代入する
+		pMesh = pMesh->GetNext();
+	}
+}
+
+//===============================
+// 丸影とブロックの当たり判定
+//===============================
+void collision::ShadowBlockCollision(D3DXVECTOR3& pos, const D3DXVECTOR3& posPlayer)
+{
+	// ローカル変数宣言
+	CBlock* pBlock = CBlockManager::Get()->GetTop();		// ブロックのポインタを取得する
+
+	while (pBlock != nullptr)
+	{ // オブジェクトのが NULL じゃない限り回す
+
+		if (pBlock->GetPos().x + pBlock->GetFileData().vtxMax.x >= pos.x &&
+			pBlock->GetPos().x + pBlock->GetFileData().vtxMin.x <= pos.x &&
+			pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y <= posPlayer.y &&
+			pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y >= pos.y)
+		{ // プレイヤーと影の間にブロックがあった場合
+
+			// 影の候補の位置を設定する
+			pos.y = pBlock->GetPos().y + pBlock->GetFileData().vtxMax.y;
+		}
+
+		// 次のオブジェクトを代入する
+		pBlock = pBlock->GetNext();
+	}
+}
+
+//===============================
+// 丸影と台の当たり判定
+//===============================
+void collision::ShadowTableCollision(D3DXVECTOR3& pos, const D3DXVECTOR3& posPlayer)
+{
+	// ローカル変数宣言
+	CTable* pTable = CTableManager::Get()->GetTop();		// 台のポインタを取得する
+
+	while (pTable != nullptr)
+	{ // オブジェクトのが NULL じゃない限り回す
+
+		if (pTable->GetPos().x + pTable->GetFileData().vtxMax.x >= pos.x &&
+			pTable->GetPos().x + pTable->GetFileData().vtxMin.x <= pos.x &&
+			pTable->GetPos().y + pTable->GetFileData().vtxMax.y <= posPlayer.y &&
+			pTable->GetPos().y + pTable->GetFileData().vtxMax.y >= pos.y)
+		{ // プレイヤーと影の間に台があった場合
+
+			// 影の候補の位置を設定する
+			pos.y = pTable->GetPos().y + pTable->GetFileData().vtxMax.y;
+		}
+
+		// 次のオブジェクトを代入する
+		pTable = pTable->GetNext();
 	}
 }
 
@@ -656,7 +726,7 @@ void collision::NeedleHit(CPlayer& player)
 //===============================
 // ブロックとの当たり判定
 //===============================
-bool collision::BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight, const bool bJump)
+bool collision::BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight, const bool bJump, CBlock** ppRide)
 {
 	// ローカル変数宣言
 	CBlock* pBlock = CBlockManager::Get()->GetTop();		// ブロックの情報
@@ -683,6 +753,13 @@ bool collision::BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, con
 
 					// 着地判定を通す
 					bLand = true;
+
+					if (ppRide != nullptr)
+					{ // 乗っているブロックのポインタが NULL じゃない場合
+
+						// ブロックの情報を入れる
+						*ppRide = pBlock;
+					}
 				}
 				else if (posOld.y + fHeight <= pBlock->GetPosOld().y + pBlock->GetFileData().vtxMin.y &&
 					pPos->y + fHeight >= pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y &&
@@ -744,6 +821,13 @@ bool collision::BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, con
 
 					// 着地判定を通す
 					bLand = true;
+
+					if (ppRide != nullptr)
+					{ // 乗っているブロックのポインタが NULL じゃない場合
+
+						// ブロックの情報を入れる
+						*ppRide = pBlock;
+					}
 				}
 				else if (posOld.y + fHeight <= pBlock->GetPosOld().y + pBlock->GetFileData().vtxMin.y &&
 					pPos->y + fHeight >= pBlock->GetPos().y + pBlock->GetFileData().vtxMin.y &&

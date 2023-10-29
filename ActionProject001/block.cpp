@@ -20,6 +20,8 @@
 CBlock::CBlock() : CModel(CObject::TYPE_BLOCK, CObject::PRIORITY_BLOCK)
 {
 	// 全ての値をクリアする
+	m_nBreakCount = 0;		// 破壊カウント
+	m_bBreak = false;		// 破壊状況
 	m_pPrev = nullptr;		// 前へのポインタ
 	m_pNext = nullptr;		// 次へのポインタ
 
@@ -87,6 +89,10 @@ HRESULT CBlock::Init(void)
 		return E_FAIL;
 	}
 
+	// 全ての値を初期化する
+	m_nBreakCount = 0;		// 破壊カウント
+	m_bBreak = false;		// 破壊状況
+
 	// 値を返す
 	return S_OK;
 }
@@ -131,14 +137,40 @@ void CBlock::Draw(void)
 //=====================================
 // 情報の設定処理
 //=====================================
-void CBlock::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale)
+void CBlock::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type)
 {
 	// 情報の設定処理
 	SetPos(pos);						// 位置
 	SetPosOld(pos);						// 前回の位置
 	SetRot(rot);						// 向き
 	SetScale(scale);					// 拡大率
-	SetFileData(CXFile::TYPE_BLOCK);	// モデルの情報
+
+	// 全ての値を設定する
+	m_nBreakCount = 0;		// 破壊カウント
+
+	switch (type)
+	{
+	case TYPE_IRON:
+
+		SetFileData(CXFile::TYPE_IRONBLOCK);	// モデルの情報
+		m_bBreak = false;		// 破壊状況
+
+		break;
+
+	case TYPE_WOOD:
+
+		SetFileData(CXFile::TYPE_WOODBLOCK);	// モデルの情報
+		m_bBreak = true;		// 破壊状況
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
+	}
 
 	// ファイルの情報を取得する
 	CXFile::SXFile file = GetFileData();
@@ -158,9 +190,45 @@ void CBlock::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 }
 
 //=======================================
+// 破壊カウントの設定処理
+//=======================================
+void CBlock::SetBreakCount(const int nCount)
+{
+	// 破壊カウントを設定する
+	m_nBreakCount = nCount;
+}
+
+//=======================================
+// 破壊カウントの取得処理
+//=======================================
+int CBlock::GetBreakCount(void) const
+{
+	// 破壊カウントを返す
+	return m_nBreakCount;
+}
+
+//=======================================
+// 破壊状況の設定処理
+//=======================================
+void CBlock::SetEnableBreak(const bool bBreak)
+{
+	// 破壊状況を設定する
+	m_bBreak = bBreak;
+}
+
+//=======================================
+// 破壊状況の取得処理
+//=======================================
+bool CBlock::IsBreak(void)
+{
+	// 破壊状況を返す
+	return m_bBreak;
+}
+
+//=======================================
 // 生成処理
 //=======================================
-CBlock* CBlock::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale)
+CBlock* CBlock::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type)
 {
 	// ローカルオブジェクトを生成
 	CBlock* pBlock = nullptr;	// プレイヤーのインスタンスを生成
@@ -196,7 +264,7 @@ CBlock* CBlock::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 		}
 
 		// 情報の設定処理
-		pBlock->SetData(pos, rot, scale);
+		pBlock->SetData(pos, rot, scale, type);
 	}
 	else
 	{ // オブジェクトが NULL の場合

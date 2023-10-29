@@ -70,7 +70,8 @@ private:		// 自分だけアクセスできる
 	void GroundQuake(CPlayer& player);	// グラウンドクエイク処理
 
 	void PossibleProcess(CPlayer& player);			// 可能状況判定処理
-
+	
+	void BlockBreak(CPlayer& player);				// ブロックの破壊処理
 	void SearchVertex(const D3DXVECTOR3& pos);		// 起伏地面の頂点の探索処理
 
 	// メンバ変数

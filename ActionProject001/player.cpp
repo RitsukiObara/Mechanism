@@ -68,6 +68,7 @@ CPlayer::CPlayer() : CCharacter(CObject::TYPE_PLAYER, CObject::PRIORITY_PLAYER)
 	m_pAbilityUI = nullptr;			// 能力UIの情報
 	m_pScrewUI = nullptr;			// ネジUIの情報
 	m_pCombo = nullptr;				// コンボの情報
+	m_pBlock = nullptr;				// ブロックの情報
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
@@ -195,6 +196,7 @@ HRESULT CPlayer::Init(void)
 
 	// 全ての値を初期化する
 	m_pAbilityUI = nullptr;			// 能力UI
+	m_pBlock = nullptr;				// ブロックの情報
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
@@ -325,6 +327,9 @@ void CPlayer::Update(void)
 	// 行動制限判定
 	CollisionMagicWall();
 
+	// 影の位置向き設定処理
+	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
+
 	// プレイヤーの情報を表示
 	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n移動量：%f %f %f\nプレイヤーの状態：%d\nジャンプ状況：%d\n", GetPos().x, GetPos().y, GetPos().z, m_move.x, m_move.y, m_move.z, m_pAction->GetState(), m_bJump);
 }
@@ -404,6 +409,24 @@ CCombo* CPlayer::GetCombo(void) const
 {
 	// コンボの情報を返す
 	return m_pCombo;
+}
+
+//===========================================
+// ブロックの情報の取得処理
+//===========================================
+CBlock* CPlayer::GetBlock(void) const
+{
+	// ブロックの情報を返す
+	return m_pBlock;
+}
+
+//===========================================
+// ブロックのNULL化処理
+//===========================================
+void CPlayer::DeleteBlock(void)
+{
+	// ブロックのポインタを NULL にする
+	m_pBlock = nullptr;
 }
 
 //===========================================
@@ -882,7 +905,7 @@ void CPlayer::BlockCollision(void)
 	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
 
 	// ブロックとの当たり判定
-	if (collision::BlockCollision(&pos, posOld, BLOCK_COLLISION_WIDTH, BLOCK_COLLISION_HEIGHT, m_bJump))
+	if (collision::BlockCollision(&pos, posOld, BLOCK_COLLISION_WIDTH, BLOCK_COLLISION_HEIGHT, m_bJump, &m_pBlock))
 	{ // 着地した場合
 
 		// ジャンプしていない
@@ -890,6 +913,12 @@ void CPlayer::BlockCollision(void)
 
 		// 移動量を0にする
 		m_move.y = 0.0f;
+	}
+	else
+	{ // 上記以外
+
+		// ブロックのポインタを NULL にする
+		m_pBlock = nullptr;
 	}
 
 	// 情報を設定する
@@ -943,15 +972,6 @@ void CPlayer::TableCollision(void)
 			// リセット処理
 			m_pAbility->ResetAbility();
 		}
-
-		// 影の位置向き設定処理
-		CShadowCircle::SetPosRot(m_nShadowIdx, GetPos(), GetRot());
-	}
-	else
-	{ // 上記以外
-
-		// 影の位置向き設定処理
-		CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
 	}
 
 	// 位置を適用させる

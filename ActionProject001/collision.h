@@ -17,6 +17,7 @@
 //-----------------------------------
 class CPlayer;		// プレイヤー
 class CEnemy;		// 敵
+class CBlock;		// ブロック
 
 //-----------------------------------
 // 名前空間(当たり判定)
@@ -24,7 +25,10 @@ class CEnemy;		// 敵
 namespace collision
 {
 	// 丸影の当たり判定
-	void ShadowElevCollision(const D3DXVECTOR3& pos, int nIdx);		// 丸影と起伏地面の当たり判定
+	void ShadowCollision(const D3DXVECTOR3& pos, int nIdx);							// 丸影の当たり判定
+	void ShadowElevCollision(D3DXVECTOR3& pos);										// 丸影と起伏地面の当たり判定
+	void ShadowBlockCollision(D3DXVECTOR3& pos, const D3DXVECTOR3& posPlayer);		// 丸影とブロックの当たり判定
+	void ShadowTableCollision(D3DXVECTOR3& pos, const D3DXVECTOR3& posPlayer);		// 丸影と台の当たり判定
 
 	// 飛行機の当たり判定
 	void AirplaneHit(CPlayer& player);			// プレイヤーと飛行機との当たり判定
@@ -51,7 +55,7 @@ namespace collision
 	void NeedleHit(CPlayer& player);			// プレイヤーと棘の当たり判定
 
 	// ブロックの当たり判定
-	bool BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight, const bool bJump);		// ブロックとの当たり判定
+	bool BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight, const bool bJump, CBlock** ppRide);		// ブロックとの当たり判定
 }
 
 #endif

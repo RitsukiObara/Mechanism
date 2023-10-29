@@ -171,8 +171,8 @@ void CShadowCircle::SetPosRotXZ(int nIdx, const D3DXVECTOR3& pos, const D3DXVECT
 	if (pShadow != nullptr)
 	{ // ポインタが NULL じゃない場合
 
-		// 影の位置の当たり判定
-		collision::ShadowElevCollision(pos, nIdx);
+		// 影の位置の設定処理
+		collision::ShadowCollision(pos, nIdx);
 
 		// 向きの設定処理
 		pShadow->SetRot(D3DXVECTOR3(0.0f, rot.y, 0.0f));

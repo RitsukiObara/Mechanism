@@ -596,7 +596,7 @@ bool CEnemy::BlockCollision(void)
 	bool bLand = false;					// 着地判定
 
 	// 着地判定を取得する
-	bLand = collision::BlockCollision(&pos, posOld, m_sizeColl.x, m_sizeColl.y, false);
+	bLand = collision::BlockCollision(&pos, posOld, m_sizeColl.x, m_sizeColl.y, false, nullptr);
 
 	// 位置を適用させる
 	SetPos(pos);
