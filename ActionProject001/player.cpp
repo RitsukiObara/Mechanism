@@ -35,6 +35,7 @@
 #include "goal.h"
 #include "bonus.h"
 #include "destruction.h"
+#include "ripple.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -54,6 +55,11 @@
 #define ADD_GRAVITY				(-50.0f)	// 追加の重力
 #define BOUND_SPEED				(-5.0f)		// バウンド時のスピード
 #define FALL_HEIGHT				(-600.0f)	// 落ちた判定が通る所
+#define PUNCH_DSTR_SHIFT		(D3DXVECTOR3(40.0f, 100.0f, 0.0f))		// パンチ時の撃破のずらす幅
+#define PUNCH_DSTR_SIZE			(D3DXVECTOR3(100.0f, 100.0f, 0.0f))		// パンチ時の撃破のサイズ
+#define PUNCH_DSTR_COL			(D3DXCOLOR(1.0f, 0.3f, 0.0f, 1.0f))		// パンチ時の撃破の色
+#define PUNCH_DSTR_LIFE			(6)			// パンチ時の撃破の寿命
+#define PUNCH_RIPPLE_SHIFT		(D3DXVECTOR3(45.0f, 100.0f, 0.0f))		// パンチ時の波紋のずらす幅
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -1170,6 +1176,34 @@ void CPlayer::GoalProcess(void)
 
 			// ボーナスの加算処理
 			CBonus::Get()->AddBonus();
+
+			if (CGoal::Get() != nullptr)
+			{ // ゴールの情報があった場合
+
+				// ゴールの向き
+				D3DXVECTOR3 rot = NONE_D3DXVECTOR3;
+
+				// 向きを設定する
+				rot.x = (rand() % 80 - 40) * 0.01f;
+				rot.z = (rand() % 80 - 40) * 0.01f;
+
+				// ゴールの向きを設定する
+				CGoal::Get()->GetModel(CGoal::MODEL_BODY)->SetRot(rot);
+				CGoal::Get()->GetModel(CGoal::MODEL_POINT)->SetRot(rot);
+			}
+
+			// 撃破の設定処理
+			CDestruction::Create
+			(
+				D3DXVECTOR3(GetPos().x + sinf(GetRot().y) * (PUNCH_DSTR_SHIFT.x + (rand() % 20)), GetPos().y + (PUNCH_DSTR_SHIFT.y + (rand() % 50 - 25)), GetPos().z),
+				PUNCH_DSTR_SIZE,
+				PUNCH_DSTR_COL,
+				CDestruction::TYPE_THORN,
+				PUNCH_DSTR_LIFE
+			);
+
+			// 波紋を生成する
+			CRipple::Create(D3DXVECTOR3(GetPos().x + sinf(GetRot().y) * PUNCH_RIPPLE_SHIFT.x, GetPos().y + PUNCH_RIPPLE_SHIFT.y, GetPos().z), D3DXVECTOR3(0.0f, 0.0f, GetRot().y));
 		}
 
 		if (m_nGoalCount >= PUNCH_COUNT)
