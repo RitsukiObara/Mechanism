@@ -33,6 +33,7 @@ public:			// 誰でもアクセスできる
 		TYPE_SCREW = 0,		// ネジ
 		TYPE_GEAR,			// 歯車
 		TYPE_RING,			// 輪っか
+		TYPE_WOODBOX,		// 木箱
 		TYPE_MAX			// この列挙型の総数
 	};
 

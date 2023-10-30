@@ -125,6 +125,9 @@ void CAbility::Update(CPlayer& player)
 		// ダッシュジャンプ処理
 		DashJump(player);
 
+		// 能力操作処理
+		Ability(player);
+
 		break;
 
 	case ABILITY_GROUNDQUAKE:	// グラウンドクエイク
