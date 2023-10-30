@@ -11,7 +11,6 @@
 #include "player.h"
 #include "player_act.h"
 #include "player_ability.h"
-#include "ability_UI.h"
 #include "collision.h"
 #include "useful.h"
 #include "input.h"
@@ -343,9 +342,6 @@ void CPlayerAct::NoneControl(CPlayer& player)
 
 	// 能力の更新処理
 	player.GetAbility()->Update(player);
-
-	// 能力UIの更新処理
-	player.GetAbilityUI()->Update();
 }
 
 //=======================================

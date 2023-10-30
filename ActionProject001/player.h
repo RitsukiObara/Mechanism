@@ -19,10 +19,10 @@
 class CMotion;				// モーション
 class CPlayerAct;			// プレイヤーの行動
 class CAbility;				// 能力
-class CAbilityUI;			// 能力UI
 class CScrewUI;				// ネジUI
 class CCombo;				// コンボ
 class CBlock;				// ブロック
+class CLifeUI;				// 体力UI
 
 //--------------------------------------------
 // クラス(プレイヤークラス)
@@ -61,6 +61,8 @@ public:			// 誰でもアクセスできる
 	D3DXVECTOR3 GetMove(void) const;			// 移動量の取得処理
 	void SetRotDest(const D3DXVECTOR3& rot);	// 目標の向きの設定処理
 	D3DXVECTOR3 GetRotDest(void) const;			// 目標の向きの取得処理
+	void SetLife(const int nLife);				// 体力の設定処理
+	int GetLife(void) const;					// 体力の取得処理
 	void SetSpeed(float fSpeed);				// 速度の設定処理
 	float GetSpeed(void) const;					// 速度の取得処理
 	void SetAlpha(const float fAlpha);			// 透明度の設定処理
@@ -78,8 +80,8 @@ public:			// 誰でもアクセスできる
 	CMotion* GetMotion(void) const;				// モーションの情報の取得処理
 	CPlayerAct* GetAction(void) const;			// アクションの情報の取得処理
 	CAbility* GetAbility(void) const;			// 能力の情報の取得処理
-	CAbilityUI* GetAbilityUI(void) const;		// 能力UIの情報の取得処理
 	CScrewUI* GetScrewUI(void) const;			// ネジUIの情報の取得処理
+	CLifeUI* GetLifeUI(void) const;				// 体力UIの情報の取得処理
 	CCombo* GetCombo(void) const;				// コンボの情報の取得処理
 	CBlock* GetBlock(void) const;				// ブロックの情報の取得処理
 	void DeleteBlock(void);						// ブロックのNULL化処理
@@ -105,8 +107,8 @@ private:		// 自分だけアクセスできる
 	CMotion* m_pMotion;				// モーションの情報
 	CPlayerAct* m_pAction;			// プレイヤーの行動の情報
 	CAbility* m_pAbility;			// 能力の情報
-	CAbilityUI* m_pAbilityUI;		// 能力UIの情報
 	CScrewUI* m_pScrewUI;			// ネジUIの情報
+	CLifeUI* m_pLifeUI;				// 体力UIの情報
 	CCombo* m_pCombo;				// コンボの情報
 	CBlock* m_pBlock;				// ブロックの情報
 
@@ -114,6 +116,7 @@ private:		// 自分だけアクセスできる
 	D3DXVECTOR3 m_rotDest;			// 目的の向き
 	int m_nShadowIdx;				// 影のインデックス
 	int m_nGoalCount;				// ゴール時のカウント
+	int m_nLife;					// 体力
 	float m_fSpeed;					// 速度
 	float m_fAlpha;					// 透明度
 	bool m_bMove;					// 移動状況

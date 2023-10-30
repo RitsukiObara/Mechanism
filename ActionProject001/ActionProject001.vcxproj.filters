@@ -129,9 +129,6 @@
     <ClCompile Include="player_act.cpp">
       <Filter>Player</Filter>
     </ClCompile>
-    <ClCompile Include="ability_UI.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
     <ClCompile Include="character.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -363,6 +360,9 @@
     <ClCompile Include="block_manager.cpp">
       <Filter>Gimmick</Filter>
     </ClCompile>
+    <ClCompile Include="lifeUI.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -426,9 +426,6 @@
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="player_act.h">
-      <Filter>Player</Filter>
-    </ClInclude>
-    <ClInclude Include="ability_UI.h">
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="character.h">
@@ -661,6 +658,9 @@
     </ClInclude>
     <ClInclude Include="block_manager.h">
       <Filter>Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="lifeUI.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

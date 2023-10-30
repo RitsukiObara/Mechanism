@@ -10,8 +10,8 @@
 #include "player.h"
 #include "player_act.h"
 #include "player_ability.h"
-#include "ability_UI.h"
 #include "screwUI.h"
+#include "lifeUI.h"
 #include "combo.h"
 #include "combo_magni.h"
 #include "manager.h"
@@ -38,6 +38,7 @@
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
+#define MAX_LIFE				(3)			// 体力の最大数
 #define STEPHIT_JUMP			(20.0f)		// 踏みつけたときのジャンプ力
 #define BLOCK_COLLISION_WIDTH	(20.0f)		// ブロックとの当たり判定の時の幅
 #define BLOCK_COLLISION_HEIGHT	(150.0f)	// ブロックとの当たり判定の時の高さ
@@ -65,14 +66,15 @@ CPlayer::CPlayer() : CCharacter(CObject::TYPE_PLAYER, CObject::PRIORITY_PLAYER)
 	m_pMotion = nullptr;			// モーションの情報
 	m_pAction = nullptr;			// プレイヤーの行動の情報
 	m_pAbility = nullptr;			// 能力の情報
-	m_pAbilityUI = nullptr;			// 能力UIの情報
 	m_pScrewUI = nullptr;			// ネジUIの情報
+	m_pLifeUI = nullptr;			// 体力UIの情報
 	m_pCombo = nullptr;				// コンボの情報
 	m_pBlock = nullptr;				// ブロックの情報
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
 	m_nGoalCount = 0;				// ゴール時のカウント
+	m_nLife = MAX_LIFE;				// 体力
 	m_fSpeed = 0.0f;				// 速度
 	m_fAlpha = 1.0f;				// 透明度
 	m_bMove = false;				// 移動状況
@@ -194,13 +196,26 @@ HRESULT CPlayer::Init(void)
 		assert(false);
 	}
 
+	if (m_pLifeUI == nullptr)
+	{ // 体力UIが NULL の場合
+
+		// 体力UIの情報を生成
+		m_pLifeUI = CLifeUI::Create();
+	}
+	else
+	{ // 上記以外
+
+		// 停止
+		assert(false);
+	}
+
 	// 全ての値を初期化する
-	m_pAbilityUI = nullptr;			// 能力UI
 	m_pBlock = nullptr;				// ブロックの情報
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
 	m_nGoalCount = 0;				// ゴール時のカウント
+	m_nLife = MAX_LIFE;				// 体力
 	m_fSpeed = 0.0f;				// 速度
 	m_fAlpha = 1.0f;				// 透明度
 	m_bMove = false;				// 移動状況
@@ -229,13 +244,12 @@ void CPlayer::Uninit(void)
 	m_pAbility->Uninit();
 	m_pAbility = nullptr;
 
-	// 能力UIの終了処理
-	m_pAbilityUI->Uninit();
-	m_pAbilityUI = nullptr;
-
 	// ネジUIの終了処理
 	m_pScrewUI->Uninit();
 	m_pScrewUI = nullptr;
+
+	// ブロックのポインタを NULL にする
+	m_pBlock = nullptr;
 
 	// 終了処理
 	CCharacter::Uninit();
@@ -312,6 +326,9 @@ void CPlayer::Update(void)
 	// モーションの更新処理
 	m_pMotion->Update();
 
+	// 体力UIの更新処理
+	m_pLifeUI->Update();
+
 	// 起伏地面との当たり判定処理
 	ElevationCollision();
 
@@ -382,15 +399,6 @@ CAbility* CPlayer::GetAbility(void) const
 {
 	// 能力の情報を返す
 	return m_pAbility;
-}
-
-//===========================================
-// 能力UIの情報の取得処理
-//===========================================
-CAbilityUI* CPlayer::GetAbilityUI(void) const
-{
-	// 能力UIの情報を返す
-	return m_pAbilityUI;
 }
 
 //===========================================
@@ -507,6 +515,16 @@ void CPlayer::Hit(void)
 		m_pAction->GetState() != CPlayerAct::STATE_CANNON)
 	{ // 一定の状態以外の場合
 
+		// 体力を減算する
+		m_nLife--;
+
+		if (m_nLife <= 0)
+		{ // 寿命がもうない場合
+
+			// 体力を0にする
+			m_nLife = 0;
+		}
+
 		// 爆発パーティクルを生成
 		CParticle::Create(GetPos(), CParticle::TYPE_FIRE);
 
@@ -584,19 +602,6 @@ void CPlayer::SetData(const D3DXVECTOR3& pos)
 		// 影のインデックス設定
 		m_nShadowIdx = pShadow->GetNumID();
 	}
-
-	if (m_pAbilityUI == nullptr)
-	{ // 能力UIが NULL の場合
-
-		// 能力UIの情報を生成
-		m_pAbilityUI = CAbilityUI::Create(GetPos());
-	}
-	else
-	{ // 上記以外
-
-		// 停止
-		assert(false);
-	}
 }
 
 //=======================================
@@ -633,6 +638,34 @@ D3DXVECTOR3 CPlayer::GetRotDest(void) const
 {
 	// 目標の向きを返す
 	return m_rotDest;
+}
+
+//=======================================
+// 体力の設定処理
+//=======================================
+void CPlayer::SetLife(const int nLife)
+{
+	if (nLife > MAX_LIFE)
+	{ // 体力が一定以上の場合
+
+		// 体力を最大に設定する
+		m_nLife = MAX_LIFE;
+	}
+	else
+	{ // 上記以外
+
+		// 体力を設定する
+		m_nLife = nLife;
+	}
+}
+
+//=======================================
+// 体力の取得処理
+//=======================================
+int CPlayer::GetLife(void) const
+{
+	// 体力を返す
+	return m_nLife;
 }
 
 //=======================================

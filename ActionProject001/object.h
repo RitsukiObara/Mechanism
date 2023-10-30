@@ -40,7 +40,6 @@ public:			// 誰でもアクセスできる
 		TYPE_SCREW,				// ネジ
 		TYPE_COLLPOLY,			// 当たり判定ポリゴン
 		TYPE_DESTRUCTION,		// 撃破
-		TYPE_ABILITYUI,			// 能力UI
 		TYPE_ENEMY,				// 敵
 		TYPE_FRACTION,			// 破片
 		TYPE_NEWRECORD,			// 新記録
@@ -63,6 +62,7 @@ public:			// 誰でもアクセスできる
 		TYPE_RANKINGPRECE,		// ランキングの順位表示
 		TYPE_TUTORIAL,			// チュートリアル
 		TYPE_BLOCK,				// ブロック
+		TYPE_LIFEUI,			// 体力UI
 		TYPE_MAX				// この列挙型の総数
 	};
 

@@ -154,7 +154,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ability_UI.cpp" />
     <ClCompile Include="airplane.cpp" />
     <ClCompile Include="airplane_manager.cpp" />
     <ClCompile Include="block.cpp" />
@@ -170,6 +169,7 @@
     <ClCompile Include="game_score.cpp" />
     <ClCompile Include="garrejante.cpp" />
     <ClCompile Include="goal.cpp" />
+    <ClCompile Include="lifeUI.cpp" />
     <ClCompile Include="machidori.cpp" />
     <ClCompile Include="needle.cpp" />
     <ClCompile Include="needle_manager.cpp" />
@@ -258,7 +258,6 @@
     <ClCompile Include="macchina_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ability_UI.h" />
     <ClInclude Include="airplane.h" />
     <ClInclude Include="airplane_manager.h" />
     <ClInclude Include="block.h" />
@@ -274,6 +273,7 @@
     <ClInclude Include="game_score.h" />
     <ClInclude Include="garrejante.h" />
     <ClInclude Include="goal.h" />
+    <ClInclude Include="lifeUI.h" />
     <ClInclude Include="machidori.h" />
     <ClInclude Include="needle.h" />
     <ClInclude Include="needle_manager.h" />
