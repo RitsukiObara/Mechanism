@@ -265,6 +265,9 @@ void CPlayer::Uninit(void)
 //===========================================
 void CPlayer::Update(void)
 {
+	// ジャンプ状況を取得する
+	bool bJump = m_bJump;
+
 	// 前回の位置の設定処理
 	SetPosOld(GetPos());
 
@@ -355,6 +358,15 @@ void CPlayer::Update(void)
 
 		// 行動制限判定
 		CollisionMagicWall();
+	}
+
+	if (m_pMotion->GetType() != MOTIONTYPE_JETDASH &&
+		m_bJump == false &&
+		bJump == true)
+	{ // 着地した瞬間
+
+		// 着地モーションを設定する
+		m_pMotion->Set(MOTIONTYPE_LANDING);
 	}
 
 	// 影の位置向き設定処理
@@ -551,6 +563,9 @@ CPlayer* CPlayer::Create(const D3DXVECTOR3& pos)
 //=======================================
 void CPlayer::Hit(void)
 {
+	// 向きを取得する
+	D3DXVECTOR3 rot = GetRot();
+
 	if (m_pAction->GetState() != CPlayerAct::STATE_DAMAGE &&
 		m_pAction->GetState() != CPlayerAct::STATE_INVINCIBLE &&
 		m_pAction->GetState() != CPlayerAct::STATE_CANNON &&
@@ -586,6 +601,12 @@ void CPlayer::Hit(void)
 			m_pAction->SetState(CPlayerAct::STATE_DAMAGE);
 		}
 
+		// ダメージモーションを設定する
+		m_pMotion->Set(MOTIONTYPE_DAMAGE);
+
+		// 向きを設定する
+		rot.y = D3DX_PI;
+
 		// 爆発パーティクルを生成
 		CParticle::Create(GetPos(), CParticle::TYPE_FIRE);
 
@@ -595,6 +616,9 @@ void CPlayer::Hit(void)
 		// 撃破の生成処理
 		CDestruction::Create(D3DXVECTOR3(GetPos().x, GetPos().y + 100.0f, GetPos().z), D3DXVECTOR3(100.0f, 100.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), CDestruction::TYPE_EXPLOSION, 20);
 	}
+
+	// 向きを適用する
+	SetRot(rot);
 }
 
 //=======================================

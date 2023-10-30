@@ -53,6 +53,7 @@ private:		// 自分だけアクセスできる
 
 	// メンバ関数
 	void NoneControl(CPlayer& player);	// 通常時の操作処理
+	void RotDecide(CPlayer& player);	// 向きの決定処理
 	void Control(CPlayer& player);		// 操作処理
 	void MoveProcess(CPlayer& player);	// 移動の基本処理
 	void ModeSpeed(CPlayer& player);	// モードごとのスピード処理

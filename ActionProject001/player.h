@@ -39,6 +39,9 @@ public:			// 誰でもアクセスできる
 		MOTIONTYPE_NEUTRAL = 0,		// 待機
 		MOTIONTYPE_MOVE,			// 移動
 		MOTIONTYPE_JETDASH,			// ジェットダッシュ
+		MOTIONTYPE_JUMP,			// ジャンプ
+		MOTIONTYPE_LANDING,			// 着地
+		MOTIONTYPE_DAMAGE,			// ダメージ状態
 		MOTIONTYPE_MAX				// この列挙の総数
 	};
 

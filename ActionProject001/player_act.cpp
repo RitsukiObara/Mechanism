@@ -107,6 +107,12 @@ void CPlayerAct::Update(CPlayer& player)
 			// 状態の設定処理
 			SetState(STATE_INVINCIBLE);
 
+			// ダメージ状態にする
+			player.GetMotion()->Set(CPlayer::MOTIONTYPE_DAMAGE);
+
+			// 向きの決定処理
+			RotDecide(player);
+
 			// 透明度を設定する
 			player.SetAlpha(0.0f);
 		}
@@ -381,6 +387,31 @@ void CPlayerAct::NoneControl(CPlayer& player)
 }
 
 //=======================================
+// 向きの決定処理
+//=======================================
+void CPlayerAct::RotDecide(CPlayer& player)
+{
+	// 向きを取得する
+	D3DXVECTOR3 rot = player.GetRot();
+
+	if (player.IsRight() == true)
+	{ // 右向きの場合
+
+		// 向きを設定する
+		rot.y = D3DX_PI * 0.5f;
+	}
+	else
+	{ // 上記以外
+
+		// 向きを設定する
+		rot.y = -D3DX_PI * 0.5f;
+	}
+
+	// 向きを適用する
+	player.SetRot(rot);
+}
+
+//=======================================
 // 操作処理
 //=======================================
 void CPlayerAct::Control(CPlayer& player)
@@ -471,7 +502,8 @@ void CPlayerAct::Control(CPlayer& player)
 		player.SetEnableMove(false);
 
 		if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
-			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_NEUTRAL)
+			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_NEUTRAL &&
+			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP)
 		{ // 待機モーションじゃない場合
 
 			// 待機モーションを設定する
@@ -488,6 +520,14 @@ void CPlayerAct::Control(CPlayer& player)
 
 		// ジャンプ状況を true にする
 		player.SetEnableJump(true);
+
+		if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
+			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP)
+		{ // ジャンプモーションじゃない場合
+
+			// ジャンプモーションを設定する
+			player.GetMotion()->Set(CPlayer::MOTIONTYPE_JUMP);
+		}
 	}
 
 	// 目標の向きを適用する
@@ -506,7 +546,8 @@ void CPlayerAct::MoveProcess(CPlayer& player)
 	player.SetEnableMove(true);
 
 	if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
-		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_MOVE)
+		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_MOVE &&
+		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP)
 	{ // 移動モーションじゃない場合
 
 		// 移動モーションを設定する
