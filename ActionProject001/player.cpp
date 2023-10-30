@@ -53,6 +53,7 @@
 #define FAR_POS					(1000.0f)	// 奥行の位置
 #define ADD_GRAVITY				(-50.0f)	// 追加の重力
 #define BOUND_SPEED				(-5.0f)		// バウンド時のスピード
+#define FALL_HEIGHT				(-600.0f)	// 落ちた判定が通る所
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -369,8 +370,21 @@ void CPlayer::Update(void)
 		m_pMotion->Set(MOTIONTYPE_LANDING);
 	}
 
-	// 影の位置向き設定処理
-	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
+	// 落下判定処理
+	FallCheck();
+
+	if (m_bJump == true)
+	{ // ジャンプしている場合
+
+		// 影の位置向きの設定処理
+		CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
+	}
+	else
+	{ // ジャンプしていない場合
+
+		// 影の位置向きの設定処理
+		CShadowCircle::SetPosRot(m_nShadowIdx, GetPos(), GetRot());
+	}
 
 	// プレイヤーの情報を表示
 	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n移動量：%f %f %f\nプレイヤーの状態：%d\nジャンプ状況：%d\n", GetPos().x, GetPos().y, GetPos().z, m_move.x, m_move.y, m_move.z, m_pAction->GetState(), m_bJump);
@@ -880,12 +894,13 @@ void CPlayer::ElevationCollision(void)
 	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
 	float fHeight = 0.0f;			// 高さ
 	bool bJump = true;				// ジャンプ状況
+	bool bRange = false;			// 範囲内状況
 
 	while (pMesh != nullptr)
 	{ // 地面の情報がある限り回す
 
 		// 当たり判定を取る
-		fHeight = pMesh->ElevationCollision(pos);
+		fHeight = pMesh->ElevationCollision(pos, bRange);
 		
 		if (pos.y < fHeight)
 		{ // 当たり判定の位置が高かった場合
@@ -943,6 +958,14 @@ void CPlayer::ElevationCollision(void)
 
 		// 次のポインタを取得する
 		pMesh = pMesh->GetNext();
+	}
+
+	if (bRange == false &&
+		m_bJump != bJump)
+	{ // 範囲外に出た瞬間
+
+		// 重力を無くす
+		m_move.y = 0.0f;
 	}
 
 	// ジャンプ状況を代入する
@@ -1094,6 +1117,32 @@ void CPlayer::TableCollision(void)
 
 	// 位置を適用させる
 	SetPos(pos);
+}
+
+//=======================================
+// 落下の判定処理
+//=======================================
+void CPlayer::FallCheck(void)
+{
+	if (GetPos().y <= FALL_HEIGHT &&
+		m_pAction->GetState() != CPlayerAct::STATE_FALL)
+	{ // 完全に落ち切った場合
+
+		// 移動量を初期化する
+		m_move = NONE_D3DXVECTOR3;
+
+		// 速度を0にする
+		m_fSpeed = 0.0f;
+
+		// 落下状態にする
+		m_pAction->SetState(CPlayerAct::STATE_FALL);
+
+		// ゲームの状態を死亡状態にする
+		CGame::SetState(CGame::STATE_DEATH);
+
+		// ライフを全て消す
+		m_nLife = 0;
+	}
 }
 
 //=======================================

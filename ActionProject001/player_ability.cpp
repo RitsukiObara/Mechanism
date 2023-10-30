@@ -35,6 +35,7 @@
 #define DASHJUMP_ADD_SPEED			(0.5f)				// ダッシュジャンプ時の追加のスピード
 #define DASH_SMOKE_SHIFT			(70.0f)				// 煙のずれる座標
 #define DASH_SMOKE_COUNT			(4)					// 煙のカウント
+#define BLOCK_BREAK_COUNT			(40)				// ブロックの壊れるカウント
 
 //============================================
 // コンストラクタ
@@ -551,8 +552,8 @@ void CAbility::BlockBreak(CPlayer& player)
 		// カウントを加算する
 		nCount++;
 
-		if (nCount % 50 == 0)
-		{ // カウントが 50 になった場合
+		if (nCount % BLOCK_BREAK_COUNT == 0)
+		{ // カウントが一定数以上になった場合
 
 			// 終了処理
 			player.GetBlock()->Uninit();

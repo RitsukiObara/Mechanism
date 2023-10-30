@@ -503,7 +503,8 @@ void CPlayerAct::Control(CPlayer& player)
 
 		if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
 			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_NEUTRAL &&
-			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP)
+			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP &&
+			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_LANDING)
 		{ // 待機モーションじゃない場合
 
 			// 待機モーションを設定する
@@ -547,7 +548,8 @@ void CPlayerAct::MoveProcess(CPlayer& player)
 
 	if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
 		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_MOVE &&
-		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP)
+		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP &&
+		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_LANDING)
 	{ // 移動モーションじゃない場合
 
 		// 移動モーションを設定する

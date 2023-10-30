@@ -101,6 +101,7 @@ private:		// 自分だけアクセスできる
 	void CollisionMagicWall(void);	// 移動制限判定
 	void BlockCollision(void);		// ブロックの当たり判定
 	void TableCollision(void);		// 台との当たり判定
+	void FallCheck(void);			// 落下の判定処理
 
 	void GoalProcess(void);			// ゴール状態の処理
 	void LeaveProcess(void);		// 退場状態の処理

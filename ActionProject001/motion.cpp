@@ -14,6 +14,7 @@
 #include "manager.h"
 
 #include "debugproc.h"
+#include "player.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 // マクロ定義
@@ -256,6 +257,13 @@ void CMotion::Update(void)
 
 						// 終了状態にする
 						m_bFinish = true;
+
+						if (m_nType == CPlayer::MOTIONTYPE_LANDING)
+						{ // 着地モーションを取っていた時
+
+							// 待機モーションを設定する
+							Set(CPlayer::MOTIONTYPE_NEUTRAL);
+						}
 
 						break;
 
