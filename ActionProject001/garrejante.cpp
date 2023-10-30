@@ -154,7 +154,7 @@ void CGarrejante::Update(void)
 				for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
 				{
 					// Ží—Þ‚ðÝ’è‚·‚é
-					type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
+					type = (CFraction::TYPE)(rand() % CFraction::TYPE_RING);
 
 					// ”j•Ð‚Ì¶¬ˆ—
 					CFraction::Create(GetPos(), type);
@@ -282,7 +282,7 @@ void CGarrejante::SmashHit(void)
 	for (int nCnt = 0; nCnt < FRACTION_COUNT; nCnt++)
 	{
 		// Ží—Þ‚ðÝ’è‚·‚é
-		type = (CFraction::TYPE)(rand() % CFraction::TYPE_MAX);
+		type = (CFraction::TYPE)(rand() % CFraction::TYPE_RING);
 
 		// ”j•Ð‚Ì¶¬ˆ—
 		CFraction::Create(GetPos(), type);

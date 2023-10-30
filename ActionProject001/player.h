@@ -43,7 +43,8 @@ public:			// 誰でもアクセスできる
 		MOTIONTYPE_LANDING,			// 着地
 		MOTIONTYPE_DAMAGE,			// ダメージ
 		MOTIONTYPE_FLY,				// 浮遊
-		MOTIONTYPE_MAX				// この列挙の総数
+		MOTIONTYPE_QUAKE,			// 地震
+		MOTIONTYPE_MAX				// この列挙型の総数
 	};
 
 	CPlayer();				// コンストラクタ

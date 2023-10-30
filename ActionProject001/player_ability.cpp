@@ -219,6 +219,9 @@ void CAbility::SetAbility(const ABILITY ability, CPlayer& player)
 
 	case ABILITY_GROUNDQUAKE:	// グラウンドクエイク状態
 
+		// グラウンドクエイクモーションにする
+		player.GetMotion()->Set(CPlayer::MOTIONTYPE_QUAKE);
+
 		// 頂点の探索処理
 		SearchVertex(player.GetPos());
 
@@ -379,6 +382,13 @@ void CAbility::HoverJet(CPlayer& player)
 
 	// カウントを加算する
 	m_aAblCount[TYPE_HOVER]++;
+
+	if (m_aAblCount[TYPE_HOVER] % 10 == 0)
+	{ // 能力カウントが一定数に達した場合
+
+		// 波紋を生成
+		CRipple::Create(player.GetPos(), player.GetRot());
+	}
 
 	if (m_aAblCount[TYPE_HOVER] >= HOVER_COUNT)
 	{ // カウントが一定数以上の場合
