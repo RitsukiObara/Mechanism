@@ -24,6 +24,7 @@ const char* CXFile::c_apModelData[CXFile::TYPE_MAX] =		// モデルの名前
 	"data\\MODEL\\ScrewParts.x",		// ネジ(破片)
 	"data\\MODEL\\GearParts.x",			// 歯車(破片)
 	"data\\MODEL\\RingParts.x",			// 輪(破片)
+	"data\\MODEL\\WoodChip.x",			// 木片(破片)
 	"data\\MODEL\\Table.x",				// 台
 	"data\\MODEL\\Macchina.x",			// マキナ草
 	"data\\MODEL\\Goal.x",				// ゴール

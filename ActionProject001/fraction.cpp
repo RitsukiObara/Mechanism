@@ -208,7 +208,7 @@ void CFraction::SetData(const D3DXVECTOR3& pos, const TYPE type)
 	case TYPE_WOODBOX:		// –Ø” 
 
 		// ƒ‚ƒfƒ‹î•ñ‚ğİ’è‚·‚é
-		SetFileData(CXFile::TYPE_FRAC_RING);
+		SetFileData(CXFile::TYPE_FRAC_WOOD);
 
 		break;
 

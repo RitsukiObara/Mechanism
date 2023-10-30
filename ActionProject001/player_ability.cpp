@@ -19,6 +19,7 @@
 #include "objectElevation.h"
 #include "elevation_manager.h"
 #include "turn.h"
+#include "fraction.h"
 #include "block.h"
 
 //--------------------------------------------
@@ -464,7 +465,7 @@ void CAbility::GroundQuake(CPlayer& player)
 	{ // 一定間隔ごとに
 
 		// 波紋の生成処理
-		CRipple::Create(player.GetPos(), NONE_D3DXVECTOR3);
+		CRipple::Create(D3DXVECTOR3(player.GetPos().x, player.GetPos().y - player.GetMove().y, player.GetPos().z), NONE_D3DXVECTOR3);
 	}
 
 	// 能力カウントを加算する
@@ -555,6 +556,19 @@ void CAbility::BlockBreak(CPlayer& player)
 		// カウントを加算する
 		nCount++;
 
+		if (nCount % 10 == 0)
+		{
+			D3DXVECTOR3 pos = player.GetPos();
+
+			// 位置をずらす
+			pos.x += rand() % 40 - 20;
+			pos.y -= 10.0f;
+			pos.z += rand() % 40 - 20;
+
+			// 破片の生成
+			CFraction::Create(pos, CFraction::TYPE_WOODBOX);
+		}
+
 		if (nCount % BLOCK_BREAK_COUNT == 0)
 		{ // カウントが一定数以上になった場合
 
@@ -563,6 +577,22 @@ void CAbility::BlockBreak(CPlayer& player)
 
 			// ブロックのNULL化処理
 			player.DeleteBlock();
+
+			D3DXVECTOR3 pos = NONE_D3DXVECTOR3;
+
+			for (int nCnt = 0; nCnt < 20; nCnt++)
+			{
+				// 位置を取得する
+				pos = player.GetPos();
+
+				// 位置をずらす
+				pos.x += rand() % 40 - 20;
+				pos.y -= 10.0f;
+				pos.z += rand() % 40 - 20;
+
+				// 破片の生成
+				CFraction::Create(pos, CFraction::TYPE_WOODBOX);
+			}
 
 			// この先の処理を行わない
 			return;
