@@ -44,6 +44,8 @@ public:			// 誰でもアクセスできる
 		MOTIONTYPE_DAMAGE,			// ダメージ
 		MOTIONTYPE_FLY,				// 浮遊
 		MOTIONTYPE_QUAKE,			// 地震
+		MOTIONTYPE_SCRATCH001,		// ひっかき001
+		MOTIONTYPE_SCRATCH002,		// ひっかき002
 		MOTIONTYPE_MAX				// この列挙型の総数
 	};
 

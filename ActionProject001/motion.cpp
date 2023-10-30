@@ -133,18 +133,40 @@ void CMotion::Set(int nType)
 	{
 	case TYPE_PLAYER:		// プレイヤー
 
-		for (int nCntModel = 0; nCntModel < m_nNumModel; nCntModel++)
-		{
-			// 位置と向きを取得
-			rot = m_ppModel[nCntModel]->GetRot();
+		if (m_nType == CPlayer::MOTIONTYPE_SCRATCH001 ||
+			m_nType == CPlayer::MOTIONTYPE_SCRATCH002)
+		{ // ひっかきの場合
 
-			// パーツの位置・向きを設定
-			m_posPast[nCntModel].x = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosX;
-			m_posPast[nCntModel].y = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosY;
-			m_posPast[nCntModel].z = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosZ;
-			m_rotPast[nCntModel].x = rot.x;
-			m_rotPast[nCntModel].y = rot.y;
-			m_rotPast[nCntModel].z = rot.z;
+			for (int nCntModel = 0; nCntModel < m_nNumModel; nCntModel++)
+			{
+				// 位置と向きを取得
+				rot = m_ppModel[nCntModel]->GetRot();
+
+				// パーツの位置・向きを設定
+				m_posPast[nCntModel].x = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosX;
+				m_posPast[nCntModel].y = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosY;
+				m_posPast[nCntModel].z = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosZ;
+				m_rotPast[nCntModel].x = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fRotX;
+				m_rotPast[nCntModel].y = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fRotY;
+				m_rotPast[nCntModel].z = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fRotZ;
+			}
+		}
+		else
+		{ // 上記以外
+
+			for (int nCntModel = 0; nCntModel < m_nNumModel; nCntModel++)
+			{
+				// 位置と向きを取得
+				rot = m_ppModel[nCntModel]->GetRot();
+
+				// パーツの位置・向きを設定
+				m_posPast[nCntModel].x = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosX;
+				m_posPast[nCntModel].y = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosY;
+				m_posPast[nCntModel].z = m_aInfo[m_nType].aKeyInfo[m_nKey].aKey[nCntModel].fPosZ;
+				m_rotPast[nCntModel].x = rot.x;
+				m_rotPast[nCntModel].y = rot.y;
+				m_rotPast[nCntModel].z = rot.z;
+			}
 		}
 
 		break;

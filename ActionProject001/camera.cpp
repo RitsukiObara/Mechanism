@@ -817,7 +817,7 @@ void CCamera::GoalCamera(void)
 	D3DXVECTOR3 pos;					// 位置
 	D3DXVECTOR3 rot;					// 向き
 	CPlayer* pPlayer = CPlayer::Get();	// プレイヤーのポインタ
-	m_DisDest = 400.0f;					// 目的の距離
+	m_DisDest = 350.0f;					// 目的の距離
 
 	// 距離の補正処理
 	useful::Correct(m_DisDest, &m_Dis, CORRECT_POSR);
@@ -835,7 +835,7 @@ void CCamera::GoalCamera(void)
 		m_posRDest.z = pos.z;
 
 		// 目的の視点を設定する
-		m_posVDest.x = m_posRDest.x + sinf(rot.y) * 50.0f;
+		m_posVDest.x = m_posRDest.x + sinf(rot.y) * 20.0f;
 		m_posVDest.y = pos.y + 130.0f;
 		m_posVDest.z = m_posRDest.z - m_Dis;
 

@@ -216,8 +216,12 @@ void CGoal::Hit(void)
 	// プレイヤーの情報の設定処理
 	PlayerSetting();
 
-	// 終了処理
-	Uninit();
+	if (m_type != TYPE_PUNCH)
+	{ // パンチ以外の場合
+
+		// 終了処理
+		Uninit();
+	}
 }
 
 //=====================================
@@ -436,16 +440,28 @@ void CGoal::PlayerPosDecide(void)
 	CPlayer* pPlayer = CPlayer::Get();		// プレイヤーの情報
 
 	if (pPlayer->GetPos().x >= m_aGoal[MODEL_POINT]->GetPos().x)
-	{ // ゴールの左側にいた場合
+	{ // ゴールの右側にいた場合
 
 		// 位置を設定する
-		pPlayer->SetPos(m_aGoal[MODEL_POINT]->GetPos());
+		pPlayer->SetPos(D3DXVECTOR3(m_aGoal[MODEL_POINT]->GetPos().x + 200.0f, m_aGoal[MODEL_POINT]->GetPos().y - 50.0f, m_aGoal[MODEL_POINT]->GetPos().z));
+
+		// 左向きにする
+		pPlayer->SetEnableRight(false);
+
+		// 向きを設定する
+		pPlayer->SetRot(D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f));
 	}
 	else
 	{ // 上記以外
 
 		// 位置を設定する
-		pPlayer->SetPos(m_aGoal[MODEL_POINT]->GetPos());
+		pPlayer->SetPos(D3DXVECTOR3(m_aGoal[MODEL_POINT]->GetPos().x - 200.0f, m_aGoal[MODEL_POINT]->GetPos().y - 50.0f, m_aGoal[MODEL_POINT]->GetPos().z));
+
+		// 右向きにする
+		pPlayer->SetEnableRight(true);
+
+		// 向きを設定する
+		pPlayer->SetRot(D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f));
 	}
 }
 

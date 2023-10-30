@@ -1159,6 +1159,15 @@ void CPlayer::GoalProcess(void)
 		if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
 		{ // SPACEキーを押した場合
 
+			// モーションの種類を取得する
+			int nMotionType = m_pMotion->GetType();
+
+			// モーションの種類を設定する
+			nMotionType = (nMotionType + 1) % 2;
+
+			// モーションを設定する
+			m_pMotion->Set(MOTIONTYPE_SCRATCH001 + nMotionType);
+
 			// ボーナスの加算処理
 			CBonus::Get()->AddBonus();
 		}
@@ -1174,6 +1183,13 @@ void CPlayer::GoalProcess(void)
 
 			// ゲームスコアの加算処理
 			CGameScore::Get()->AddScore(CBonus::Get()->GetBonus() * 100);
+
+			if (CGoal::Get() != nullptr)
+			{ // ゴールがあった場合
+
+				// ゴールの終了処理
+				CGoal::Get()->Uninit();
+			}
 		}
 	}
 	else
