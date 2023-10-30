@@ -28,8 +28,6 @@ public:		// 誰でもアクセスできる
 	void Update(void);		// 更新処理
 	void Draw(void);		// 描画処理
 
-	void MeshCollision(void);	// メッシュの当たり判定
-
 private:		// 自分だけアクセスできる
 
 };

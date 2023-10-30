@@ -42,10 +42,9 @@
 //--------------------------------------------
 #define MAX_LIFE				(3)			// 体力の最大数
 #define STEPHIT_JUMP			(20.0f)		// 踏みつけたときのジャンプ力
-#define BLOCK_COLLISION_WIDTH	(20.0f)		// ブロックとの当たり判定の時の幅
-#define BLOCK_COLLISION_HEIGHT	(150.0f)	// ブロックとの当たり判定の時の高さ
-#define TABLE_COLLISION_WIDTH	(20.0f)		// 台との当たり判定の時の幅
-#define TABLE_COLLISION_DEPTH	(20.0f)		// 台との当たり判定の時の奥行
+#define COLLISION_WIDTH			(20.0f)		// 当たり判定時に使う時の幅
+#define COLLISION_HEIGHT		(150.0f)	// 当たり判定時に使う時の高さ
+#define COLLISION_DEPTH			(20.0f)		// 当たり判定時に使う時の奥行
 #define PUNCH_COUNT				(150)		// パンチ状態のカウント数
 #define GOAL_COUNT				(80)		// ゴール状態のカウント数
 #define LEAVE_GRAVITY			(0.4f)		// 退場状態の重力
@@ -60,6 +59,7 @@
 #define PUNCH_DSTR_COL			(D3DXCOLOR(1.0f, 0.3f, 0.0f, 1.0f))		// パンチ時の撃破の色
 #define PUNCH_DSTR_LIFE			(6)			// パンチ時の撃破の寿命
 #define PUNCH_RIPPLE_SHIFT		(D3DXVECTOR3(45.0f, 100.0f, 0.0f))		// パンチ時の波紋のずらす幅
+#define OUT_RANGE_GRAVITY		(-5.0f)		// 範囲外に出たときの重力
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -391,6 +391,9 @@ void CPlayer::Update(void)
 		// 影の位置向きの設定処理
 		CShadowCircle::SetPosRot(m_nShadowIdx, GetPos(), GetRot());
 	}
+
+	// 範囲外の当たり判定
+	OutRangeCollision();
 
 	// プレイヤーの情報を表示
 	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n移動量：%f %f %f\nプレイヤーの状態：%d\nジャンプ状況：%d\n", GetPos().x, GetPos().y, GetPos().z, m_move.x, m_move.y, m_move.z, m_pAction->GetState(), m_bJump);
@@ -971,7 +974,7 @@ void CPlayer::ElevationCollision(void)
 	{ // 範囲外に出た瞬間
 
 		// 重力を無くす
-		m_move.y = 0.0f;
+		m_move.y = OUT_RANGE_GRAVITY;
 	}
 
 	// ジャンプ状況を代入する
@@ -1052,7 +1055,7 @@ void CPlayer::BlockCollision(void)
 	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
 
 	// ブロックとの当たり判定
-	if (collision::BlockCollision(&pos, posOld, BLOCK_COLLISION_WIDTH, BLOCK_COLLISION_HEIGHT, m_bJump, &m_pBlock))
+	if (collision::BlockCollision(&pos, posOld, COLLISION_WIDTH, COLLISION_HEIGHT, m_bJump, &m_pBlock))
 	{ // 着地した場合
 
 		// ジャンプしていない
@@ -1081,7 +1084,7 @@ void CPlayer::TableCollision(void)
 	D3DXVECTOR3 pos = GetPos();			// 位置
 	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
 
-	if (collision::TableCollision(&pos, posOld, TABLE_COLLISION_WIDTH, TABLE_COLLISION_DEPTH) == true)
+	if (collision::TableCollision(&pos, posOld, COLLISION_WIDTH, COLLISION_DEPTH) == true)
 	{ // 台との当たり判定が true だった場合
 
 		// 縦の移動量を無くす
@@ -1149,6 +1152,32 @@ void CPlayer::FallCheck(void)
 		// ライフを全て消す
 		m_nLife = 0;
 	}
+}
+
+//=======================================
+// 範囲外の当たり判定
+//=======================================
+void CPlayer::OutRangeCollision(void)
+{
+	// 位置を取得する
+	D3DXVECTOR3 pos = GetPos();
+
+	// 起伏範囲外の当たり判定処理
+	if (collision::ElevOutRangeCollision(&pos, GetPosOld(), COLLISION_WIDTH, COLLISION_HEIGHT) == true)
+	{ // 当たり判定が通った場合
+
+		// 移動量を0.0fにする
+		m_move.x = 0.0f;
+
+		// 速度を0.0fにする
+		m_fSpeed = 0.0f;
+
+		// 無能力状態にする
+		m_pAbility->SetAbility(CAbility::ABILITY_NONE, *this);
+	}
+
+	// 位置の設定処理
+	SetPos(pos);
 }
 
 //=======================================

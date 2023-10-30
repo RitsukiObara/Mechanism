@@ -28,6 +28,7 @@
 #include "pork_manager.h"
 #include "needle_manager.h"
 #include "block_manager.h"
+#include "mesh_manager.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -65,6 +66,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CPorkManager::Create();				// ポークマネージャー
 	CNeedleManager::Create();			// 棘マネージャー
 	CBlockManager::Create();			// ブロックマネージャー
+	CMeshManager::Create();				// メッシュマネージャー
 
 	if (m_pFile == nullptr)
 	{ // ファイルへのポインタが nullptr の場合
@@ -520,6 +522,7 @@ void CManager::Uninit(void)
 	CPorkManager::Get()->Uninit();			// ポークマネージャー
 	CNeedleManager::Get()->Uninit();		// 棘マネージャー
 	CBlockManager::Get()->Uninit();			// ブロックマネージャー
+	CMeshManager::Get()->Uninit();			// メッシュマネージャー
 
 	// マネージャーのメモリを解放する
 	delete m_pManager;

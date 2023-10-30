@@ -848,3 +848,50 @@ bool collision::BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, con
 	// 着地判定を返す
 	return bLand;
 }
+
+//===============================
+// 起伏地面の範囲外の当たり判定
+//===============================
+bool collision::ElevOutRangeCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight)
+{
+	// ローカル変数宣言
+	CElevation* pElev = CElevationManager::Get()->GetTop();		// 先頭の起伏地面を取得する
+	bool bCollision = false;									// 当たり判定状況
+
+	while (pElev != nullptr)
+	{ // ブロックの情報が NULL じゃない場合
+
+		if (pElev->GetPos().z + (pElev->GetSize().z * 0.5f) >= pPos->z &&
+			pElev->GetPos().z - (pElev->GetSize().z * 0.5f) <= pPos->z &&
+			pElev->GetPos().y > pPos->y)
+		{ // 起伏地面より下にいる場合
+
+			if (posOld.x + fWidth <= pElev->GetPos().x - (pElev->GetSize().x * 0.5f) &&
+				pPos->x + fWidth >= pElev->GetPos().x - (pElev->GetSize().x * 0.5f))
+			{ // 左の当たり判定
+
+				// 位置を設定する
+				pPos->x = pElev->GetPos().x - (pElev->GetSize().x * 0.5f) - fWidth;
+
+				// 当たり判定状況を true にする
+				bCollision = true;
+			}
+			else if (posOld.x - fWidth >= pElev->GetPos().x + (pElev->GetSize().x * 0.5f) &&
+				pPos->x - fWidth <= pElev->GetPos().x + (pElev->GetSize().x * 0.5f))
+			{ // 右の当たり判定
+
+				// 位置を設定する
+				pPos->x = pElev->GetPos().x + (pElev->GetSize().x * 0.5f) + fWidth;
+
+				// 当たり判定状況を true にする
+				bCollision = true;
+			}
+		}
+
+		// 次のオブジェクトを代入する
+		pElev = pElev->GetNext();
+	}
+
+	// 当たり判定状況を返す
+	return bCollision;
+}
