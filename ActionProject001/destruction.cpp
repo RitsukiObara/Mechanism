@@ -12,8 +12,9 @@
 //=======================================
 // マクロ定義
 //=======================================
-#define THORN_TEXTURE	"data\\TEXTURE\\Dstr001.png"		// トゲトゲ飛沫のテクスチャ
-#define AIRY_TEXTURE	"data\\TEXTURE\\Dstr002.png"		// フワフワ飛沫のテクスチャ
+#define THORN_TEXTURE		"data\\TEXTURE\\Dstr001.png"		// トゲトゲ飛沫のテクスチャ
+#define AIRY_TEXTURE		"data\\TEXTURE\\Dstr002.png"		// フワフワ飛沫のテクスチャ
+#define EXPLOSION_TEXTURE	"data\\TEXTURE\\Dstr003.png"		// 爆発飛沫のテクスチャ
 
 //=========================
 // コンストラクタ
@@ -176,6 +177,13 @@ void CDestruction::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& size, cons
 
 		// テクスチャの読み込み処理
 		BindTexture(CManager::Get()->GetTexture()->Regist(AIRY_TEXTURE));
+
+		break;
+
+	case TYPE_EXPLOSION:	// 爆発
+
+		// テクスチャの読み込み処理
+		BindTexture(CManager::Get()->GetTexture()->Regist(EXPLOSION_TEXTURE));
 
 		break;
 

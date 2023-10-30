@@ -31,8 +31,11 @@
 #define INVINCIBLE_ALPHA_CHANGE	(6)									// 無敵状態の透明度が変わるカウント
 #define INVINCIBLE_COUNT		(70)								// 無敵状態のカウント数
 #define TURN_SHIFT				(D3DXVECTOR3(55.0f, 25.0f, 0.0f))	// 振り向きのずれる座標
+#define DEATH_COUNT				(20)								// 死ぬまでのカウント
+#define DEATH_JUMP				(20.0f)								// 死んだときのジャンプ量
 #define NONE_GRAVITY			(-0.9f)								// 通常状態の重力
 #define HOVER_GRAVITY			(0.8f)								// ホバー状態の重力
+#define FALL_GRAVITY			(-0.5f)								// 落下状態の重力
 
 //============================================
 // コンストラクタ
@@ -199,6 +202,39 @@ void CPlayerAct::Update(CPlayer& player)
 			// 移動量を設定する
 			player.SetMove(move);
 		}
+
+		break;
+
+	case STATE_DEATH:		// 死亡状態
+
+		// 状態カウントを加算する
+		m_nStateCount++;
+
+		if (m_nStateCount % DEATH_COUNT == 0)
+		{ // 状態カウントが一定数に達した場合
+
+			// 移動量を取得する
+			D3DXVECTOR3 move = player.GetMove();
+
+			// 落下状態にする
+			m_state = STATE_FALL;
+
+			// 移動量を設定する
+			move.y = DEATH_JUMP;
+
+			// 移動量を適用する
+			player.SetMove(move);
+		}
+
+		break;
+
+	case STATE_FALL:		// 落下状態
+
+		// 重力処理
+		Gravity(player);
+
+		// 移動処理
+		Move(player);
 
 		break;
 
@@ -536,21 +572,23 @@ void CPlayerAct::Gravity(CPlayer& player)
 	// ローカル変数宣言
 	D3DXVECTOR3 move = player.GetMove();		// 移動量を取得する
 
-	switch (player.GetAbility()->GetAbility())
-	{
-	case CAbility::ABILITY_HOVER:		// ホバージェット状態
+	if (player.GetAbility()->GetAbility() == CAbility::ABILITY_HOVER)
+	{ // ホバージェット状態の場合
+
+		// 重力を設定する
+		move.y = HOVER_GRAVITY;
+	}
+	else if (m_state == STATE_FALL)
+	{ // 落下状態の場合
 
 		// 重力を加算する
-		move.y = HOVER_GRAVITY;
-
-		break;
-
-	default:
+		move.y += FALL_GRAVITY;
+	}
+	else
+	{ // 上記以外
 
 		// 重力を加算する
 		move.y += NONE_GRAVITY;
-
-		break;
 	}
 
 	// 移動量を適用する

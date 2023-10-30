@@ -34,6 +34,7 @@
 #include "game_score.h"
 #include "goal.h"
 #include "bonus.h"
+#include "destruction.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -51,6 +52,7 @@
 #define NEAR_POS				(0.0f)		// 手前の位置
 #define FAR_POS					(1000.0f)	// 奥行の位置
 #define ADD_GRAVITY				(-50.0f)	// 追加の重力
+#define BOUND_SPEED				(-5.0f)		// バウンド時のスピード
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -292,6 +294,9 @@ void CPlayer::Update(void)
 		// ゴールとの当たり判定
 		collision::GoalHit(*this);
 
+		// 棘との当たり判定
+		collision::NeedleHit(*this);
+
 		break;
 
 	case CGame::STATE_GOAL:
@@ -315,6 +320,13 @@ void CPlayer::Update(void)
 
 		break;
 
+	case CGame::STATE_DEATH:
+
+		// 行動の更新処理
+		m_pAction->Update(*this);
+
+		break;
+
 	default:
 
 		// 停止
@@ -329,20 +341,21 @@ void CPlayer::Update(void)
 	// 体力UIの更新処理
 	m_pLifeUI->Update();
 
-	// 起伏地面との当たり判定処理
-	ElevationCollision();
+	if (m_pAction->GetState() != CPlayerAct::STATE_FALL)
+	{ // 落下状態以外の場合
 
-	// ブロックとの当たり判定
-	BlockCollision();
+		// 起伏地面との当たり判定処理
+		ElevationCollision();
 
-	// 台との当たり判定
-	TableCollision();
+		// ブロックとの当たり判定
+		BlockCollision();
 
-	// 棘との当たり判定
-	collision::NeedleHit(*this);
+		// 台との当たり判定
+		TableCollision();
 
-	// 行動制限判定
-	CollisionMagicWall();
+		// 行動制限判定
+		CollisionMagicWall();
+	}
 
 	// 影の位置向き設定処理
 	CShadowCircle::SetPosRotXZ(m_nShadowIdx, GetPos(), GetRot());
@@ -356,12 +369,31 @@ void CPlayer::Update(void)
 //===========================================
 void CPlayer::Draw(void)
 {
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();
+
 	switch (m_pAction->GetState())
 	{
 	case CPlayerAct::STATE_INVINCIBLE:		// 無敵状態
 
 		// 描画処理
 		CCharacter::Draw(m_fAlpha);
+
+		break;
+
+	case CPlayerAct::STATE_DEATH:			// 死亡状態
+	case CPlayerAct::STATE_DAMAGE:			// ダメージ状態
+
+		// Zテストを無効にする
+		pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);					//Zテストの設定
+		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);						//Zテストの有効/無効設定
+
+		// 描画処理
+		CCharacter::Draw(m_fAlpha);
+
+		// Zテストを有効にする
+		pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);			// Zテストの設定
+		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);				// Zテストの有効/無効設定
 
 		break;
 
@@ -408,6 +440,15 @@ CScrewUI* CPlayer::GetScrewUI(void) const
 {
 	// ネジUIの情報を返す
 	return m_pScrewUI;
+}
+
+//===========================================
+// 体力UIの情報の取得処理
+//===========================================
+CLifeUI* CPlayer::GetLifeUI(void) const
+{
+	// 体力UIの情報を返す
+	return m_pLifeUI;
 }
 
 //===========================================
@@ -512,7 +553,9 @@ void CPlayer::Hit(void)
 {
 	if (m_pAction->GetState() != CPlayerAct::STATE_DAMAGE &&
 		m_pAction->GetState() != CPlayerAct::STATE_INVINCIBLE &&
-		m_pAction->GetState() != CPlayerAct::STATE_CANNON)
+		m_pAction->GetState() != CPlayerAct::STATE_CANNON &&
+		m_pAction->GetState() != CPlayerAct::STATE_DEATH &&
+		m_pAction->GetState() != CPlayerAct::STATE_FALL)
 	{ // 一定の状態以外の場合
 
 		// 体力を減算する
@@ -523,16 +566,34 @@ void CPlayer::Hit(void)
 
 			// 体力を0にする
 			m_nLife = 0;
+
+			// 死亡状態にする
+			m_pAction->SetState(CPlayerAct::STATE_DEATH);
+
+			// ゲームの状態を死亡状態にする
+			CGame::SetState(CGame::STATE_DEATH);
+
+			// 移動量を初期化する
+			m_move = NONE_D3DXVECTOR3;
+
+			// 速度を初期化する
+			m_fSpeed = 0.0f;
+		}
+		else
+		{ // 上記以外
+
+			// ダメージ状態にする
+			m_pAction->SetState(CPlayerAct::STATE_DAMAGE);
 		}
 
 		// 爆発パーティクルを生成
 		CParticle::Create(GetPos(), CParticle::TYPE_FIRE);
 
-		// ダメージ状態にする
-		m_pAction->SetState(CPlayerAct::STATE_DAMAGE);
-
 		// 無能力状態にする
 		m_pAbility->SetAbility(CAbility::ABILITY_NONE, *this);
+
+		// 撃破の生成処理
+		CDestruction::Create(D3DXVECTOR3(GetPos().x, GetPos().y + 100.0f, GetPos().z), D3DXVECTOR3(100.0f, 100.0f, 0.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), CDestruction::TYPE_EXPLOSION, 20);
 	}
 }
 
@@ -565,7 +626,7 @@ void CPlayer::BoundHit(void)
 		m_pAbility->SetAbility(CAbility::ABILITY_NONE, *this);
 
 		// 速度を設定する
-		m_fSpeed = -5.0f;
+		m_fSpeed = BOUND_SPEED;
 	}
 }
 

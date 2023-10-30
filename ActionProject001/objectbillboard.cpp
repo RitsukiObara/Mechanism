@@ -300,7 +300,7 @@ void CBillboard::DrawLightOff(void)
 //===========================================
 void CBillboard::DrawShift(const D3DXVECTOR3 shift)
 {
-		// デバイスの取得
+	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::Get()->GetRenderer()->GetDevice();
 
 	// 頂点フォーマットの設定

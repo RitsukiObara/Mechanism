@@ -34,6 +34,7 @@ public:						// 誰でもアクセスできる
 		STATE_GOAL,			// ゴール状態
 		STATE_LEAVE,		// 退場状態
 		STATE_FINISH,		// 終了状態
+		STATE_DEATH,		// 死亡状態
 		STATE_MAX			// この列挙型の総数
 	};
 
@@ -72,6 +73,7 @@ private:					// 自分だけアクセスできる
 	// メンバ関数
 	void Pause(void);			// ポーズ処理
 	void Transition(void);		// 遷移処理
+	void DeathTransition(void);	// 死亡時の遷移処理
 
 	// 静的メンバ変数(最初から必要な物を配置しておく)
 	static CPause* m_pPause;			// ポーズの情報

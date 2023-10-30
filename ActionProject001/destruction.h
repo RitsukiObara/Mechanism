@@ -24,6 +24,7 @@ public:
 	{
 		TYPE_THORN = 0,		// トゲトゲ
 		TYPE_AIRY,			// フワフワ
+		TYPE_EXPLOSION,		// 爆発
 		TYPE_MAX			// この列挙型の総数
 	};
 

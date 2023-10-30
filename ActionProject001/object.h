@@ -70,9 +70,9 @@ public:			// 誰でもアクセスできる
 	enum PRIORITY
 	{
 		PRIORITY_BG = 0,			// 背景関係
-		PRIORITY_SHADOW,			// 影関係
 		PRIORITY_BLOCK,				// ブロック・障害物系
 		PRIORITY_EFFECT,			// エフェクト系
+		PRIORITY_SHADOW,			// 影関係
 		PRIORITY_ENTITY,			// 敵・アイテム関係
 		PRIORITY_PLAYER,			// プレイヤー関係
 		PRIORITY_UI,				// UI関係

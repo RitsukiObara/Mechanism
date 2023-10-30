@@ -29,6 +29,12 @@
 #include "block.h"
 
 //--------------------------------------------
+// マクロ定義
+//--------------------------------------------
+#define SUCCESS_TRANS_COUNT		(80)		// 成功時の遷移カウント
+#define FAILED_TRANS_COUNT		(200)		// 失敗時の遷移カウント
+
+//--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
 CPause* CGame::m_pPause = nullptr;							// ポーズの情報
@@ -262,6 +268,13 @@ void CGame::Update(void)
 
 		break;
 
+	case CGame::STATE_DEATH:
+
+		// 死亡時の遷移処理
+		DeathTransition();
+
+		break;
+
 	default:
 
 		// 停止
@@ -376,7 +389,26 @@ void CGame::Transition(void)
 	// 終了カウントを加算する
 	m_nFinishCount++;
 
-	if (m_nFinishCount % 80 == 0)
+	if (m_nFinishCount % SUCCESS_TRANS_COUNT == 0)
+	{ // 終了カウントが一定数を超えた場合
+
+		// 得点を渡す
+		m_nScore = CGameScore::Get()->GetScore();
+
+		// リザルトに遷移する
+		CManager::Get()->GetFade()->SetFade(CScene::MODE_RESULT);
+	}
+}
+
+//======================================
+// 死亡時の遷移処理
+//======================================
+void CGame::DeathTransition(void)
+{
+	// 終了カウントを加算する
+	m_nFinishCount++;
+
+	if (m_nFinishCount % FAILED_TRANS_COUNT == 0)
 	{ // 終了カウントが一定数を超えた場合
 
 		// 得点を渡す

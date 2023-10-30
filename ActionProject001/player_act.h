@@ -24,7 +24,9 @@ public:			// 誰でもアクセスできる
 		STATE_INVINCIBLE,	// 無敵状態
 		STATE_BOUND,		// バウンド状態
 		STATE_CANNON,		// 大砲状態
-		STATE_FLY,			// 飛んでいる処理
+		STATE_FLY,			// 飛んでいる状態
+		STATE_DEATH,		// 死亡状態
+		STATE_FALL,			// 落下状態
 		STATE_MAX			// この列挙の総数
 	};
 

@@ -11,6 +11,7 @@ TEXTURE = data\TEXTURE\ButTutorial002.png	# ジェットダッシュのチュー
 TEXTURE = data\TEXTURE\ButTutorial003.png	# グラウンドクエイクのチュートリアル(ボタン)
 TEXTURE = data\TEXTURE\Dstr001.png			# 撃破(トゲトゲ)
 TEXTURE = data\TEXTURE\Dstr002.png			# 撃破(フワフワ)
+TEXTURE = data\TEXTURE\Dstr003.png			# 撃破(爆発)
 TEXTURE = data\TEXTURE\explosion000.png		# 爆発
 TEXTURE = data\TEXTURE\KeyTutorial001.png	# ホバージェットのチュートリアル(キーボード)
 TEXTURE = data\TEXTURE\KeyTutorial002.png	# ジェットダッシュのチュートリアル(キーボード)

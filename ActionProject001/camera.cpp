@@ -717,6 +717,13 @@ void CCamera::GameCamera(void)
 
 		break;
 
+	case CGame::STATE_DEATH:		// €–Só‘Ô
+
+		// ƒvƒŒƒC‚ÌƒJƒƒ‰ˆ—
+		PlayCamera();
+
+		break;
+
 	default:
 
 		// ’â~
