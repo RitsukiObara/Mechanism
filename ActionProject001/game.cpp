@@ -86,6 +86,9 @@ HRESULT CGame::Init(void)
 	// テキスト読み込み処理
 	CElevation::TxtSet();
 
+	// メッシュの読み込み処理
+	CMesh::TxtSet();
+
 	// メッシュのテキスト読み込み
 	//CMesh::TxtSet();
 

@@ -38,6 +38,12 @@ public:			// 誰でもアクセスできる
 	virtual ~CMesh();	// デストラクタ
 	void Box(void);		// コンストラクタの箱
 
+	// リスト構造関係
+	void SetPrev(CMesh* pPrev);	// 前のポインタの設定処理
+	void SetNext(CMesh* pNext);	// 後のポインタの設定処理
+	CMesh* GetPrev(void) const;	// 前のポインタの設定処理
+	CMesh* GetNext(void) const;	// 次のポインタの設定処理
+
 	// メンバ関数
 	virtual HRESULT Init(void);		// 初期化処理
 	virtual void Uninit(void);		// 終了処理
@@ -93,6 +99,10 @@ private:		// 自分だけアクセスできる
 	int		m_nNumIdx;			// 総インデックス数
 	int		m_nTexIdx;			// テクスチャのインデックス
 	bool	m_bLightOff;		// ライティング状況
+
+	// リスト構造関係
+	CMesh* m_pPrev;	// 前へのポインタ
+	CMesh* m_pNext;	// 次へのポインタ
 };
 
 

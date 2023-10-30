@@ -375,15 +375,37 @@ void CPlayerAct::NoneControl(CPlayer& player)
 	else
 	{ // 上記以外
 
-		// 速度を設定する
-		player.SetSpeed(0.0f);
-
-		// 移動量を設定する
-		player.SetMove(NONE_D3DXVECTOR3);
+		// グラウンドクエイク処理
+		GroundQuake(player);
 	}
 
 	// 能力の更新処理
 	player.GetAbility()->Update(player);
+}
+
+//=======================================
+// グラウンドクエイク処理
+//=======================================
+void CPlayerAct::GroundQuake(CPlayer& player)
+{
+	// 位置を取得する
+	D3DXVECTOR3 move = player.GetMove();
+
+	// 速度を設定する
+	player.SetSpeed(0.0f);
+
+	// 移動量を設定する
+	move.x = 0.0f;
+	move.z = 0.0f;
+
+	// 重力処理
+	Gravity(player);
+
+	// 移動処理
+	Move(player);
+
+	// 移動量を設定する
+	player.SetMove(move);
 }
 
 //=======================================

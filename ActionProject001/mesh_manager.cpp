@@ -1,24 +1,24 @@
 //============================================
 //
-// 起伏マネージャー処理[elevation_manager.cpp]
+// メッシュマネージャー処理[mesh_manager.cpp]
 // Author：小原立暉
 //
 //============================================
 //********************************************
 // インクルードファイル
 //********************************************
-#include "elevation_manager.h"
-#include "objectElevation.h"
+#include "Objectmesh.h"
+#include "mesh_manager.h"
 
 //--------------------------------------------
 // 静的メンバ変数宣言
 //--------------------------------------------
-CElevationManager* CElevationManager::m_pManager = nullptr;			// プレイヤーの変数
+CMeshManager* CMeshManager::m_pManager = nullptr;			// プレイヤーの変数
 
 //============================
 // コンストラクタ
 //============================
-CElevationManager::CElevationManager()
+CMeshManager::CMeshManager()
 {
 	// 全ての値をクリアする
 	m_pTop = nullptr;		// 先頭のオブジェクト
@@ -28,7 +28,7 @@ CElevationManager::CElevationManager()
 //============================
 // 登録処理
 //============================
-void CElevationManager::Regist(CElevation* pThis)
+void CMeshManager::Regist(CMesh* pThis)
 {
 	if (m_pTop == nullptr)
 	{ // オブジェクトが NULL の場合
@@ -46,7 +46,7 @@ void CElevationManager::Regist(CElevation* pThis)
 	{ // 上記以外
 
 		// ローカルポインタを宣言
-		CElevation* pObject = m_pTop;			// 先頭のオブジェクト
+		CMesh* pObject = m_pTop;			// 先頭のオブジェクト
 
 		while (pObject->GetNext() != nullptr)
 		{ // オブジェクトがある限り回る
@@ -72,10 +72,10 @@ void CElevationManager::Regist(CElevation* pThis)
 //============================
 // 終了処理
 //============================
-void CElevationManager::Uninit(void)
+void CMeshManager::Uninit(void)
 {
 	// ローカル変数宣言
-	CElevation* pObj = nullptr;		// 現在のオブジェクトのポインタ
+	CMesh* pObj = nullptr;		// 現在のオブジェクトのポインタ
 
 	// オブジェクトを代入する
 	pObj = m_pTop;
@@ -98,7 +98,7 @@ void CElevationManager::Uninit(void)
 //============================
 // デストラクタ
 //============================
-CElevationManager::~CElevationManager()
+CMeshManager::~CMeshManager()
 {
 
 }
@@ -106,7 +106,7 @@ CElevationManager::~CElevationManager()
 //===========================================
 // オブジェクトの取得処理
 //===========================================
-CElevation* CElevationManager::GetTop(void)
+CMesh* CMeshManager::GetTop(void)
 {
 	// オブジェクトの情報を渡す
 	return m_pTop;
@@ -115,10 +115,10 @@ CElevation* CElevationManager::GetTop(void)
 //===========================================
 // リスト構造の引き抜き処理
 //===========================================
-void CElevationManager::Pull(CElevation* pThis)
+void CMeshManager::Pull(CMesh* pThis)
 {
 	// ローカル変数宣言
-	CElevation* pObj = nullptr;		// 現在のオブジェクトのポインタ
+	CMesh* pObj = nullptr;		// 現在のオブジェクトのポインタ
 
 	// オブジェクトを代入する
 	pObj = m_pTop;
@@ -158,13 +158,13 @@ void CElevationManager::Pull(CElevation* pThis)
 //============================
 //生成処理
 //============================
-CElevationManager* CElevationManager::Create(void)
+CMeshManager* CMeshManager::Create(void)
 {
 	if (m_pManager == nullptr)
 	{ // オブジェクトが NULL の場合
 
 		// オブジェクトを生成
-		m_pManager = new CElevationManager;
+		m_pManager = new CMeshManager;
 	}
 	else
 	{ // オブジェクトが NULL じゃない場合
@@ -190,7 +190,7 @@ CElevationManager* CElevationManager::Create(void)
 //============================
 // 取得処理
 //============================
-CElevationManager* CElevationManager::Get(void)
+CMeshManager* CMeshManager::Get(void)
 {
 	// マネージャーのポインタを返す
 	return m_pManager;

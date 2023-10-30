@@ -363,6 +363,9 @@
     <ClCompile Include="lifeUI.cpp">
       <Filter>Player</Filter>
     </ClCompile>
+    <ClCompile Include="mesh_manager.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -661,6 +664,9 @@
     </ClInclude>
     <ClInclude Include="lifeUI.h">
       <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_manager.h">
+      <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,12 +7,12 @@
 #===========================================================
 # メッシュの設定
 #===========================================================
-SET_MESHFIELD
-	POS = 20000.0 -10000.0 0.0
+SET_MESHWALL
+	POS = 0.0 -1000.0 -150.0
 	ROT = 0.0 0.0 0.0
-	SIZE = 100000.0 0.0 100000.0
-	WIDTH = 4
-	DEPTH = 4
+	SIZE = 10000.0 1000.0 0.0
+	WIDTH = 1
+	HEIGHT = 1
 	TEXTURE = data/TEXTURE/Grass.png
 	LIGHTING = TRUE
-END_SET_MESHFIELD
+END_SET_MESHWALL

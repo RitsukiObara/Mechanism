@@ -11,6 +11,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "Objectmesh.h"
+#include "mesh_manager.h"
 #include "useful.h"
 #include "texture.h"
 
@@ -74,6 +75,53 @@ void CMesh::Box(void)
 	m_nNumIdx = 0;									// 総インデックス数
 	m_nTexIdx = NONE_TEXIDX;						// テクスチャのインデックス
 	m_bLightOff = false;							// ライティング状況
+
+	// 全ての値をクリアする
+	m_pPrev = nullptr;		// 前のアウトボールへのポインタ
+	m_pNext = nullptr;		// 次のアウトボールへのポインタ
+
+	if (CMeshManager::Get() != nullptr)
+	{ // マネージャーが存在していた場合
+
+		// マネージャーへの登録処理
+		CMeshManager::Get()->Regist(this);
+	}
+}
+
+//============================
+// 前のポインタの設定処理
+//============================
+void CMesh::SetPrev(CMesh* pPrev)
+{
+	// 前のポインタを設定する
+	m_pPrev = pPrev;
+}
+
+//============================
+// 後のポインタの設定処理
+//============================
+void CMesh::SetNext(CMesh* pNext)
+{
+	// 次のポインタを設定する
+	m_pNext = pNext;
+}
+
+//============================
+// 前のポインタの設定処理
+//============================
+CMesh* CMesh::GetPrev(void) const
+{
+	// 前のポインタを返す
+	return m_pPrev;
+}
+
+//============================
+// 次のポインタの設定処理
+//============================
+CMesh* CMesh::GetNext(void) const
+{
+	// 次のポインタを返す
+	return m_pNext;
 }
 
 //================================
@@ -199,6 +247,17 @@ void CMesh::Uninit(void)
 
 	// 破棄処理
 	Release();
+
+	if (CMeshManager::Get() != nullptr)
+	{ // マネージャーが存在していた場合
+
+		// リスト構造の引き抜き処理
+		CMeshManager::Get()->Pull(this);
+	}
+
+	// リスト構造関係のポインタを NULL にする
+	m_pPrev = nullptr;
+	m_pNext = nullptr;
 }
 
 //================================
@@ -534,7 +593,7 @@ void CMesh::SetVertexWall(void)
 			pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 			// テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(nCntWid * (1.0f / (float)(m_divi.x)), nCntDep * (1.0f / (float)(m_divi.y)));
