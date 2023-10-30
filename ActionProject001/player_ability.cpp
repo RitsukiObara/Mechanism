@@ -37,6 +37,7 @@
 #define DASH_SMOKE_SHIFT			(70.0f)				// 煙のずれる座標
 #define DASH_SMOKE_COUNT			(4)					// 煙のカウント
 #define BLOCK_BREAK_COUNT			(40)				// ブロックの壊れるカウント
+#define BLOCK_FRACTION_COUNT		(10)				// ブロックの破片のカウント
 
 //============================================
 // コンストラクタ
@@ -188,6 +189,9 @@ void CAbility::SetAbility(const ABILITY ability, CPlayer& player)
 		break;
 
 	case ABILITY_HOVER:			// ホバージェット状態
+
+		// 浮遊モーションにする
+		player.GetMotion()->Set(CPlayer::MOTIONTYPE_FLY);
 
 		break;
 
@@ -556,8 +560,10 @@ void CAbility::BlockBreak(CPlayer& player)
 		// カウントを加算する
 		nCount++;
 
-		if (nCount % 10 == 0)
-		{
+		if (nCount % BLOCK_FRACTION_COUNT == 0)
+		{ // 一定カウントごとに
+
+			// 位置を取得する
 			D3DXVECTOR3 pos = player.GetPos();
 
 			// 位置をずらす

@@ -41,7 +41,8 @@ public:			// 誰でもアクセスできる
 		MOTIONTYPE_JETDASH,			// ジェットダッシュ
 		MOTIONTYPE_JUMP,			// ジャンプ
 		MOTIONTYPE_LANDING,			// 着地
-		MOTIONTYPE_DAMAGE,			// ダメージ状態
+		MOTIONTYPE_DAMAGE,			// ダメージ
+		MOTIONTYPE_FLY,				// 浮遊
 		MOTIONTYPE_MAX				// この列挙の総数
 	};
 
