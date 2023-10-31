@@ -19,6 +19,7 @@
 #include "objectElevation.h"
 #include "elevation_manager.h"
 #include "stun.h"
+#include "sound.h"
 
 #include "itocan.h"
 #include "machidori.h"
@@ -254,6 +255,12 @@ void CEnemy::SmashHit(void)
 
 	// 気絶カウントを初期化する
 	m_nStunCount = 0;
+
+	// 吹き飛ばし音を鳴らす
+	CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_SMASH);
+
+	// 吹き飛び中の音を鳴らす
+	CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_SMASHFLY);
 }
 
 //=====================================

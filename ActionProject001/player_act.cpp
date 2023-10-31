@@ -17,11 +17,12 @@
 
 #include "motion.h"
 #include "turn.h"
+#include "sound.h"
 
 //--------------------------------------------
 // マクロ定義
 //--------------------------------------------
-#define CANNON_COUNT			(60)								// 飛ぶまでのカウント
+#define CANNON_COUNT			(40)								// 飛ぶまでのカウント
 #define ROT_Y_MOVE				(D3DX_PI * 0.1f)					// 向きの移動量(Y軸)
 #define JUMP_MOVE				(20.0f)								// ジャンプの移動量
 #define CANNON_Y_MOVE			(30.0f)								// 大砲のY軸の移動量
@@ -36,6 +37,7 @@
 #define NONE_GRAVITY			(-0.9f)								// 通常状態の重力
 #define HOVER_GRAVITY			(0.8f)								// ホバー状態の重力
 #define FALL_GRAVITY			(-0.5f)								// 落下状態の重力
+#define RUN_SOUND_COUNT			(22)									// 走り音の鳴るカウント数
 
 //============================================
 // コンストラクタ
@@ -87,6 +89,9 @@ void CPlayerAct::Update(CPlayer& player)
 	switch (m_state)
 	{
 	case STATE_NONE:		// 通常状態
+
+		// 状態カウントを加算する
+		m_nStateCount++;
 
 		// 通常時の操作処理
 		NoneControl(player);
@@ -185,6 +190,9 @@ void CPlayerAct::Update(CPlayer& player)
 
 			// 飛んでいる状態にする
 			SetState(STATE_FLY);
+
+			// 大砲で飛ぶ音を鳴らす
+			CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_CANNON);
 		}
 
 		break;
@@ -544,6 +552,9 @@ void CPlayerAct::Control(CPlayer& player)
 		// ジャンプ状況を true にする
 		player.SetEnableJump(true);
 
+		// ジャンプ音を鳴らす
+		CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_JUMP);
+
 		if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
 			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP)
 		{ // ジャンプモーションじゃない場合
@@ -565,8 +576,18 @@ void CPlayerAct::Control(CPlayer& player)
 //=======================================
 void CPlayerAct::MoveProcess(CPlayer& player)
 {
-	// 移動状況を true にする
-	player.SetEnableMove(true);
+	if (player.IsMove() == false)
+	{
+		// 移動状況を true にする
+		player.SetEnableMove(true);
+
+		if (player.IsJump() == false)
+		{ // 地上の場合
+
+			// 走り始め音を鳴らす
+			CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_RUNSTART);
+		}
+	}
 
 	if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
 		player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_MOVE &&
@@ -576,6 +597,15 @@ void CPlayerAct::MoveProcess(CPlayer& player)
 
 		// 移動モーションを設定する
 		player.GetMotion()->Set(CPlayer::MOTIONTYPE_MOVE);
+	}
+
+	if (player.IsJump() == false &&
+		player.GetAbility()->GetAbility() != CAbility::ABILITY_JETDASH &&
+		m_nStateCount % RUN_SOUND_COUNT == 0)
+	{ // 地上を動いて一定時間経過した場合
+
+		// 走り音を鳴らす
+		CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_RUN);
 	}
 }
 

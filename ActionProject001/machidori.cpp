@@ -21,6 +21,7 @@
 #include "collision.h"
 #include "stun.h"
 #include "ripple.h"
+#include "sound.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -52,6 +53,7 @@
 #define HIT_DSTR_LIFE			(10)			// ヒット時の撃破の寿命
 #define STUN_COUNT				(150)			// 気絶時のカウント数
 #define STUN_DOWN				(15.0f)			// 気絶時の減少量
+#define STUN_SOUND_COUNT		(27)			// 気絶音がなるカウント数
 
 //==============================
 // コンストラクタ
@@ -119,6 +121,13 @@ void CMachidori::Update(void)
 
 		// ローカル変数宣言
 		int nStunCount = GetStunCount();		// 気絶カウントを取得する
+
+		if (nStunCount % STUN_SOUND_COUNT == 0)
+		{ // 気絶カウントが一定数に達した場合
+
+			// 気絶音を流す
+			CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_STUN);
+		}
 
 		// 気絶カウントを加算する
 		nStunCount++;
@@ -308,6 +317,9 @@ void CMachidori::Update(void)
 					// 破片の生成処理
 					CFraction::Create(GetPos(), type);
 				}
+
+				// 敵の破壊音を鳴らす
+				CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_ENEMYBREAK);
 
 				// 終了処理
 				Uninit();

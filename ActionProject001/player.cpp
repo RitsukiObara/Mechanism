@@ -367,13 +367,19 @@ void CPlayer::Update(void)
 		CollisionMagicWall();
 	}
 
-	if (m_pMotion->GetType() != MOTIONTYPE_JETDASH &&
-		m_bJump == false &&
+	if (m_bJump == false &&
 		bJump == true)
 	{ // 着地した瞬間
 
-		// 着地モーションを設定する
-		m_pMotion->Set(MOTIONTYPE_LANDING);
+		if (m_pMotion->GetType() != MOTIONTYPE_JETDASH)
+		{ // ジェットダッシュモーション以外の場合
+
+			// 着地モーションを設定する
+			m_pMotion->Set(MOTIONTYPE_LANDING);
+		}
+
+		// 着地音を鳴らす
+		CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_LANDING);
 	}
 
 	// 落下判定処理
@@ -596,6 +602,9 @@ void CPlayer::Hit(void)
 		m_pAction->GetState() != CPlayerAct::STATE_FALL)
 	{ // 一定の状態以外の場合
 
+		// ダメージ音を鳴らす
+		CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_DAMAGE);
+		
 		// 体力を減算する
 		m_nLife--;
 
@@ -651,6 +660,9 @@ void CPlayer::StepHit(void)
 {
 	// 移動量を上げる
 	m_move.y = STEPHIT_JUMP;
+
+	// 踏みつけ音を鳴らす
+	CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_STEPPING);
 
 	// コンボの加算処理
 	m_pCombo->AddCombo(100);

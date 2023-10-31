@@ -19,6 +19,7 @@
 #include "collision.h"
 #include "objectElevation.h"
 #include "elevation_manager.h"
+#include "sound.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -181,6 +182,9 @@ void CScrew::Hit(const D3DXVECTOR3& pos)
 
 	// 撃破の生成
 	CDestruction::Create(pos, DSTR_SIZE, DSTR_COL, CDestruction::TYPE_AIRY, DSTR_LIFE);
+
+	// アイテム取得音を鳴らす
+	CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_GETITEM);
 }
 
 //=====================================

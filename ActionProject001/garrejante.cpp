@@ -16,6 +16,7 @@
 #include "destruction.h"
 #include "Particle.h"
 #include "fraction.h"
+#include "sound.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -33,6 +34,7 @@
 #define SMASH_ROTMOVE_Z		(0.06f)									// 吹き飛び状態の向きの移動量(Z軸)
 #define SMASH_DEATH_COUNT	(150)									// 吹き飛んで死ぬまでのカウント数
 #define DEATH_COUNT			(30)									// 死亡するまでのカウント
+#define STUN_SOUND_COUNT	(27)									// 気絶音がなるカウント数
 
 //==============================
 // コンストラクタ
@@ -94,6 +96,13 @@ void CGarrejante::Update(void)
 
 		// ローカル変数宣言
 		int nStunCount = GetStunCount();	// 気絶カウントを取得する
+
+		if (nStunCount % STUN_SOUND_COUNT == 0)
+		{ // 気絶カウントが一定数に達した場合
+
+			// 気絶音を流す
+			CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_STUN);
+		}
 
 		// 気絶カウントを加算する
 		nStunCount++;
@@ -159,6 +168,9 @@ void CGarrejante::Update(void)
 					// 破片の生成処理
 					CFraction::Create(GetPos(), type);
 				}
+
+				// 敵の破壊音を鳴らす
+				CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_ENEMYBREAK);
 
 				// 終了処理
 				Uninit();

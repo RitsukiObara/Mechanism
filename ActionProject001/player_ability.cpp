@@ -13,6 +13,7 @@
 #include "player_ability.h"
 #include "input.h"
 #include "collision.h"
+#include "sound.h"
 #include "useful.h"
 
 #include "ripple.h"
@@ -26,7 +27,9 @@
 // マクロ定義
 //--------------------------------------------
 #define HOVER_COUNT					(100)				// ホバー状態のカウント
-#define JETDASH_COUNT				(20)				// ジェットダッシュ状態のカウント
+#define HOVER_RIPPLE_COUNT			(10)				// ホバー状態時の波紋が出るカウント
+#define HOVER_SOUND_COUNT			(7)					// ホバー音を鳴らすカウント数
+#define JETDASH_SOUND_LABEL			(14)				// ジェットダッシュ音を鳴らすカウント
 #define JETDASH_POSBL_COUNT			(10)				// ジェットダッシュ状態が使用可能になるカウント
 #define GROUNDQUAKE_COUNT			(500)				// グラウンドクエイク状態の強制解除カウント
 #define GROUNDQUAKE_RIPPLE_COUNT	(10)				// グラウンドクエイク時の波紋が出る間隔
@@ -37,7 +40,7 @@
 #define DASH_SMOKE_SHIFT			(70.0f)				// 煙のずれる座標
 #define DASH_SMOKE_COUNT			(4)					// 煙のカウント
 #define BLOCK_BREAK_COUNT			(40)				// ブロックの壊れるカウント
-#define BLOCK_FRACTION_COUNT		(10)				// ブロックの破片のカウント
+#define BLOCK_FRACTION_COUNT		(20)				// ブロックの破片のカウント
 
 //============================================
 // コンストラクタ
@@ -384,10 +387,17 @@ void CAbility::HoverJet(CPlayer& player)
 	m_aAblCount[TYPE_HOVER]++;
 
 	if (m_aAblCount[TYPE_HOVER] % 10 == 0)
-	{ // 能力カウントが一定数に達した場合
+	{ // 能力カウントが一定数ごとに
 
 		// 波紋を生成
 		CRipple::Create(player.GetPos(), player.GetRot());
+	}
+
+	if (m_aAblCount[TYPE_HOVER] % HOVER_SOUND_COUNT == 0)
+	{ // 能力カウントが一定数ごとに
+
+		// ホバー音を鳴らす
+		CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_HOVER);
 	}
 
 	if (m_aAblCount[TYPE_HOVER] >= HOVER_COUNT)
@@ -409,6 +419,12 @@ void CAbility::SkyDash(CPlayer& player)
 	// ローカル変数宣言
 	D3DXVECTOR3 pos = player.GetPos();		// 位置を取得する
 	D3DXVECTOR3 rot = player.GetRot();		// 向きを取得する
+
+	if (m_aAblCount[TYPE_JETDASH] % JETDASH_SOUND_LABEL == 0)
+	{
+		// ジェットダッシュ音を鳴らす
+		CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_JETDASH);
+	}
 
 	// 能力カウントを加算する
 	m_aAblCount[TYPE_JETDASH]++;
@@ -480,6 +496,13 @@ void CAbility::GroundQuake(CPlayer& player)
 
 		// 波紋の生成処理
 		CRipple::Create(D3DXVECTOR3(player.GetPos().x, player.GetPos().y - player.GetMove().y, player.GetPos().z), NONE_D3DXVECTOR3);
+	}
+
+	if (m_aAblCount[TYPE_GROUNDQUAKE] % 35 == 0)
+	{ // 能力カウントが一定以上の場合
+
+		// グラウンドクエイク音を鳴らす
+		CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_GROUNDQUAKE);
 	}
 
 	// 能力カウントを加算する
@@ -599,7 +622,7 @@ void CAbility::BlockBreak(CPlayer& player)
 
 			D3DXVECTOR3 pos = NONE_D3DXVECTOR3;
 
-			for (int nCnt = 0; nCnt < 2000; nCnt++)
+			for (int nCnt = 0; nCnt < BLOCK_FRACTION_COUNT; nCnt++)
 			{
 				// 位置を取得する
 				pos = player.GetPos();

@@ -18,6 +18,7 @@
 #include "fraction.h"
 #include "collision.h"
 #include "stun.h"
+#include "sound.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -41,6 +42,7 @@
 #define HIT_DSTR_COL		(D3DXCOLOR(1.0f, 0.7f, 0.1f, 1.0f))	// ヒット時の撃破の色
 #define HIT_DSTR_LIFE		(10)								// ヒット時の撃破の寿命
 #define STUN_COUNT			(150)								// 気絶演出時のカウント数
+#define STUN_SOUND_COUNT	(27)								// 気絶音がなるカウント数
 
 //==============================
 // コンストラクタ
@@ -104,6 +106,13 @@ void CItocan::Update(void)
 
 		// ローカル変数宣言
 		int nStunCount = GetStunCount();	// 気絶カウントを取得する
+
+		if (nStunCount % STUN_SOUND_COUNT == 0)
+		{ // 気絶カウントが一定数に達した場合
+
+			// 気絶音を流す
+			CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_STUN);
+		}
 
 		// 気絶カウントを加算する
 		nStunCount++;
@@ -204,6 +213,9 @@ void CItocan::Update(void)
 					// 破片の生成処理
 					CFraction::Create(GetPos(), type);
 				}
+
+				// 敵の破壊音を鳴らす
+				CManager::Get()->GetSound()->Play(CSound::SOUND_LABEL_SE_ENEMYBREAK);
 
 				// 終了処理
 				Uninit();

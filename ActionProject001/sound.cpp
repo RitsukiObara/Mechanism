@@ -21,6 +21,18 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[CSound::SOUND_LABEL_MAX] =
 	{ "data\\SE\\Select.wav",0 },			// 選択音
 	{ "data\\SE\\Decide.wav",0 },			// 決定音
 	{ "data\\SE\\NewRecord.wav",0 },		// 新記録の音
+	{ "data\\SE\\Hover.wav",0 },			// ホバー音
+	{ "data\\SE\\Landing.wav",0 },			// 着地音
+	{ "data\\SE\\JetDash.wav",0 },			// ジェットダッシュ音
+	{ "data\\SE\\Stepping.wav",0 },			// 踏みつけ音
+	{ "data\\SE\\EnemyBreak.wav",0 },		// 敵の破壊音
+	{ "data\\SE\\Smash.wav",0 },			// 吹き飛ばし音
+	{ "data\\SE\\SmashFly.wav",0 },			// 吹き飛び中の音
+	{ "data\\SE\\GetItem.wav",0 },			// アイテム取得音
+	{ "data\\SE\\Cannon.wav",0 },			// 大砲の音
+	{ "data\\SE\\GroundQuake.wav",0 },		// グラウンドクエイク音
+	{ "data\\SE\\Stun.wav",0 },				// 気絶音
+	{ "data\\SE\\Damage.wav",0 },			// ダメージ音
 };
 
 //=============================================================================
