@@ -27,6 +27,7 @@
 #include "airplane_manager.h"
 #include "needle.h"
 #include "needle_manager.h"
+#include "block_manager.h"
 
 //-------------------------------------------
 // マクロ定義
@@ -43,12 +44,14 @@
 CEdit::CEdit() : CModel(CObject::TYPE_EDIT, CObject::PRIORITY_ENTITY)
 {
 	// 全ての値をクリアする
-	m_move = NONE_D3DXVECTOR3;			// 移動量
-	m_type = TYPE_ITEM;					// 種類
-	m_enemyType = CEnemy::TYPE_ITOCAN;	// 敵の種類
-	m_fAddDepth = 0.0f;					// 追加の奥行
-	m_bFront = true;					// 奥行状況
-	m_bAirplaneFront = true;			// 飛行機の向きの状況
+	m_move = NONE_D3DXVECTOR3;				// 移動量
+	m_type = TYPE_ITEM;						// 種類
+	m_enemyType = CEnemy::TYPE_ITOCAN;		// 敵の種類
+	m_blockType = CBlock::TYPE_IRON;		// ブロックの種類
+	m_dropType = CBlock::DROPTYPE_NONE;		// ドロップの種類
+	m_fAddDepth = 0.0f;						// 追加の奥行
+	m_bFront = true;						// 奥行状況
+	m_bAirplaneFront = true;				// 飛行機の向きの状況
 }
 
 //==============================
@@ -75,6 +78,8 @@ HRESULT CEdit::Init(void)
 	m_move = NONE_D3DXVECTOR3;			// 移動量
 	m_type = TYPE_ITEM;					// 種類
 	m_enemyType = CEnemy::TYPE_ITOCAN;	// 敵の種類
+	m_blockType = CBlock::TYPE_IRON;	// ブロックの種類
+	m_dropType = CBlock::DROPTYPE_NONE;	// ドロップの種類
 	m_fAddDepth = 0.0f;					// 追加の奥行
 	m_bFront = true;					// 奥行状況
 	m_bAirplaneFront = true;			// 飛行機の向きの状況
@@ -125,7 +130,6 @@ void CEdit::Update(void)
 
 	case CEdit::TYPE_TABLE:
 
-
 		break;
 
 	case CEdit::TYPE_AIRPLANE:
@@ -133,6 +137,13 @@ void CEdit::Update(void)
 		break;
 
 	case CEdit::TYPE_NEEDLE:
+
+		break;
+
+	case CEdit::TYPE_BLOCK:
+
+		// ブロックのエディット処理
+		BlockProcess();
 
 		break;
 
@@ -163,7 +174,7 @@ void CEdit::Update(void)
 	Set();
 
 	// デバッグ表示
-	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n種類：%d\n手前状況：%d(0：奥/1：手前)\nW/A/S/Dキー：移動\nSPACEキー：種類変更\nENTERキー：手前状況設定\n0キー：設置\n9キー：消去\n", GetPos().x, GetPos().y, GetPos().z, m_type, m_bFront);
+	CManager::Get()->GetDebugProc()->Print("位置：%f %f %f\n種類：%d\n手前状況：%d(0：奥/1：手前)\nブロックのドロップの種類：%d\nW/A/S/Dキー：移動\nSPACEキー：種類変更\nENTERキー：手前状況設定\n0キー：設置\n9キー：消去\n", GetPos().x, GetPos().y, GetPos().z, m_type, m_bFront, m_dropType);
 }
 
 //=====================================
@@ -397,6 +408,49 @@ void CEdit::EnemyProcess(void)
 
 			break;
 		}
+	}
+}
+
+//=======================================
+// ブロックエディットの処理
+//=======================================
+void CEdit::BlockProcess(void)
+{
+	if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_1) == true)
+	{ // 1キーを押している場合
+
+		// ブロックの種類を設定する
+		m_blockType = (CBlock::TYPE)((m_blockType + 1) % CBlock::TYPE_MAX);
+
+		switch (m_blockType)
+		{
+		case CBlock::TYPE_IRON:
+
+			// モデルの情報設定処理
+			SetFileData(CXFile::TYPE_IRONBLOCK);
+
+			break;
+
+		case CBlock::TYPE_WOOD:
+
+			// モデルの情報設定処理
+			SetFileData(CXFile::TYPE_WOODBLOCK);
+
+			break;
+
+		default:
+
+			// 停止
+			assert(false);
+
+			break;
+		}
+	}
+	else if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_2) == true)
+	{ // 2キーを押している場合
+
+		// ドロップの種類を設定する
+		m_dropType = (CBlock::DROPTYPE)((m_dropType + 1) % CBlock::DROPTYPE_MAX);
 	}
 }
 
@@ -705,6 +759,13 @@ void CEdit::Type(void)
 
 			break;
 
+		case CEdit::TYPE_BLOCK:
+
+			// モデルの情報設定処理
+			SetFileData(CXFile::TYPE_IRONBLOCK);
+
+			break;
+
 		default:
 
 			// 停止
@@ -848,6 +909,13 @@ void CEdit::Set(void)
 
 			break;
 
+		case CEdit::TYPE_BLOCK:
+
+			// ブロックの生成処理
+			CBlock::Create(pos, NONE_D3DXVECTOR3, NONE_SCALE, m_blockType, m_dropType);
+
+			break;
+
 		default:
 
 			// 停止
@@ -907,6 +975,13 @@ void CEdit::Delete(void)
 
 		break;
 
+	case CEdit::TYPE_BLOCK:
+
+		// ブロックの消去処理
+		DeleteBlock();
+
+		break;
+
 	default:
 
 		// 停止
@@ -937,8 +1012,8 @@ void CEdit::DeleteItem(void)
 		// 次のアイテムを設定する
 		pScrewNext = pScrew->GetNext();
 
-		if (useful::RectangleCollisionXY(pScrew->GetPos(), GetPos(), pScrew->GetFileData().collsize, GetFileData().collsize, -pScrew->GetFileData().collsize, -GetFileData().collsize) == true &&
-			useful::RectangleCollisionXZ(pScrew->GetPos(), GetPos(), pScrew->GetFileData().collsize, GetFileData().collsize, -pScrew->GetFileData().collsize, -GetFileData().collsize) == true)
+		if (useful::RectangleCollisionXY(pScrew->GetPos(), GetPos(), pScrew->GetFileData().vtxMax, GetFileData().vtxMax, pScrew->GetFileData().vtxMin, GetFileData().vtxMin) == true &&
+			useful::RectangleCollisionXZ(pScrew->GetPos(), GetPos(), pScrew->GetFileData().vtxMax, GetFileData().vtxMax, pScrew->GetFileData().vtxMin, GetFileData().vtxMin) == true)
 		{ // 当たり判定が true の場合
 
 			if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_9) == true)
@@ -969,8 +1044,8 @@ void CEdit::DeleteMacchina(void)
 		// 次のマキナ草を設定する
 		pMacchinaNext = pMacchina->GetNext();
 
-		if (useful::RectangleCollisionXY(pMacchina->GetPos(), GetPos(), pMacchina->GetFileData().collsize, GetFileData().collsize, -pMacchina->GetFileData().collsize, -GetFileData().collsize) == true &&
-			useful::RectangleCollisionXZ(pMacchina->GetPos(), GetPos(), pMacchina->GetFileData().collsize, GetFileData().collsize, -pMacchina->GetFileData().collsize, -GetFileData().collsize) == true)
+		if (useful::RectangleCollisionXY(pMacchina->GetPos(), GetPos(), pMacchina->GetFileData().vtxMax, GetFileData().vtxMax, pMacchina->GetFileData().vtxMin, GetFileData().vtxMin) == true &&
+			useful::RectangleCollisionXZ(pMacchina->GetPos(), GetPos(), pMacchina->GetFileData().vtxMax, GetFileData().vtxMax, pMacchina->GetFileData().vtxMin, GetFileData().vtxMin) == true)
 		{ // 当たり判定が true の場合
 
 			if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_9) == true)
@@ -1001,8 +1076,8 @@ void CEdit::DeleteEnemy(void)
 		// 次の敵を設定する
 		pEnemyNext = pEnemy->GetNext();
 
-		if (useful::RectangleCollisionXY(pEnemy->GetPos(), GetPos(), pEnemy->GetFileData().collsize, GetFileData().collsize, -pEnemy->GetFileData().collsize, -GetFileData().collsize) == true &&
-			useful::RectangleCollisionXZ(pEnemy->GetPos(), GetPos(), pEnemy->GetFileData().collsize, GetFileData().collsize, -pEnemy->GetFileData().collsize, -GetFileData().collsize) == true)
+		if (useful::RectangleCollisionXY(pEnemy->GetPos(), GetPos(), pEnemy->GetFileData().vtxMax, GetFileData().vtxMax, pEnemy->GetFileData().vtxMin, GetFileData().vtxMin) == true &&
+			useful::RectangleCollisionXZ(pEnemy->GetPos(), GetPos(), pEnemy->GetFileData().vtxMax, GetFileData().vtxMax, pEnemy->GetFileData().vtxMin, GetFileData().vtxMin) == true)
 		{ // 当たり判定が true の場合
 
 			if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_9) == true)
@@ -1033,8 +1108,8 @@ void CEdit::DeleteTable(void)
 		// 次の台を設定する
 		pTableNext = pTable->GetNext();
 
-		if (useful::RectangleCollisionXY(pTable->GetPos(), GetPos(), pTable->GetFileData().collsize, GetFileData().collsize, -pTable->GetFileData().collsize, -GetFileData().collsize) == true &&
-			useful::RectangleCollisionXZ(pTable->GetPos(), GetPos(), pTable->GetFileData().collsize, GetFileData().collsize, -pTable->GetFileData().collsize, -GetFileData().collsize) == true)
+		if (useful::RectangleCollisionXY(pTable->GetPos(), GetPos(), pTable->GetFileData().vtxMax, GetFileData().vtxMax, pTable->GetFileData().vtxMin, GetFileData().vtxMin) == true &&
+			useful::RectangleCollisionXZ(pTable->GetPos(), GetPos(), pTable->GetFileData().vtxMax, GetFileData().vtxMax, pTable->GetFileData().vtxMin, GetFileData().vtxMin) == true)
 		{ // 当たり判定が true の場合
 
 			if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_9) == true)
@@ -1065,8 +1140,8 @@ void CEdit::DeleteAirplane(void)
 		// 次の飛行機を設定する
 		pAirplaneNext = pAirplane->GetNext();
 
-		if (useful::RectangleCollisionXY(pAirplane->GetPos(), GetPos(), pAirplane->GetFileData().collsize, GetFileData().collsize, -pAirplane->GetFileData().collsize, -GetFileData().collsize) == true &&
-			useful::RectangleCollisionXZ(pAirplane->GetPos(), GetPos(), pAirplane->GetFileData().collsize, GetFileData().collsize, -pAirplane->GetFileData().collsize, -GetFileData().collsize) == true)
+		if (useful::RectangleCollisionXY(pAirplane->GetPos(), GetPos(), pAirplane->GetFileData().vtxMax, GetFileData().vtxMax, pAirplane->GetFileData().vtxMin, GetFileData().vtxMin) == true &&
+			useful::RectangleCollisionXZ(pAirplane->GetPos(), GetPos(), pAirplane->GetFileData().vtxMax, GetFileData().vtxMax, pAirplane->GetFileData().vtxMin, GetFileData().vtxMin) == true)
 		{ // 当たり判定が true の場合
 
 			if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_9) == true)
@@ -1097,8 +1172,8 @@ void CEdit::DeleteNeedle(void)
 		// 次の棘を設定する
 		pNeedleNext = pNeedle->GetNext();
 
-		if (useful::RectangleCollisionXY(pNeedle->GetPos(), GetPos(), pNeedle->GetFileData().collsize, GetFileData().collsize, -pNeedle->GetFileData().collsize, -GetFileData().collsize) == true &&
-			useful::RectangleCollisionXZ(pNeedle->GetPos(), GetPos(), pNeedle->GetFileData().collsize, GetFileData().collsize, -pNeedle->GetFileData().collsize, -GetFileData().collsize) == true)
+		if (useful::RectangleCollisionXY(pNeedle->GetPos(), GetPos(), pNeedle->GetFileData().vtxMax, GetFileData().vtxMax, pNeedle->GetFileData().vtxMin, GetFileData().vtxMin) == true &&
+			useful::RectangleCollisionXZ(pNeedle->GetPos(), GetPos(), pNeedle->GetFileData().vtxMax, GetFileData().vtxMax, pNeedle->GetFileData().vtxMin, GetFileData().vtxMin) == true)
 		{ // 当たり判定が true の場合
 
 			if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_9) == true)
@@ -1111,6 +1186,38 @@ void CEdit::DeleteNeedle(void)
 
 		// 次の棘を代入する
 		pNeedle = pNeedleNext;
+	}
+}
+
+//=======================================
+// ブロックの消去処理
+//=======================================
+void CEdit::DeleteBlock(void)
+{
+	// ローカル変数宣言
+	CBlock* pBlock = CBlockManager::Get()->GetTop();	// ブロックのポインタ
+	CBlock* pBlockNext;									// 次のブロック
+
+	while (pBlock != nullptr)
+	{ // ブロックが NULL じゃない場合回す
+		 
+		// 次のブロックを設定する
+		pBlockNext = pBlock->GetNext();
+
+		if (useful::RectangleCollisionXY(pBlock->GetPos(), GetPos(), pBlock->GetFileData().vtxMax, GetFileData().vtxMax, pBlock->GetFileData().vtxMin, GetFileData().vtxMin) == true &&
+			useful::RectangleCollisionXZ(pBlock->GetPos(), GetPos(), pBlock->GetFileData().vtxMax, GetFileData().vtxMax, pBlock->GetFileData().vtxMin, GetFileData().vtxMin) == true)
+		{ // 当たり判定が true の場合
+
+			if (CManager::Get()->GetInputKeyboard()->GetTrigger(DIK_9) == true)
+			{ // 9キーを押した場合
+
+				// ブロックを消す
+				pBlock->Uninit();
+			}
+		}
+
+		// 次のブロックを代入する
+		pBlock = pBlockNext;
 	}
 }
 

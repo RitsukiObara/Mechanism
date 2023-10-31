@@ -13,6 +13,7 @@
 //********************************************
 #include "model.h"
 #include "enemy.h"
+#include "block.h"
 
 //--------------------------------------------
 // クラス定義(エディット)
@@ -30,6 +31,7 @@ public:				// 誰でもアクセスできる
 		TYPE_TABLE,			// 台
 		TYPE_AIRPLANE,		// 飛行機
 		TYPE_NEEDLE,		// 棘
+		TYPE_BLOCK,			// ブロック
 		TYPE_MAX			// この列挙型の総数
 	};
 
@@ -53,6 +55,7 @@ private:			// 自分だけアクセスできる
 	void ItemProcess(void);		// アイテムエディットの処理
 	void MacchinaProcess(void);	// マキナ草エディットの処理
 	void EnemyProcess(void);	// 敵エディットの処理
+	void BlockProcess(void);	// ブロックエディットの処理
 
 	void SetMaccina(void);		// マキナ草の設定処理
 
@@ -71,14 +74,17 @@ private:			// 自分だけアクセスできる
 	void DeleteTable(void);		// 台の消去処理
 	void DeleteAirplane(void);	// 飛行機の消去処理
 	void DeleteNeedle(void);	// 棘の消去処理
+	void DeleteBlock(void);		// ブロックの消去処理
 
 	// メンバ変数
-	D3DXVECTOR3 m_move;			// 移動量
-	TYPE m_type;				// 種類
-	CEnemy::TYPE m_enemyType;	// 敵の種類
-	float m_fAddDepth;			// 追加の奥行
-	bool m_bFront;				// 奥行状況
-	bool m_bAirplaneFront;		// 飛行機の向きの状況
+	D3DXVECTOR3 m_move;				// 移動量
+	TYPE m_type;					// 種類
+	CEnemy::TYPE m_enemyType;		// 敵の種類
+	CBlock::TYPE m_blockType;		// ブロックの種類
+	CBlock::DROPTYPE m_dropType;	// ドロップの種類
+	float m_fAddDepth;				// 追加の奥行
+	bool m_bFront;					// 奥行状況
+	bool m_bAirplaneFront;			// 飛行機の向きの状況
 };
 
 #endif

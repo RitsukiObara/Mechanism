@@ -109,6 +109,43 @@ HRESULT CBlock::Init(void)
 //========================================
 void CBlock::Uninit(void)
 {
+	// 終了処理
+	CModel::Uninit();
+
+	if (CBlockManager::Get() != nullptr)
+	{ // マネージャーが存在していた場合
+
+		// リスト構造の引き抜き処理
+		CBlockManager::Get()->Pull(this);
+	}
+
+	// リスト構造関係のポインタを NULL にする
+	m_pPrev = nullptr;
+	m_pNext = nullptr;
+}
+
+//========================================
+//ブロックの更新処理
+//========================================
+void CBlock::Update(void)
+{
+
+}
+
+//=====================================
+//ブロックの描画処理
+//=====================================
+void CBlock::Draw(void)
+{
+	// 描画処理
+	CModel::Draw();
+}
+
+//=====================================
+// ドロップ処理
+//=====================================
+void CBlock::Drop(void)
+{
 	switch (m_dropType)
 	{
 	case DROPTYPE_NONE:			// ドロップ無し
@@ -148,37 +185,6 @@ void CBlock::Uninit(void)
 
 		break;
 	}
-
-	// 終了処理
-	CModel::Uninit();
-
-	if (CBlockManager::Get() != nullptr)
-	{ // マネージャーが存在していた場合
-
-		// リスト構造の引き抜き処理
-		CBlockManager::Get()->Pull(this);
-	}
-
-	// リスト構造関係のポインタを NULL にする
-	m_pPrev = nullptr;
-	m_pNext = nullptr;
-}
-
-//========================================
-//ブロックの更新処理
-//========================================
-void CBlock::Update(void)
-{
-
-}
-
-//=====================================
-//ブロックの描画処理
-//=====================================
-void CBlock::Draw(void)
-{
-	// 描画処理
-	CModel::Draw();
 }
 
 //=====================================

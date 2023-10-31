@@ -588,6 +588,9 @@ void CAbility::BlockBreak(CPlayer& player)
 		if (nCount % BLOCK_BREAK_COUNT == 0)
 		{ // カウントが一定数以上になった場合
 
+			// ドロップ処理
+			player.GetBlock()->Drop();
+
 			// 終了処理
 			player.GetBlock()->Uninit();
 
