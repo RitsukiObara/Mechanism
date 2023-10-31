@@ -366,6 +366,9 @@
     <ClCompile Include="mesh_manager.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="push_timing.cpp">
+      <Filter>Staging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fade.h">
@@ -667,6 +670,9 @@
     </ClInclude>
     <ClInclude Include="mesh_manager.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="push_timing.h">
+      <Filter>Staging</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

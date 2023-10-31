@@ -63,6 +63,7 @@ public:			// 誰でもアクセスできる
 		TYPE_TUTORIAL,			// チュートリアル
 		TYPE_BLOCK,				// ブロック
 		TYPE_LIFEUI,			// 体力UI
+		TYPE_PUSHTIMING,		// 押すタイミング
 		TYPE_MAX				// この列挙型の総数
 	};
 

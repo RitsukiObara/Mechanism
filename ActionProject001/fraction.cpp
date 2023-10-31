@@ -212,6 +212,13 @@ void CFraction::SetData(const D3DXVECTOR3& pos, const TYPE type)
 
 		break;
 
+	case TYPE_REDRUST:		// Ô‚³‚Ñ
+
+		// ƒ‚ƒfƒ‹î•ñ‚ğİ’è‚·‚é
+		SetFileData(CXFile::TYPE_FRAC_REDRUST);
+
+		break;
+
 	default:
 
 		// ’â~

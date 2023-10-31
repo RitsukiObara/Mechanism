@@ -355,6 +355,14 @@ void CObject::UpdateNormal(void)
 
 				// オブジェクトの更新
 				pObj->Update();
+
+				if (pObj != nullptr &&
+					pObj->m_pNext == nullptr)
+				{ // 次のオブジェクトが NULL の場合
+
+					// 次のオブジェクトを NULL にする
+					pObjNext = nullptr;
+				}
 			}
 
 			// 次のオブジェクトを代入する
@@ -397,6 +405,14 @@ void CObject::UpdateGame(void)
 
 				// オブジェクトの更新
 				pObj->Update();
+
+				if (pObj != nullptr &&
+					pObj->m_pNext == nullptr)
+				{ // 次のオブジェクトが NULL の場合
+
+					// 次のオブジェクトを NULL にする
+					pObjNext = nullptr;
+				}
 			}
 
 			// 次のオブジェクトを代入する

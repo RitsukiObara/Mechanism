@@ -599,7 +599,7 @@ void CAbility::BlockBreak(CPlayer& player)
 
 			D3DXVECTOR3 pos = NONE_D3DXVECTOR3;
 
-			for (int nCnt = 0; nCnt < 20; nCnt++)
+			for (int nCnt = 0; nCnt < 2000; nCnt++)
 			{
 				// ˆÊ’u‚ðŽæ“¾‚·‚é
 				pos = player.GetPos();

@@ -226,6 +226,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="push_timing.cpp" />
     <ClCompile Include="ranking.cpp" />
     <ClCompile Include="ranking_precedence.cpp" />
     <ClCompile Include="ranking_table.cpp" />
@@ -328,6 +329,7 @@
     <ClInclude Include="pork.h" />
     <ClInclude Include="pork_manager.h" />
     <ClInclude Include="precompile.h" />
+    <ClInclude Include="push_timing.h" />
     <ClInclude Include="ranking.h" />
     <ClInclude Include="ranking_precedence.h" />
     <ClInclude Include="ranking_table.h" />

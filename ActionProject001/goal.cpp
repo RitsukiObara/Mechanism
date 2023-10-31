@@ -18,14 +18,17 @@
 #include "bonus.h"
 #include "game_score.h"
 #include "player.h"
+#include "fraction.h"
+#include "push_timing.h"
 
 //-------------------------------------------
 // マクロ定義
 //-------------------------------------------
-#define CYCLE_COUNT			(40)			// 向きが変わるカウント
-#define GOAL_PLAYER_SPEED	(7.0f)			// ゴール時のプレイヤーの速度
-#define SMALL_ADD_SCORE		(1000)			// 小スコア
-#define BIG_ADD_SCORE		(2000)			// 大スコア
+#define CYCLE_COUNT			(40)		// 向きが変わるカウント
+#define GOAL_PLAYER_SPEED	(7.0f)		// ゴール時のプレイヤーの速度
+#define SMALL_ADD_SCORE		(1000)		// 小スコア
+#define BIG_ADD_SCORE		(2000)		// 大スコア
+#define GOAL_FRACTION_COUNT	(15)		// ゴールが壊れたときの破片の数
 
 //-------------------------------------------
 // 静的メンバ変数宣言
@@ -219,8 +222,37 @@ void CGoal::Hit(void)
 	if (m_type != TYPE_PUNCH)
 	{ // パンチ以外の場合
 
+		// 破壊処理
+		Break();
+
 		// 終了処理
 		Uninit();
+	}
+	else
+	{ // 上記以外
+
+		if (CPlayer::Get() != nullptr)
+		{ // プレイヤーが NULL じゃない場合
+
+			// ローカル変数宣言
+			D3DXVECTOR3 pos = CPlayer::Get()->GetPos();		// 位置を取得する
+			D3DXVECTOR3 rot = CPlayer::Get()->GetRot();		// 向きを取得する
+
+			// 押しタイミングの表示の生成
+			CPushTiming::Create(D3DXVECTOR3(pos.x + sinf(-rot.y) * 100.0f, pos.y + 160.0f, pos.z));
+		}
+	}
+}
+
+//=====================================
+// 破壊処理
+//=====================================
+void CGoal::Break(void)
+{
+	for (int nCnt = 0; nCnt < GOAL_FRACTION_COUNT; nCnt++)
+	{
+		// 破片を出す
+		CFraction::Create(CGoal::Get()->GetModel(CGoal::MODEL_POINT)->GetPos(), CFraction::TYPE_REDRUST);
 	}
 }
 

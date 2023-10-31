@@ -34,6 +34,7 @@ public:			// 誰でもアクセスできる
 		TYPE_FRAC_GEAR,			// 歯車(破片)
 		TYPE_FRAC_RING,			// 輪(破片)
 		TYPE_FRAC_WOOD,			// 木片(破片)
+		TYPE_FRAC_REDRUST,		// 赤さび(破片)
 		TYPE_TABLE,				// 台
 		TYPE_MACCHINA,			// マキナ草
 		TYPE_GOAL,				// ゴール

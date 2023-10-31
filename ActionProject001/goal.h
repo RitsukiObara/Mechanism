@@ -59,6 +59,7 @@ public:				// 誰でもアクセスできる
 	void Draw(void);		// 描画処理
 
 	void Hit(void);			// ヒット処理
+	void Break(void);		// 破壊処理
 	void SetData(const D3DXVECTOR3& pos);		// 情報の設定処理
 
 	// セット・ゲット関係

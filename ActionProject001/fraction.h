@@ -34,6 +34,7 @@ public:			// 誰でもアクセスできる
 		TYPE_GEAR,			// 歯車
 		TYPE_RING,			// 輪っか
 		TYPE_WOODBOX,		// 木箱
+		TYPE_REDRUST,		// 赤さび
 		TYPE_MAX			// この列挙型の総数
 	};
 

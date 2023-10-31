@@ -708,12 +708,15 @@ void CCamera::GameCamera(void)
 
 	case CGame::STATE_LEAVE:		// ‘Şêó‘Ô
 
-		// ‘Şê‚ÌƒJƒƒ‰ˆ—
-		LeaveCamera();
+		// ’ÇÕˆ—
+		Chase();
 
 		break;
 
 	case CGame::STATE_FINISH:		// I—¹ó‘Ô
+
+		// ‘Şê‚ÌƒJƒƒ‰ˆ—
+		LeaveCamera();
 
 		break;
 

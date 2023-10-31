@@ -1250,9 +1250,15 @@ void CPlayer::GoalProcess(void)
 			if (CGoal::Get() != nullptr)
 			{ // ゴールがあった場合
 
+				// 破壊処理
+				CGoal::Get()->Break();
+
 				// ゴールの終了処理
 				CGoal::Get()->Uninit();
 			}
+
+			// 押しボタンの表示を消す
+			CObject::AnyAllClear(CObject::PRIORITY_UI, CObject::TYPE_PUSHTIMING);
 		}
 	}
 	else
