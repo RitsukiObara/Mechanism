@@ -308,7 +308,7 @@ HRESULT CFile::Load(const TYPE type)
 			for (int nCnt = 0; nCnt < m_AirplaneInfo.nNum; nCnt++)
 			{
 				// “G‚Ì¶¬ˆ—
-				CAirplane::Create(m_AirplaneInfo.pos[nCnt], m_AirplaneInfo.bFront[nCnt]);
+				CAirplane::Create(m_AirplaneInfo.pos[nCnt], m_AirplaneInfo.bFront[nCnt], CAirplane::STATE_NONE);
 			}
 		}
 

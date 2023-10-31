@@ -232,10 +232,10 @@ void CGoal::SetData(const D3DXVECTOR3& pos)
 	for (int nCnt = 0; nCnt < MODEL_MAX; nCnt++)
 	{
 		// 情報の設定処理
-		m_aGoal[nCnt]->SetPos(pos);									// 位置
-		m_aGoal[nCnt]->SetPosOld(pos);								// 前回の位置
-		m_aGoal[nCnt]->SetRot(NONE_D3DXVECTOR3);					// 向き
-		m_aGoal[nCnt]->SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));		// 拡大率
+		m_aGoal[nCnt]->SetPos(pos);						// 位置
+		m_aGoal[nCnt]->SetPosOld(pos);					// 前回の位置
+		m_aGoal[nCnt]->SetRot(NONE_D3DXVECTOR3);		// 向き
+		m_aGoal[nCnt]->SetScale(NONE_SCALE);			// 拡大率
 
 		// モデルの情報
 		switch (nCnt)

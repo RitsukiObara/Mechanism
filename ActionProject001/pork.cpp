@@ -175,10 +175,10 @@ void CPork::SetData(const D3DXVECTOR3& pos, const TYPE type)
 {
 	// 情報の設定処理
 	SetPos(D3DXVECTOR3(pos.x, pos.y, pos.z + PORK_POS_Z));								// 位置
-	SetRot(NONE_D3DXVECTOR3);					// 向き
-	SetPosOld(GetPos());						// 前回の位置
-	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
-	SetFileData(CXFile::TYPE_PORK);				// モデルの情報
+	SetRot(NONE_D3DXVECTOR3);			// 向き
+	SetPosOld(GetPos());				// 前回の位置
+	SetScale(NONE_SCALE);				// 拡大率
+	SetFileData(CXFile::TYPE_PORK);		// モデルの情報
 
 	// 全ての値を設定する
 	m_type = type;				// 種類

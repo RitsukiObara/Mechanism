@@ -166,8 +166,9 @@ void collision::AirplaneHit(CPlayer& player)
 	{ // オブジェクトのが NULL じゃない限り回す
 
 		if (useful::RectangleCollisionXY(pAirplane->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true &&
-			useful::RectangleCollisionXZ(pAirplane->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true)
-		{ // 矩形の当たり判定が true の場合
+			useful::RectangleCollisionXZ(pAirplane->GetPos(), PosPlayer, AirplaneVtxMax, VtxMax, AirplaneVtxMin, VtxMin) == true &&
+			pAirplane->GetCollision() == true)
+		{ // 矩形の当たり判定が true かつ、当たり判定がある場合
 
 			if (player.GetAction()->GetState() != CPlayerAct::STATE_CANNON &&
 				player.GetAction()->GetState() != CPlayerAct::STATE_FLY)
@@ -852,7 +853,7 @@ bool collision::BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, con
 //===============================
 // 起伏地面の範囲外の当たり判定
 //===============================
-bool collision::ElevOutRangeCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight)
+bool collision::ElevOutRangeCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth)
 {
 	// ローカル変数宣言
 	CElevation* pElev = CElevationManager::Get()->GetTop();		// 先頭の起伏地面を取得する

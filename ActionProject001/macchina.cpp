@@ -17,7 +17,6 @@
 #include"screw.h"
 
 // マクロ定義
-#define NONE_SCALE			(D3DXVECTOR3(1.0f, 1.0f, 1.0f))		// 通常状態の拡大率
 #define NONE_SCALE_COUNT	(20)								// 通常状態の動くカウント
 #define NONE_SCALE_REDUCE	(D3DXVECTOR3(0.9f, 1.1f, 0.9f))		// 通常状態の縮んだ際の拡大率
 #define NONE_ADD_CORRECT	(0.008f)							// 通常状態の補正する時の加算数
@@ -255,11 +254,11 @@ void CMacchina::Hit(void)
 void CMacchina::SetData(const D3DXVECTOR3& pos)
 {
 	// 情報の設定処理
-	SetPos(pos);								// 位置
-	SetPosOld(pos);								// 前回の位置
-	SetRot(NONE_D3DXVECTOR3);					// 向き
-	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
-	SetFileData(CXFile::TYPE_MACCHINA);			// モデルの情報
+	SetPos(pos);							// 位置
+	SetPosOld(pos);							// 前回の位置
+	SetRot(NONE_D3DXVECTOR3);				// 向き
+	SetScale(NONE_SCALE);					// 拡大率
+	SetFileData(CXFile::TYPE_MACCHINA);		// モデルの情報
 
 	// 全ての値を初期化する
 	m_scaleDest = NONE_SCALE;		// 目的のサイズ

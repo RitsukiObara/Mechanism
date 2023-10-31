@@ -135,11 +135,11 @@ void CTable::Draw(void)
 void CTable::SetData(const D3DXVECTOR3& pos)
 {
 	// 情報の設定処理
-	SetPos(pos);								// 位置
-	SetPosOld(pos);								// 前回の位置
-	SetRot(NONE_D3DXVECTOR3);					// 向き
-	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
-	SetFileData(CXFile::TYPE_TABLE);			// モデルの情報
+	SetPos(pos);							// 位置
+	SetPosOld(pos);							// 前回の位置
+	SetRot(NONE_D3DXVECTOR3);				// 向き
+	SetScale(NONE_SCALE);					// 拡大率
+	SetFileData(CXFile::TYPE_TABLE);		// モデルの情報
 }
 
 //=======================================

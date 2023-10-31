@@ -134,11 +134,11 @@ void CNeedle::Draw(void)
 void CNeedle::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3 rot)
 {
 	// 情報の設定処理
-	SetPos(pos);								// 位置
-	SetPosOld(pos);								// 前回の位置
-	SetRot(rot);								// 向き
-	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
-	SetFileData(CXFile::TYPE_NEEDLE);			// モデルの情報
+	SetPos(pos);							// 位置
+	SetPosOld(pos);							// 前回の位置
+	SetRot(rot);							// 向き
+	SetScale(NONE_SCALE);					// 拡大率
+	SetFileData(CXFile::TYPE_NEEDLE);		// モデルの情報
 }
 
 //=======================================

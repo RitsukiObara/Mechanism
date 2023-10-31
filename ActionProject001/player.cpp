@@ -1163,7 +1163,7 @@ void CPlayer::OutRangeCollision(void)
 	D3DXVECTOR3 pos = GetPos();
 
 	// ‹N•š”ÍˆÍŠO‚Ì“–‚½‚è”»’èˆ—
-	if (collision::ElevOutRangeCollision(&pos, GetPosOld(), COLLISION_WIDTH, COLLISION_HEIGHT) == true)
+	if (collision::ElevOutRangeCollision(&pos, GetPosOld(), COLLISION_WIDTH) == true)
 	{ // “–‚½‚è”»’è‚ª’Ê‚Á‚½ê‡
 
 		// ˆÚ“®—Ê‚ğ0.0f‚É‚·‚é

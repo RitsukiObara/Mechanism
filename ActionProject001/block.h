@@ -27,6 +27,15 @@ public:			// 誰でもアクセスできる
 		TYPE_MAX			// この列挙型の総数
 	};
 
+	// 列挙型定義(ドロップの種類)
+	enum DROPTYPE
+	{
+		DROPTYPE_NONE = 0,	// ドロップ無し
+		DROPTYPE_ITEM,		// アイテムドロップ
+		DROPTYPE_AIRPLANE,	// 飛行機ドロップ
+		DROPTYPE_MAX		// この列挙型の総数
+	};
+
 	CBlock();				// コンストラクタ
 	~CBlock();				// デストラクタ
 
@@ -42,7 +51,7 @@ public:			// 誰でもアクセスできる
 	void Update(void);		// 更新処理
 	void Draw(void);		// 描画処理
 
-	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type);				// 情報の設定処理
+	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type, const DROPTYPE dropType);				// 情報の設定処理
 
 	// セット・ゲット関数
 	void SetBreakCount(const int nCount);		// 破壊カウントの設定処理
@@ -51,13 +60,14 @@ public:			// 誰でもアクセスできる
 	bool IsBreak(void);							// 破壊状況の取得処理
 
 	// 静的メンバ関数
-	static CBlock* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type);		// 生成処理
+	static CBlock* Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type, const DROPTYPE dropType);		// 生成処理
 
 private:		// 自分だけアクセスできる
 
 	// メンバ変数
-	int m_nBreakCount;	// 破壊カウント
-	bool m_bBreak;		// 破壊状況
+	DROPTYPE m_dropType;	// ドロップの種類
+	int m_nBreakCount;		// 破壊カウント
+	bool m_bBreak;			// 破壊状況
 
 	// リスト構造関係
 	CBlock* m_pPrev;	// 前へのポインタ

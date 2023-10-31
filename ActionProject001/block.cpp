@@ -14,6 +14,13 @@
 #include "block_manager.h"
 #include "useful.h"
 
+#include "screw.h"
+#include "airplane.h"
+
+// マクロ定義
+#define SCREW_MOVE				(D3DXVECTOR3(0.0f, 20.0f, 0.0f))		// ネジの移動量
+#define AIRPLANE_SPAWN_CHECK	(500.0f)								// 飛行機のチェック
+
 //==============================
 // コンストラクタ
 //==============================
@@ -102,6 +109,46 @@ HRESULT CBlock::Init(void)
 //========================================
 void CBlock::Uninit(void)
 {
+	switch (m_dropType)
+	{
+	case DROPTYPE_NONE:			// ドロップ無し
+
+		// ドロップしない
+
+		break;
+
+	case DROPTYPE_ITEM:			// アイテムドロップ
+
+		// ネジの生成
+		CScrew::Create(D3DXVECTOR3(GetPos().x, GetPos().y + GetFileData().vtxMax.y, GetPos().z), SCREW_MOVE, true);
+
+		break;
+
+	case DROPTYPE_AIRPLANE:		// 飛行機ドロップ
+
+		if (GetPos().z >= AIRPLANE_SPAWN_CHECK)
+		{ // 飛行機が奥にある場合
+
+			// 飛行機の生成
+			CAirplane::Create(D3DXVECTOR3(GetPos().x, GetPos().y + GetFileData().vtxMax.y, GetPos().z), false, CAirplane::STATE_APPEAR);
+		}
+		else
+		{ // 飛行機が手前にある場合
+
+			// 飛行機の生成
+			CAirplane::Create(D3DXVECTOR3(GetPos().x, GetPos().y + GetFileData().vtxMax.y, GetPos().z), true, CAirplane::STATE_APPEAR);
+		}
+
+		break;
+
+	default:
+
+		// 停止
+		assert(false);
+
+		break;
+	}
+
 	// 終了処理
 	CModel::Uninit();
 
@@ -137,7 +184,7 @@ void CBlock::Draw(void)
 //=====================================
 // 情報の設定処理
 //=====================================
-void CBlock::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type)
+void CBlock::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type, const DROPTYPE dropType)
 {
 	// 情報の設定処理
 	SetPos(pos);						// 位置
@@ -146,6 +193,7 @@ void CBlock::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 	SetScale(scale);					// 拡大率
 
 	// 全ての値を設定する
+	m_dropType = dropType;	// ドロップの種類
 	m_nBreakCount = 0;		// 破壊カウント
 
 	switch (type)
@@ -228,7 +276,7 @@ bool CBlock::IsBreak(void)
 //=======================================
 // 生成処理
 //=======================================
-CBlock* CBlock::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type)
+CBlock* CBlock::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type, const DROPTYPE dropType)
 {
 	// ローカルオブジェクトを生成
 	CBlock* pBlock = nullptr;	// プレイヤーのインスタンスを生成
@@ -264,7 +312,7 @@ CBlock* CBlock::Create(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3D
 		}
 
 		// 情報の設定処理
-		pBlock->SetData(pos, rot, scale, type);
+		pBlock->SetData(pos, rot, scale, type, dropType);
 	}
 	else
 	{ // オブジェクトが NULL の場合

@@ -51,6 +51,7 @@ private:		// 自分だけアクセスできる
 	void Cycle(void);		// 回転処理
 	void Elevation(void);	// 起伏の当たり判定処理
 	void Table(void);		// 台との当たり判定処理
+	void Block(void);		// ブロックとの当たり判定処理
 
 	// メンバ変数
 	D3DXVECTOR3 m_move;		// 移動量

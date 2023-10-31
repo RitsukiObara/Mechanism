@@ -58,7 +58,7 @@ namespace collision
 	bool BlockCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight, const bool bJump, CBlock** ppRide);		// ブロックとの当たり判定
 
 	// 起伏地面の当たり判定
-	bool ElevOutRangeCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth, const float fHeight);			// 起伏地面の範囲外の当たり判定
+	bool ElevOutRangeCollision(D3DXVECTOR3* pPos, const D3DXVECTOR3& posOld, const float fWidth);			// 起伏地面の範囲外の当たり判定
 }
 
 #endif

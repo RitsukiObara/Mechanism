@@ -154,6 +154,9 @@ void CScrew::Update(void)
 
 	// 台との当たり判定
 	Table();
+
+	// ブロックとの当たり判定
+	Block();
 }
 
 //=====================================
@@ -186,11 +189,11 @@ void CScrew::Hit(const D3DXVECTOR3& pos)
 void CScrew::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& move, const bool bGravity)
 {
 	// 情報の設定処理
-	SetPos(pos);								// 位置
-	SetPosOld(pos);								// 前回の位置
-	SetRot(INIT_ROT);							// 向き
-	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
-	SetFileData(CXFile::TYPE_SCREW);			// モデルの情報
+	SetPos(pos);						// 位置
+	SetPosOld(pos);						// 前回の位置
+	SetRot(INIT_ROT);					// 向き
+	SetScale(NONE_SCALE);				// 拡大率
+	SetFileData(CXFile::TYPE_SCREW);	// モデルの情報
 
 	// 全ての値を初期化する
 	m_move = move;				// 移動量
@@ -355,6 +358,26 @@ void CScrew::Table(void)
 	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
 
 	if (collision::TableCollision(&pos, posOld, GetFileData().collsize.x, GetFileData().collsize.z) == true)
+	{ // 台との当たり判定が true だった場合
+
+		// 縦の移動量を無くす
+		m_move.y = 0.0f;
+	}
+
+	// 位置を適用させる
+	SetPos(pos);
+}
+
+//=======================================
+// ブロックとの当たり判定処理
+//=======================================
+void CScrew::Block(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();			// 位置
+	D3DXVECTOR3 posOld = GetPosOld();	// 前回の位置
+
+	if (collision::BlockCollision(&pos, posOld, GetFileData().collsize.x, GetFileData().collsize.y, false, nullptr) == true)
 	{ // 台との当たり判定が true だった場合
 
 		// 縦の移動量を無くす

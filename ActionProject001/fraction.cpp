@@ -177,10 +177,10 @@ void CFraction::Draw(void)
 void CFraction::SetData(const D3DXVECTOR3& pos, const TYPE type)
 {
 	// 情報の設定処理
-	SetPos(pos);								// 位置
-	SetPosOld(pos);								// 前回の位置
-	SetRot(NONE_D3DXVECTOR3);					// 向き
-	SetScale(D3DXVECTOR3(1.0f, 1.0f, 1.0f));	// 拡大率
+	SetPos(pos);					// 位置
+	SetPosOld(pos);					// 前回の位置
+	SetRot(NONE_D3DXVECTOR3);		// 向き
+	SetScale(NONE_SCALE);			// 拡大率
 
 	switch (type)
 	{
