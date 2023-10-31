@@ -55,6 +55,8 @@ public:			// 誰でもアクセスできる
 	void SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXVECTOR3& scale, const TYPE type, const DROPTYPE dropType);				// 情報の設定処理
 
 	// セット・ゲット関数
+	TYPE GetType(void) const;					// 種類の設定処理
+	DROPTYPE GetDropType(void) const;			// ドロップの種類の設定処理
 	void SetBreakCount(const int nCount);		// 破壊カウントの設定処理
 	int GetBreakCount(void) const;				// 破壊カウントの取得処理
 	void SetEnableBreak(const bool bBreak);		// 破壊状況の設定処理
@@ -66,6 +68,7 @@ public:			// 誰でもアクセスできる
 private:		// 自分だけアクセスできる
 
 	// メンバ変数
+	TYPE m_type;			// 種類
 	DROPTYPE m_dropType;	// ドロップの種類
 	int m_nBreakCount;		// 破壊カウント
 	bool m_bBreak;			// 破壊状況

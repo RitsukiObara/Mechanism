@@ -115,6 +115,7 @@ HRESULT CGame::Init(void)
 	CManager::Get()->GetFile()->Load(CFile::TYPE_TABLE);
 	CManager::Get()->GetFile()->Load(CFile::TYPE_AIRPLANE);
 	CManager::Get()->GetFile()->Load(CFile::TYPE_NEEDLE);
+	CManager::Get()->GetFile()->Load(CFile::TYPE_BLOCK);
 
 	// スコアを生成する
 	CGameScore::Create(D3DXVECTOR3(50.0f,680.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f));
@@ -138,8 +139,6 @@ HRESULT CGame::Init(void)
 	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 370.0f, 800.0f), NONE_D3DXVECTOR3, false);
 	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 250.0f, 900.0f), NONE_D3DXVECTOR3, false);
 	//CScrew::Create(D3DXVECTOR3(4800.0f, 飛行機の位置 + 100.0f, 1000.0f), NONE_D3DXVECTOR3, false);
-
-	CBlock::Create(D3DXVECTOR3(-4000.0f, 0.0f, 0.0f), NONE_D3DXVECTOR3, NONE_SCALE, CBlock::TYPE::TYPE_WOOD, CBlock::DROPTYPE_ITEM);
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント
@@ -234,6 +233,7 @@ void CGame::Update(void)
 		CManager::Get()->GetFile()->Save(CFile::TYPE_TABLE);
 		CManager::Get()->GetFile()->Save(CFile::TYPE_AIRPLANE);
 		CManager::Get()->GetFile()->Save(CFile::TYPE_NEEDLE);
+		CManager::Get()->GetFile()->Save(CFile::TYPE_BLOCK);
 	}
 
 #endif

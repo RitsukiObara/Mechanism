@@ -27,10 +27,12 @@
 CBlock::CBlock() : CModel(CObject::TYPE_BLOCK, CObject::PRIORITY_BLOCK)
 {
 	// 全ての値をクリアする
-	m_nBreakCount = 0;		// 破壊カウント
-	m_bBreak = false;		// 破壊状況
-	m_pPrev = nullptr;		// 前へのポインタ
-	m_pNext = nullptr;		// 次へのポインタ
+	m_type = TYPE_IRON;			// 種類
+	m_dropType = DROPTYPE_NONE;	// ドロップの種類
+	m_nBreakCount = 0;			// 破壊カウント
+	m_bBreak = false;			// 破壊状況
+	m_pPrev = nullptr;			// 前へのポインタ
+	m_pNext = nullptr;			// 次へのポインタ
 
 	if (CBlockManager::Get() != nullptr)
 	{ // マネージャーが存在していた場合
@@ -97,8 +99,10 @@ HRESULT CBlock::Init(void)
 	}
 
 	// 全ての値を初期化する
-	m_nBreakCount = 0;		// 破壊カウント
-	m_bBreak = false;		// 破壊状況
+	m_type = TYPE_IRON;			// 種類
+	m_dropType = DROPTYPE_NONE;	// ドロップの種類
+	m_nBreakCount = 0;			// 破壊カウント
+	m_bBreak = false;			// 破壊状況
 
 	// 値を返す
 	return S_OK;
@@ -199,6 +203,7 @@ void CBlock::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 	SetScale(scale);					// 拡大率
 
 	// 全ての値を設定する
+	m_type = type;			// 種類
 	m_dropType = dropType;	// ドロップの種類
 	m_nBreakCount = 0;		// 破壊カウント
 
@@ -241,6 +246,24 @@ void CBlock::SetData(const D3DXVECTOR3& pos, const D3DXVECTOR3& rot, const D3DXV
 
 	// データの設定処理
 	SetFileData(file);
+}
+
+//=======================================
+// 種類の設定処理
+//=======================================
+CBlock::TYPE CBlock::GetType(void) const
+{
+	// 種類を返す
+	return m_type;
+}
+
+//=======================================
+// ドロップの種類の設定処理
+//=======================================
+CBlock::DROPTYPE CBlock::GetDropType(void) const
+{
+	// ドロップの種類を返す
+	return m_dropType;
 }
 
 //=======================================

@@ -12,6 +12,7 @@
 //********************************************
 #include "main.h"
 #include "enemy.h"
+#include "block.h"
 #include "ranking.h"
 
 //--------------------------------------------
@@ -35,6 +36,7 @@ public:			// 誰でもアクセスできる
 		TYPE_TABLE,			// 台
 		TYPE_AIRPLANE,		// 飛行機
 		TYPE_NEEDLE,		// 棘
+		TYPE_BLOCK,			// ブロック
 		TYPE_RANKING,		// ランキング
 		TYPE_MAX			// この列挙型の総数
 	};
@@ -90,6 +92,18 @@ public:			// 誰でもアクセスできる
 		bool bSuccess;						// 成功状況
 	};
 
+	// 列挙型定義(ブロックの情報)
+	struct SBlockInfo
+	{
+		D3DXVECTOR3 pos[MAX_FILE_DATA];				// 位置
+		D3DXVECTOR3 rot[MAX_FILE_DATA];				// 向き
+		D3DXVECTOR3 scale[MAX_FILE_DATA];			// 拡大率
+		CBlock::TYPE type[MAX_FILE_DATA];			// 種類
+		CBlock::DROPTYPE dropType[MAX_FILE_DATA];	// ドロップの種類
+		int nNum;									// 総数
+		bool bSuccess;								// 成功状況
+	};
+
 	// ランキングの情報
 	struct SRankingInfo
 	{
@@ -119,6 +133,7 @@ private:		// 自分のみアクセスできる
 	HRESULT SaveTable(void);		// 台のセーブ処理
 	HRESULT SaveAirplane(void);		// 飛行機のセーブ処理
 	HRESULT SaveNeedle(void);		// 棘のセーブ処理
+	HRESULT SaveBlock(void);		// ブロックのセーブ処理
 	HRESULT SaveRanking(void);		// ランキングのセーブ処理
 
 	// メンバ関数(ロード関係)
@@ -128,6 +143,7 @@ private:		// 自分のみアクセスできる
 	HRESULT LoadTable(void);		// 台のロード処理
 	HRESULT LoadAirplane(void);		// 飛行機のロード処理
 	HRESULT LoadNeedle(void);		// 棘のロード処理
+	HRESULT LoadBlock(void);		// ブロックのロード処理
 	HRESULT LoadRanking(void);		// ランキングのロード処理
 
 	// メンバ変数
@@ -137,6 +153,7 @@ private:		// 自分のみアクセスできる
 	STableInfo m_TableInfo;			// 台の情報
 	SAirplaneInfo m_AirplaneInfo;	// 飛行機の情報
 	SNeedleInfo m_NeedleInfo;		// 棘の情報
+	SBlockInfo m_BlockInfo;			// ブロックの情報
 	SRankingInfo m_RankingInfo;		// ランキングの情報
 
 	// 静的メンバ変数
