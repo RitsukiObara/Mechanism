@@ -17,6 +17,7 @@
 #include "file.h"
 #include "camera.h"
 #include "result_score.h"
+#include "skybox.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -53,6 +54,9 @@ HRESULT CResult::Init(void)
 {
 	// シーンの初期化
 	CScene::Init();
+
+	// スカイボックスの生成処理
+	CSkyBox::Create();
 
 	// テキスト読み込み処理
 	CMesh::TxtSet();

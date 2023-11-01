@@ -106,8 +106,7 @@ HRESULT CGame::Init(void)
 	CScene::Init();
 
 	// プレイヤーを生成する
-	//CPlayer::Create(D3DXVECTOR3(-4500.0f, 0.0f, 0.0f));
-	CPlayer::Create(D3DXVECTOR3(23000.0f, 0.0f, 0.0f));
+	CPlayer::Create(D3DXVECTOR3(-4500.0f, 0.0f, 0.0f));
 
 	// ロード処理
 	CManager::Get()->GetFile()->Load(CFile::TYPE_ITEM);

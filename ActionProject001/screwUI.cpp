@@ -24,6 +24,7 @@
 #define SCORE_SHIFT			(40.0f)													// 数値のずらす幅
 #define BACK_SIZE			(D3DXVECTOR3(80.0f, 60.0f, 0.0f))						// 背景のサイズ
 #define SCORE_SIZE			(D3DXVECTOR3(20.0f, 30.0f, 0.0f))						// 数値のサイズ
+#define ADD_LIFE_SCORE		(100)													// 体力が増えるスコア
 
 //========================
 // コンストラクタ
@@ -345,7 +346,7 @@ void CScrewUI::AddScore(const int nScore)
 	// スコアを設定する
 	m_nScore += nScore;
 
-	if (m_nScore >= 100)
+	if (m_nScore >= ADD_LIFE_SCORE)
 	{ // スコアが一定数に達した場合
 
 		// スコアを初期化する

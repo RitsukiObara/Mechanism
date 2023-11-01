@@ -18,6 +18,7 @@
 
 #include "Objectmesh.h"
 #include "game.h"
+#include "skybox.h"
 
 //マクロ定義
 #define SET_TITLE_TIMER			(300)			// タイトル画面に行く秒数
@@ -49,6 +50,9 @@ HRESULT CRanking::Init(void)
 
 	// テキスト読み込み処理
 	CMesh::TxtSet();
+
+	// スカイボックスの生成処理
+	CSkyBox::Create();
 
 	// ランキングの文字を生成
 	CRankingWord::Create();
