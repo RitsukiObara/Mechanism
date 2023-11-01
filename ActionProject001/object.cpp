@@ -671,6 +671,7 @@ void CObject::DeathDecision(const int nCnt)
 
 			// 死亡(破棄)処理
 			pObj->Death();
+			pObj = nullptr;
 		}
 
 		// 次のオブジェクトを代入する

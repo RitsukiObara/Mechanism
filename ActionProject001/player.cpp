@@ -36,6 +36,7 @@
 #include "bonus.h"
 #include "destruction.h"
 #include "ripple.h"
+#include "push_timing.h"
 
 //--------------------------------------------
 // マクロ定義
@@ -45,6 +46,10 @@
 #define COLLISION_WIDTH			(20.0f)		// 当たり判定時に使う時の幅
 #define COLLISION_HEIGHT		(150.0f)	// 当たり判定時に使う時の高さ
 #define COLLISION_DEPTH			(20.0f)		// 当たり判定時に使う時の奥行
+#define START_CAMERA_POSR_Y		(100.0f)	// スタート時のカメラの注視点(Y軸)
+#define START_CAMERA_POSV_Y		(130.0f)	// スタート時のカメラの視点(Y軸)
+#define START_CAMERA_DISTANCE	(200.0f)	// スタート時のカメラの距離
+#define START_COUNT				(40)		// スタートのカウント
 #define PUNCH_COUNT				(150)		// パンチ状態のカウント数
 #define GOAL_COUNT				(80)		// ゴール状態のカウント数
 #define LEAVE_GRAVITY			(0.4f)		// 退場状態の重力
@@ -60,6 +65,7 @@
 #define PUNCH_DSTR_LIFE			(6)			// パンチ時の撃破の寿命
 #define PUNCH_RIPPLE_SHIFT		(D3DXVECTOR3(45.0f, 100.0f, 0.0f))		// パンチ時の波紋のずらす幅
 #define OUT_RANGE_GRAVITY		(-5.0f)		// 範囲外に出たときの重力
+#define ADD_START_POS			(D3DXVECTOR3(20.0f, -20.0f, 0.0f))		// スタート状態の加算する位置
 
 //--------------------------------------------
 // 静的メンバ変数宣言
@@ -78,10 +84,13 @@ CPlayer::CPlayer() : CCharacter(CObject::TYPE_PLAYER, CObject::PRIORITY_PLAYER)
 	m_pScrewUI = nullptr;			// ネジUIの情報
 	m_pLifeUI = nullptr;			// 体力UIの情報
 	m_pCombo = nullptr;				// コンボの情報
+	m_pPushTiming = nullptr;		// 押しボタンのタイミング
 	m_pBlock = nullptr;				// ブロックの情報
+	m_posDest = NONE_D3DXVECTOR3;	// 目的の位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
+	m_nStartCount = 0;				// スタートカウント
 	m_nGoalCount = 0;				// ゴール時のカウント
 	m_nLife = MAX_LIFE;				// 体力
 	m_fSpeed = 0.0f;				// 速度
@@ -151,7 +160,7 @@ HRESULT CPlayer::Init(void)
 	}
 
 	// モーションの設定処理
-	m_pMotion->Set(MOTIONTYPE_NEUTRAL);
+	m_pMotion->Set(MOTIONTYPE_APPEAR);
 
 	if (m_pAction == nullptr)
 	{ // 行動状態が NULL の場合
@@ -219,10 +228,13 @@ HRESULT CPlayer::Init(void)
 	}
 
 	// 全ての値を初期化する
+	m_pPushTiming = nullptr;		// 押しボタンのタイミング
 	m_pBlock = nullptr;				// ブロックの情報
+	m_posDest = NONE_D3DXVECTOR3;	// 目的の位置
 	m_move = NONE_D3DXVECTOR3;		// 移動量
 	m_rotDest = NONE_D3DXVECTOR3;	// 目的の向き
 	m_nShadowIdx = INIT_SHADOW;		// 影のインデックス
+	m_nStartCount = 0;				// スタートカウント
 	m_nGoalCount = 0;				// ゴール時のカウント
 	m_nLife = MAX_LIFE;				// 体力
 	m_fSpeed = 0.0f;				// 速度
@@ -281,6 +293,9 @@ void CPlayer::Update(void)
 	switch (CGame::GetState())
 	{
 	case CGame::STATE_START:
+
+		// スタート状態の処理
+		StartProcess();
 
 		break;
 
@@ -371,7 +386,8 @@ void CPlayer::Update(void)
 		bJump == true)
 	{ // 着地した瞬間
 
-		if (m_pMotion->GetType() != MOTIONTYPE_JETDASH)
+		if (m_pMotion->GetType() != MOTIONTYPE_JETDASH &&
+			m_pMotion->GetType() != MOTIONTYPE_APPEAR)
 		{ // ジェットダッシュモーション以外の場合
 
 			// 着地モーションを設定する
@@ -499,6 +515,28 @@ CCombo* CPlayer::GetCombo(void) const
 {
 	// コンボの情報を返す
 	return m_pCombo;
+}
+
+//===========================================
+// 押しボタンの情報の設定処理
+//===========================================
+void CPlayer::SetPushTiming(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();
+	D3DXVECTOR3 rot = GetRot();
+
+	// 押しボタンを生成
+	m_pPushTiming = CPushTiming::Create(D3DXVECTOR3(pos.x + sinf(-rot.y) * 100.0f, pos.y + 160.0f, pos.z));
+}
+
+//===========================================
+// 押しボタンの情報の取得処理
+//===========================================
+CPushTiming* CPlayer::GetPushTiming(void) const
+{
+	// 押しボタンを返す
+	return m_pPushTiming;
 }
 
 //===========================================
@@ -695,10 +733,13 @@ void CPlayer::BoundHit(void)
 void CPlayer::SetData(const D3DXVECTOR3& pos)
 {
 	// 全ての値を初期化する
-	SetPos(pos);			// 位置
-	SetPosOld(pos);			// 前回の位置
-	SetRot(D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f));			// 向き
-	SetScale(NONE_SCALE);	// 拡大率
+	m_posDest = pos;	// 目的の位置
+	SetPos(D3DXVECTOR3(pos.x - 500.0f, pos.y + 400.0f, pos.z));		// 位置
+	SetPosOld(GetPos());			// 前回の位置
+	SetRot(D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f));				// 向き
+	SetScale(NONE_SCALE);			// 拡大率
+
+	m_rotDest = GetRot();	// 目的の向きを設定する
 
 	for (int nCntData = 0; nCntData < GetNumModel(); nCntData++)
 	{
@@ -722,6 +763,14 @@ void CPlayer::SetData(const D3DXVECTOR3& pos)
 		// 影のインデックス設定
 		m_nShadowIdx = pShadow->GetNumID();
 	}
+
+	// モーションの設定処理
+	m_pMotion->Set(MOTIONTYPE_APPEAR);
+
+	// カメラを設定する
+	CManager::Get()->GetCamera()->SetPosR(D3DXVECTOR3(pos.x, pos.y + START_CAMERA_POSR_Y, pos.z));
+	CManager::Get()->GetCamera()->SetPosV(D3DXVECTOR3(pos.x, pos.y + START_CAMERA_POSV_Y, pos.z));
+	CManager::Get()->GetCamera()->SetDistance(START_CAMERA_DISTANCE);
 }
 
 //=======================================
@@ -1193,10 +1242,55 @@ void CPlayer::OutRangeCollision(void)
 }
 
 //=======================================
+// スタート状態の処理
+//=======================================
+void CPlayer::StartProcess(void)
+{
+	// ローカル変数宣言
+	D3DXVECTOR3 pos = GetPos();		// 位置を取得する
+
+	// 位置を加算する
+	pos += ADD_START_POS;
+
+	if (pos.x >= m_posDest.x)
+	{ // 位置が目的を超えた場合
+
+		// 位置を補正する
+		pos = m_posDest;
+
+		if (m_nStartCount == 0)
+		{ // 最初のみ
+
+			// 波紋の生成
+			CRipple::Create(GetPos(), NONE_D3DXVECTOR3);
+		}
+
+		// スタートカウントを加算する
+		m_nStartCount++;
+	}
+
+	if (m_nStartCount >= START_COUNT)
+	{ // スタートカウントを設定する
+
+		// 通常モーションを設定する
+		m_pMotion->Set(MOTIONTYPE_NEUTRAL);
+
+		// 遊び状態にする
+		CGame::SetState(CGame::STATE_PLAY);
+	}
+
+	// 位置を適用する
+	SetPos(pos);
+}
+
+//=======================================
 // ゴール状態の処理
 //=======================================
 void CPlayer::GoalProcess(void)
 {
+	// 通常状態にする
+	m_pAction->SetState(CPlayerAct::STATE_NONE);
+
 	// ゴール時のカウントを加算する
 	m_nGoalCount++;
 
@@ -1269,8 +1363,13 @@ void CPlayer::GoalProcess(void)
 				CGoal::Get()->Uninit();
 			}
 
-			// 押しボタンの表示を消す
-			CObject::AnyAllClear(CObject::PRIORITY_UI, CObject::TYPE_PUSHTIMING);
+			if (m_pPushTiming != nullptr)
+			{ // 押しボタンが NULL じゃない場合
+
+				// 終了処理
+				m_pPushTiming->Uninit();
+				m_pPushTiming = nullptr;
+			}
 		}
 	}
 	else

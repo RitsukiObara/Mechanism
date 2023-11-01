@@ -234,12 +234,8 @@ void CGoal::Hit(void)
 		if (CPlayer::Get() != nullptr)
 		{ // プレイヤーが NULL じゃない場合
 
-			// ローカル変数宣言
-			D3DXVECTOR3 pos = CPlayer::Get()->GetPos();		// 位置を取得する
-			D3DXVECTOR3 rot = CPlayer::Get()->GetRot();		// 向きを取得する
-
-			// 押しタイミングの表示の生成
-			CPushTiming::Create(D3DXVECTOR3(pos.x + sinf(-rot.y) * 100.0f, pos.y + 160.0f, pos.z));
+			// 押しボタンを生成
+			CPlayer::Get()->SetPushTiming();
 		}
 	}
 }

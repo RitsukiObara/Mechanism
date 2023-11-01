@@ -14,6 +14,8 @@
 #include "texture.h"
 #include "useful.h"
 
+#include "player.h"
+
 // マクロ定義
 #define BACK_TEXTURE		"data\\TEXTURE\\ScrewUI.png"							// 背景のテクスチャ
 #define SCORE_TEXTURE		"data\\TEXTURE\\Number.png"								// スコアのテクスチャ
@@ -342,6 +344,16 @@ void CScrewUI::AddScore(const int nScore)
 {
 	// スコアを設定する
 	m_nScore += nScore;
+
+	if (m_nScore >= 100)
+	{ // スコアが一定数に達した場合
+
+		// スコアを初期化する
+		m_nScore = 0;
+
+		// 体力を1増やす
+		CPlayer::Get()->SetLife(CPlayer::Get()->GetLife() + 1);
+	}
 }
 
 //========================

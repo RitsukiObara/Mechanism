@@ -534,7 +534,8 @@ void CPlayerAct::Control(CPlayer& player)
 		if (player.GetAbility()->GetAbility() == CAbility::ABILITY_NONE &&
 			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_NEUTRAL &&
 			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_JUMP &&
-			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_LANDING)
+			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_LANDING &&
+			player.GetMotion()->GetType() != CPlayer::MOTIONTYPE_APPEAR)
 		{ // 待機モーションじゃない場合
 
 			// 待機モーションを設定する

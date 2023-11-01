@@ -23,6 +23,7 @@ class CScrewUI;				// ネジUI
 class CCombo;				// コンボ
 class CBlock;				// ブロック
 class CLifeUI;				// 体力UI
+class CPushTiming;			// 押すタイミング
 
 //--------------------------------------------
 // クラス(プレイヤークラス)
@@ -46,6 +47,7 @@ public:			// 誰でもアクセスできる
 		MOTIONTYPE_QUAKE,			// 地震
 		MOTIONTYPE_SCRATCH001,		// ひっかき001
 		MOTIONTYPE_SCRATCH002,		// ひっかき002
+		MOTIONTYPE_APPEAR,			// 登場
 		MOTIONTYPE_MAX				// この列挙型の総数
 	};
 
@@ -90,6 +92,8 @@ public:			// 誰でもアクセスできる
 	CScrewUI* GetScrewUI(void) const;			// ネジUIの情報の取得処理
 	CLifeUI* GetLifeUI(void) const;				// 体力UIの情報の取得処理
 	CCombo* GetCombo(void) const;				// コンボの情報の取得処理
+	void SetPushTiming(void);					// 押しボタンの情報の設定処理
+	CPushTiming* GetPushTiming(void) const;		// 押しボタンの情報の取得処理
 	CBlock* GetBlock(void) const;				// ブロックの情報の取得処理
 	void DeleteBlock(void);						// ブロックのNULL化処理
 
@@ -108,6 +112,7 @@ private:		// 自分だけアクセスできる
 	void FallCheck(void);			// 落下の判定処理
 	void OutRangeCollision(void);	// 範囲外の当たり判定
 
+	void StartProcess(void);		// スタート状態の処理
 	void GoalProcess(void);			// ゴール状態の処理
 	void LeaveProcess(void);		// 退場状態の処理
 	void FinishProcess(void);		// 終了状態の処理
@@ -119,11 +124,14 @@ private:		// 自分だけアクセスできる
 	CScrewUI* m_pScrewUI;			// ネジUIの情報
 	CLifeUI* m_pLifeUI;				// 体力UIの情報
 	CCombo* m_pCombo;				// コンボの情報
+	CPushTiming* m_pPushTiming;		// 押しボタンのタイミング
 	CBlock* m_pBlock;				// ブロックの情報
 
+	D3DXVECTOR3 m_posDest;			// 目的の位置
 	D3DXVECTOR3 m_move;				// 移動量
 	D3DXVECTOR3 m_rotDest;			// 目的の向き
 	int m_nShadowIdx;				// 影のインデックス
+	int m_nStartCount;				// スタートカウント
 	int m_nGoalCount;				// ゴール時のカウント
 	int m_nLife;					// 体力
 	float m_fSpeed;					// 速度

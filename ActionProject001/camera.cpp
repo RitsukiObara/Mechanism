@@ -687,9 +687,6 @@ void CCamera::GameCamera(void)
 	{
 	case CGame::STATE_START:		// スタート時
 
-		// 追跡処理
-		Chase();
-
 		break;
 
 	case CGame::STATE_PLAY:			// プレイ状態

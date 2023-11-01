@@ -106,7 +106,8 @@ HRESULT CGame::Init(void)
 	CScene::Init();
 
 	// プレイヤーを生成する
-	CPlayer::Create(D3DXVECTOR3(-4500.0f, 0.0f, 0.0f));
+	//CPlayer::Create(D3DXVECTOR3(-4500.0f, 0.0f, 0.0f));
+	CPlayer::Create(D3DXVECTOR3(23000.0f, 0.0f, 0.0f));
 
 	// ロード処理
 	CManager::Get()->GetFile()->Load(CFile::TYPE_ITEM);
@@ -121,7 +122,7 @@ HRESULT CGame::Init(void)
 	CGameScore::Create(D3DXVECTOR3(50.0f,680.0f,0.0f),NONE_D3DXVECTOR3,D3DXVECTOR3(25.0f,35.0f,0.0f));
 
 	// ゴールの生成
-	CGoal::Create(D3DXVECTOR3(20000.0f, 500.0f, 0.0f));
+	CGoal::Create(D3DXVECTOR3(27000.0f, 500.0f, 0.0f));
 
 	// ポークの生成
 	CPork::Create(D3DXVECTOR3(-3500.0f, 0.0f, 0.0f), CPork::TYPE_HOVER);
@@ -347,7 +348,7 @@ void CGame::SetData(const MODE mode)
 	}
 
 	// スタート状態にする
-	m_GameState = STATE_PLAY;
+	m_GameState = STATE_START;
 
 	// 情報の初期化
 	m_nFinishCount = 0;				// 終了カウント

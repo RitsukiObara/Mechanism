@@ -14,14 +14,14 @@
 //----------------------------------------------------
 // マクロ定義
 //----------------------------------------------------
-#define TEXTURE				"data\\TEXTURE\\NoonSky.jpg"			// テクスチャのパス
-#define SKYBOX_POS			(D3DXVECTOR3(7500.0f, -10000.0f, 0.0f))	// 位置
-#define SKYBOX_ROT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))			// 向き
-#define SKYBOX_WIDTH		(40000.0f)								// 横幅
-#define SKYBOX_HEIGHT		(40000.0f)								// 縦幅
-#define SKYBOX_DIVI_CIRCUM	(32)									// 円周の分割数
-#define SKYBOX_DIVI_HEIGHT	(32)									// 縦の分割数
-#define SKYBOX_ROTATION		(0.001f)								// 回す速度
+#define TEXTURE				"data\\TEXTURE\\NoonSky.jpg"				// テクスチャのパス
+#define SKYBOX_POS			(D3DXVECTOR3(20000.0f, -10000.0f, 0.0f))	// 位置
+#define SKYBOX_ROT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))				// 向き
+#define SKYBOX_WIDTH		(40000.0f)									// 横幅
+#define SKYBOX_HEIGHT		(40000.0f)									// 縦幅
+#define SKYBOX_DIVI_CIRCUM	(32)										// 円周の分割数
+#define SKYBOX_DIVI_HEIGHT	(32)										// 縦の分割数
+#define SKYBOX_ROTATION		(0.001f)									// 回す速度
 
 //================================
 // コンストラクタ
