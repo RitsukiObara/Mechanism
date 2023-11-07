@@ -9,6 +9,7 @@
 TEXTURE = data\TEXTURE\ButTutorial001.png	# ホバージェットのチュートリアル(ボタン)
 TEXTURE = data\TEXTURE\ButTutorial002.png	# ジェットダッシュのチュートリアル(ボタン)
 TEXTURE = data\TEXTURE\ButTutorial003.png	# グラウンドクエイクのチュートリアル(ボタン)
+TEXTURE = data\TEXTURE\Dirt.png				# 土
 TEXTURE = data\TEXTURE\Dstr001.png			# 撃破(トゲトゲ)
 TEXTURE = data\TEXTURE\Dstr002.png			# 撃破(フワフワ)
 TEXTURE = data\TEXTURE\Dstr003.png			# 撃破(爆発)
